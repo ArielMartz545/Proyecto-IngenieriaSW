@@ -1,0 +1,36 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block content %}
+    <div class="col-3 mx-auto mt-5 text-center">
+        <!--i class="fas fa-bullseye fa-3x" style="justify-content: center;color: #009AD0"></i-->
+        <img src="{% static 'core/img/Logo-Paya-Single2.png' %} " height="60" width="160" alt="">  
+        <h3>Te damos la bienvenida a Pa'ya</h3>
+        <h5 style="color:grey">Encuentra todo lo que necesitas</h5>
+        <h5><strong style="color: black">Iniciar sesión</strong></h5>
+        {% if 'register' in request.GET %}
+            <p style=color:green>Te has registrado correctamente, para poder iniciar sesión necesitarás activar tu cuenta, se ha enviado un enlace a tu correo.</p>
+        {% endif %}
+        {% if 'activated' in request.GET %}
+            <p style=color:green>Has activado tu cuenta, estás listo para ingresar y obtener el máximo de APP.</p>
+        {% endif %}
+        {% if 'invalid_activation' in request.GET %}
+            <p style=color:green>Al parecer el enlace de activación no es válido.</p>
+        {% endif %}
+        <form action="" method="post">
+            {% csrf_token %} 
+            <div class="form-group my-0 py-2">
+                <input type="email" name="username" maxlength="100" autofocus required class="form-control" id="id_username" placeholder="Correo electrónico">
+            </div>
+            <div class="form-group my-0 py-2">
+                <input type="password" name="password" maxlength="100" autofocus required class="form-control" id="id_password" placeholder="Contraseña">
+                {% if form.errors %}
+                    <p  style="color:red;font-size: 12px">Verifique que su correo y contraseña sean las correctas.</p>
+                {% endif %}
+                <a href="{% url 'signup' %}">¿Olvidaste tu contraseña?</a>
+            </div>
+                <button type="submit" class="btn btn-primary btn-block mb-3">Ingresar</button>
+            <a href="{% url 'signup' %}">Registrate</a>
+        </form>
+    </div>
+        
+{% endblock %}

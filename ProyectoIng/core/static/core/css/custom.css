@@ -1,0 +1,23 @@
+.top{
+    padding-bottom: 67px; 
+    padding-top: 48px; 
+    min-height: 533px; 
+    left: 50%; 
+    position: absolute; 
+    transform: translateX(-50%);
+}
+
+.midle{
+    background-color: rgb(255, 255, 255); 
+    border-radius: 8px;
+    min-height: 533px;
+    padding-top: 10px;
+    width: 400px;
+    border-color:ffc20e
+}
+
+.in{
+    position: static;
+     height: 100%; 
+     width: 100%;
+}
