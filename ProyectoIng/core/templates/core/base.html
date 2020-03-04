@@ -9,55 +9,62 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>APP</title>
+    <title>Pa'Ya|Tu Mercado Digital.</title>
 
     <!-- Bootstrap core CSS -->
     <link href="{% static 'core/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
     <link href="{% static 'core/vendor/fontawesome/css/all.min.css' %}" rel="stylesheet">
 
     <!-- Custom styles for this template -->
-    <link href="css/simple-sidebar.css" rel="stylesheet">
+    <link href="{% static 'css/simple-sidebar.css' %}" rel="stylesheet">
+    <link href="{% static 'core/css/custom.css' %}" rel="stylesheet">
 
 </head>
 
 <body>
-{% block content %}
-<h1>PAdre</h1>
-
-
-{% endblock %}
-            <!-- FIN Contenido -->
-            <!-- Pié de página -->
-            <hr>
-            <footer>
-                <div class="container">
-                    <div class="row">
-                        <div class="col-lg-8 col-md-10 mx-auto text-center">
-                            <ul class="list-inline">
-                                <li class="list-inline-item">
-                                    <a href="#">
-                                        <i class="fab fa-whatsapp fa-2x"></i>
-                                    </a>
-                                </li>
-                                <li class="list-inline-item">
-                                    <a href="#">
-                                        <i class="fab fa-facebook fa-2x"></i>
-                                    </a>
-                                </li>
-                                <li class="list-inline-item">
-                                    <a href="#">
-                                        <i class="fab fa-instagram fa-2x"></i>
-                                    </a>
-                                </li>
-                            </ul>
-                            <p class="copyright text-muted" align="center">Derechos reservados &copy; 2020 APP</p>
-                        </div>
-                    </div>
-                </div>
-            </footer>
-            <!-- FIN Pié de página -->
+    {% if request.user.is_authenticated %}
+        <p style="color: green;">Usuario Autenticado</p>
+        <a href="{% url 'logout' %}">logout</a>
+    {% endif %}
+<footer>
+    <div class="container-fluid">
+        <div class="row">
+            {% block content %}{% endblock %}
         </div>
-    </div>
+        <hr>
+        <div class="row">
+            <div class="col mx-auto text-center">
+                    <ul class="list-inline">
+                        <li class="list-inline-item">
+                            <a href="#">
+                                <i class="fab fa-whatsapp fa-2x"></i>
+                            </a>
+                        </li>
+                        <li class="list-inline-item">
+                            <a href="#">
+                                <i class="fab fa-facebook fa-2x"></i>
+                            </a>
+                        </li>
+                        <li class="list-inline-item">
+                            <a href="#">
+                                <i class="fab fa-instagram fa-2x"></i>
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="termserv">
+                        <ul>
+                            Al enviar este formulario, confirma aceptar los 
+                            <a href="/core/templates/core/terms.html">Terminos y condiciones,</a>
+                            el almacenamiento y el procesamiento de sus datos personales, 
+                            del producto tal y como se describen en la <a href="/core/templates/core/privacy.html">
+                            Politicas y Privacidad</a>
+                        </ul>   
+                    </div>
+                    <p class="copyright text-muted" align="center">Derechos reservados &copy; 2020 Pa'Ya</p>
+                </div>
+            </div>
+        </div>
+</footer>
 
     <!-- Bootstrap core JavaScript -->
     <script src="{% static 'core/vendor/jquery/jquery.min.js' %}"></script>
@@ -72,6 +79,7 @@
         });
     </script>
     <!-- Category Script -->
+
     <script>
         $(document).ready(function (e) {
             $('.search-panel .dropdown-menu').find('a').click(function (e) {
