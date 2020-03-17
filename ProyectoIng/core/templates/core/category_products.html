@@ -20,7 +20,7 @@
                         <img class="card-img-top img-fluid" src="{{img.img_route.url}}" alt="Card image cap">
                         {% endfor %}
                         {% else %}
-                        <div id="carouselAd{{ data.pk }}" class="carousel slide" data-ride="carousel">
+                        <div id="carouselAd{{ product.pk }}" class="carousel slide" data-ride="carousel">
                             <div class="carousel-inner">
                                 {% for img in product.ad_images.all %}
                                 <div class="carousel-item {% if forloop.first %}active{% endif %}">
@@ -28,11 +28,11 @@
                                 </div>
                                 {% endfor %}
                             </div>
-                            <a class="carousel-control-prev" href="#carouselAd{{ data.pk }}" role="button" data-slide="prev">
+                            <a class="carousel-control-prev" href="#carouselAd{{ product.pk }}" role="button" data-slide="prev">
                                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                                 <span class="sr-only">Previous</span>
                             </a>
-                            <a class="carousel-control-next" href="#carouselAd{{ data.pk }}" role="button" data-slide="next">
+                            <a class="carousel-control-next" href="#carouselAd{{ product.pk }}" role="button" data-slide="next">
                                 <span class="carousel-control-next-icon" aria-hidden="true"></span>
                                 <span class="sr-only">Next</span>
                             </a>
