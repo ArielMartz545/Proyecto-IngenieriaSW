@@ -15,14 +15,3 @@ class main_page(TemplateView):
         context['locations'] = Location.objects.filter(correlative_direction__isnull=True)
         return context
 
-
-
-class CategoryDetailView(DetailView):
-
-    model = Category
-    template_name = 'core/category_products.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['products']= Ad.objects.all()
-        return context
