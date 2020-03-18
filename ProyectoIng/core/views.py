@@ -7,7 +7,7 @@ from ad.models import Category,Ad
 # Create your views here.
 
 class main_page(TemplateView):
-    template_name= "core/sidebar.html"
+    template_name= "core/home.html"
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         context['categories'] = Category.objects.order_by('category_name')

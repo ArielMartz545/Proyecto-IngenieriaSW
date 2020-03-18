@@ -1,11 +1,10 @@
 {% extends 'core/sidebar.html' %}
 {% load static %}
+{% block title %}{{object}}{% endblock %} 
 {% block css %}
 <link href="{% static 'core/css/card-img-top.css' %}" rel="stylesheet">
 {% endblock %}
 {% block content %}
-
-<div class="container-fluid">
     <div class="row">
         <div class="col-md-10"></div>
         <div class="col-md-2"> 
@@ -13,7 +12,7 @@
         </div>
         {% for product in products %}
             {% if product.id_category == object %}
-                <div class="col-md-3"> 
+                <div class="col-md-3 mb-4"> 
                     <div class="card border-left-{% cycle 'primary' 'info' 'success' 'secondary' 'danger' 'warning' %} shadow h-100 pb-2">
                         {% if product.ad_images.count == 1 %}
                         {% for img in product.ad_images.all %}
@@ -51,5 +50,4 @@
             {% endif %}
         {% endfor %}
     </div>
-</div>
 {% endblock %}

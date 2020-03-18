@@ -10,7 +10,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>{% block title %}Inicio{% endblock %} | Pa’Ya</title>
+  <title>{% block title %}{% endblock %} | Pa’Ya</title>
 
   <!-- Custom fonts for this template-->
   <link href="{% static 'core/vendor/fontawesome/css/all.min.css' %}" rel="stylesheet">
@@ -380,28 +380,6 @@
         <!-- Begin Page Content -->
         <div class="container-fluid">
           {% block content %}
-            <div class="row">
-              {% for category in categories %}              
-                <div class="col-md-3 mb-4">
-                  <div class="card border-left-{% cycle 'primary' 'info' 'success' 'secondary' 'danger' 'warning' %} shadow h-100 py-2">
-                    <div class="card-body">
-                      <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                          <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">{{category.category_name}}</div>
-                          <div class="h5 mb-0 font-weight-bold text-gray-800">{{category.category_description}}</div>
-                        </div>
-                        <div class="col-auto">
-                          <i class="{{category.category_icon_class}} fa-2x"></i>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <a href="{% url 'category_products' category.id %}" class="btn btn-link">Buscar en {{category.category_name}}</a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              {% endfor %}
-            </div>
           {% endblock %}
         </div>
         <!-- /.container-fluid -->
