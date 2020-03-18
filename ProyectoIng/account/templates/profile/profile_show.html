@@ -1,0 +1,183 @@
+{% extends 'core/navbar.html' %}
+{% load static %}
+{% block title %}Editar Mi Perfil{% endblock %}
+
+{% block css %}
+    <link href="{% static 'core/css/img-profileuser.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+
+<header class="masthead bg-info text-white text-left ">
+    <div class="container d-flex align-items-left flex-column">
+
+      <!-- Masthead Avatar Image -->
+      <img class="masthead-avatar mb-4" src="img/avataaars.svg" alt="">
+
+      <!-- Masthead Heading --> 
+        <div class="row text-left">
+            <div class="col-md text-left">
+                <a class="text-decoration-none">
+                    <h1 class="font-weight-bold font-italic display-3">
+                        <span class="text-warning">Pa</span>
+                        <span class="text-warning">’Ya</span>
+                    </h1>
+                </a>
+            </div>
+        </div>
+        <div class="container d-flex align-items-center">
+    
+          <!-- Masthead Avatar Image -->
+
+          <div class="divider-custom divider-light m-4">
+    
+            <div class="divider-custom-line "></div>
+               <h1 class="masthead-heading text-uppercase font-weight-bold">{{ request.user.get_full_name }}</h1>
+            <div class="divider-custom-line"></div>
+    
+    
+          </div>
+          
+        <div class="col text-right">
+            <img class="img-profileuser rounded-circle mb-5" src="{{request.user.profile_img.url}} " >
+        </div>
+          <!-- Masthead Heading -->
+          
+    
+          <!-- Icon Divider -->
+         
+
+      <!-- Icon Divider -->
+      <div class="divider-custom divider-light">
+        <div class="divider-custom-line"></div>
+        <div class="divider-custom-line"></div>
+      </div>
+      <!-- Masthead Subheading -->
+    </div>
+    
+    <section class="col text-right">
+        <div class="divider-custom-line"></div>
+            <div class="col-md-5">
+                <h2>
+                    <p>Informacion General</p>
+                </h2>
+            </div>
+            <div class="divider-custom-line"></div>
+            <div class="col">
+                <div class="col-md-5 ">
+                    <div class="form-group my-0 py-0 m-3">
+                        <p>{{ request.user.email}}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="col-md-3">
+                    <div class="form-group my-0 py-0">
+                        <p>{{ request.user.phone_number }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="col-md-3 l-4">
+                    <div class="form-group my-0 py-0">
+                        <p>{{ request.user.address }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="col-md-3 m-4">
+                    <div class="form-group my-0 py-0">
+                        <p>{{ request.user.birth_date }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="col-md-4 m-4">
+                    <div class="form-group my-0 py-0">
+                        <p>{{ request.user.date_joined }}</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+  </header>
+  
+  <!-- Portfolio Section -->
+  
+
+  <!-- About Section -->
+  <section class="page-section text-white mb-0 d-flex flex-column pt-0" id="about">
+    <div class="container bg-info">
+
+      <!-- About Section Heading -->
+      <br>
+      <br>
+      <h2 class="page-section-heading text-center text-uppercase text-white">Sobre mi</h2>
+
+      <!-- Icon Divider -->
+      <div class="divider-custom divider-light">
+        <div class="divider-custom-line"></div>
+        
+        <div class="divider-custom-line"></div>
+      </div>
+
+      <!-- About Section Content -->
+      <div class="row">
+        <div class="col-lg-4 ml-auto">
+          <p class="lead">Freelancer is a free bootstrap theme created by Start Bootstrap. The download includes the complete source files including HTML, CSS, and JavaScript as well as optional SASS stylesheets for easy customization.</p>
+        </div>
+        <div class="col-lg-4 mr-auto">
+          <p class="lead">You can create your own custom avatar for the masthead, change the icon in the dividers, and add your email address to the contact form to make it fully functional!</p>
+        </div>
+      </div>
+
+      <!-- About Section Button -->
+      <br>
+  </section>
+  <div class="divider-custom"></div>
+
+  <br>
+  <br>
+  <!-- Contact Section -->
+    <!-- Footer -->
+    <footer class="footer text-center">
+        <div class="container">
+          <div class="row">
+    
+            <!-- Footer Location -->
+            <div class="col-lg-4 mb-5 mb-lg-0">
+              <h4 class="text-uppercase mb-4">Localidad</h4>
+              <p class="lead mb-0">2215 John Daniel Drive
+                <br>Clark, MO 65243</p>
+            </div>
+    
+            <!-- Footer Social Icons -->
+            <div class="col-lg-4 mb-5 mb-lg-0">
+              <h4 class="text-uppercase mb-4">Nuestras Redes</h4>
+            </div>
+    
+            <!-- Footer About Text -->
+            <div class="col-lg-4">
+              <h4 class="text-uppercase mb-4">Acerca de Pa'Ya</h4>
+              <p class="lead mb-0">Freelance is a free to use, MIT licensed Bootstrap theme created by</p>
+            </div>
+    
+          </div>
+        </div>
+      </footer>
+
+  
+
+  <a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+  </a>
+
+
+
+{% endblock %}
+{% block js %}
+    <script src="{% static 'core/js/profile-update.js' %}"></script>
+    <script src="{% static 'core/js/file-label-change.js' %}"></script>
+    <script src="{% static 'core/js/max-date-today.js' %}"></script>
+{% endblock %}

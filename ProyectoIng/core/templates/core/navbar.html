@@ -10,7 +10,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>{% block title %}{% endblock %} | Pa’Ya</title>
+  <title>{% block title %}Inicio{% endblock %} | Pa’Ya</title>
 
   <!-- Custom fonts for this template-->
   <link href="{% static 'core/vendor/fontawesome/css/all.min.css' %}" rel="stylesheet">
@@ -39,77 +39,12 @@
       </a>
 
       <!-- Divider -->
-      <hr class="sidebar-divider my-0">
-
-      <!-- Nav Item - Dashboard -->
-      <li class="nav-item {% if request.user.is_authenticated %}active{% endif %}">
-        <a class="nav-link" href="{% url 'home' %}">
-          <i class="fas fa-home"></i>
-          <span>Inicio</span></a>
-      </li>
-
-      <!-- Divider -->
-      <hr class="sidebar-divider">
-
-      <!-- Heading -->
-      <div class="sidebar-heading">
-        Filtros
-      </div>
-      <!-- Nav Item - Utilities Collapse Menu -->
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePrices" aria-expanded="true" aria-controls="collapseUtilities">
-          <i class="fas fa-money-bill-wave"></i>
-          <span>Precio</span>
-        </a>
-        <div id="collapsePrices" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
-          <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">Rango de precio</h6>
-            {% for price_range in price_ranges %}
-              <a class="collapse-item" onclick="searchRange({{price_range.min_price}},{{price_range.max_price}},{{price_range.currency.id}});">{{price_range}}</a>
-            {% endfor %}
-              <a class="collapse-item" hidden></a>
-            <div class="collapse-item">
-              <div class="form-row mx-0">
-                <div class="form-group col-md-5">
-                  <input type="text" class="form-control form-control-sm" id="minPrice" placeholder="Min">
-                </div>
-                <div class="form-group col-md-5">
-                  <input type="text" class="form-control form-control-sm" id="maxPrice" placeholder="Max">
-                </div>
-                <div class="form-group col-md-2">
-                  <button class="btn btn-primary btn-sm">Ir</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseLocations" aria-expanded="true" aria-controls="collapseUtilities">
-          <i class="fas fa-location-arrow"></i>
-          <span>Lugar</span>
-        </a>
-        <div id="collapseLocations" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
-          <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">Departamento</h6>
-            {% for location in locations %}
-              <a class="collapse-item" onclick="searchLocation('{{location.direction}}');">{{location.direction}}</a>
-            {% endfor %}
-          </div>
-        </div>
-      </li>
-
-      <!-- Divider -->
-      <hr class="sidebar-divider">
-
-      <!-- Heading -->
       <div class="sidebar-heading">
         Perfil
       </div>
 
       <!-- Nav Item - Pages Collapse Menu -->
       {% if request.user.is_authenticated %}
-     
       <li class="nav-item">
         <a class="nav-link" href="{% url 'my_products' %}">
           <i class="fas fa-cube"></i>
@@ -130,6 +65,7 @@
           <i class="fas fa-sign-out-alt"></i>
           <span>Salir</span></a>
       </li>
+
       {% else %}
       <li class="nav-item">
         <a class="nav-link" href="{% url 'signup' %}">
@@ -176,15 +112,14 @@
           </button>
 
           <!-- Topbar Search -->
+          <div>
+            <a class="nav-link" href="{% url 'home' %}">
+              <i class="fas fa-home"></i>
+              <span>Inicio</span></a>
+          </div>
           <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
             <div class="input-group">
               <div class="input-group-prepend">
-                <select class="btn btn-primary resize-select" name="category" id="search_category">
-                  <option value="0">Todo</option>
-                  {% for category in categories %}
-                    <option value="{{category.id}}">{{category.category_name}}</option>
-                  {% endfor %}
-                </select>
               </div>
               <input type="text" class="form-control bg-light border-0 small" placeholder="Estoy buscando..." aria-label="Search" aria-describedby="basic-addon2">
               <div class="input-group-append">
@@ -194,6 +129,7 @@
               </div>
             </div>
           </form>
+
 
           <!-- Topbar Navbar -->
           <ul class="navbar-nav ml-auto">
@@ -376,6 +312,28 @@
         <!-- Begin Page Content -->
         <div class="container-fluid">
           {% block content %}
+            <div class="row">
+              {% for category in categories %}              
+                <div class="col-md-3 mb-4">
+                  <div class="card border-left-{% cycle 'primary' 'info' 'success' 'secondary' 'danger' 'warning' %} shadow h-100 py-2">
+                    <div class="card-body">
+                      <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                          <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">{{category.category_name}}</div>
+                          <div class="h5 mb-0 font-weight-bold text-gray-800">{{category.category_description}}</div>
+                        </div>
+                        <div class="col-auto">
+                          <i class="{{category.category_icon_class}} fa-2x"></i>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <a href="{% url 'category_products' category.id %}" class="btn btn-link">Buscar en {{category.category_name}}</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
           {% endblock %}
         </div>
         <!-- /.container-fluid -->

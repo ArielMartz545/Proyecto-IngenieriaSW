@@ -3,6 +3,7 @@ from django.urls import reverse_lazy
 from django.views.generic.edit import CreateView #Objeto para la creacion de usuario, vista basada en Clase
 from django.views.generic.base import TemplateView #Visualizacion de Template , Vista basada en Clase
 from django.views.generic.edit import UpdateView
+from django.views.generic.detail import DetailView
 from account.models import Account #Modelo de Usuario
 from account.forms import RegistrationForm, UpdateForm #Formulario de registro de usuario
 from django.contrib.auth import logout  #Permite finalizar Sesion
@@ -59,6 +60,17 @@ class UpdateUser(UpdateView):
 
     def get_success_url(self):
         return reverse_lazy('profile-edit', kwargs={'pk': self.request.user.id})+'?updated'
+
+class DetailUser(DetailView):
+    model = Account
+    template_name = 'profile/profile_show.html'
+
+    def get_context_data(self, *args, **kwars):
+        context = super().get_context_data(*args, **kwars)
+        return context
+
+    def get_success_url(self):
+        return reverse_lazy('profile-view', kwargs={'pk': self.request.user.id})+'?detail'
 
 class TemplateLogin(TemplateView):#Visualizar Login
     template_name = 'account/login.html'

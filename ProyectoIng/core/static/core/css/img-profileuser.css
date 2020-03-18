@@ -1,0 +1,7 @@
+.img-profileuser {
+    width: 30vw;
+    height: 30vw;
+    object-fit: fill;
+    background-repeat: no-repeat;
+    border-radius: 10px;
+}
