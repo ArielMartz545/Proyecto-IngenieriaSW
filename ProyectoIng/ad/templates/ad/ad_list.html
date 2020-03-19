@@ -11,8 +11,8 @@
             <a href="#" class="btn btn-primary m-1">Nuevo Anuncio</a>
         </div>
         {% for data in ads_data %}
-          <div class="col-md-3"> 
           {% if data.id_user == request.user %}
+          <div class="col-md-3 mb-3"> 
             <div class="card border-left-{% cycle 'primary' 'info' 'success' 'secondary' 'danger' 'warning' %} shadow h-100 pb-2">
               {% if data.ad_images.count == 1 %}
                 {% for img in data.ad_images.all %}
@@ -49,8 +49,8 @@
                 <a href="#" class="btn btn-danger">Eliminar</a>
               </div>
             </div>
-            {% endif %}
           </div>
+            {% endif %}
         {% endfor %}
     </div>
 </div>
