@@ -25,3 +25,12 @@ class CategoryDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         context['products']= Ad.objects.all().order_by('-date_created')
         return context
+
+class AdDetailView(DetailView):
+    model = Ad 
+    template_name = 'ad/ad_detail.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        #context['ads'] = Ad.objects.all().order_by('-date_created')
+        return context

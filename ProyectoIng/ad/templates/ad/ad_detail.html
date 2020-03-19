@@ -1,0 +1,72 @@
+{% extends 'core/sidebar.html' %}
+{% load static %}
+{% block title %}{{object}}{% endblock %}
+{% block css %}
+<link href="{% static 'core/css/card-img-top.css' %}" rel="stylesheet">
+<link href="{% static 'ad/css/ui.css' %}" rel="stylesheet">
+<link href="{% static 'ad/css/style.css' %}" rel="stylesheet">
+{% endblock %}
+{% block content %}
+<div class="card">
+    <div class="row no-gutters">
+        <aside class="col-md-6">
+            <article class="gallery-wrap">
+                <div class="img-big-wrap">
+                    {% for img in object.ad_images.all %}
+                    <div> <a href="#"><img src="{{img.img_route.url}}"></a></div>
+                    {% endfor %}
+                </div> <!-- slider-product.// -->
+                <div class="thumbs-wrap">
+                    {% for img in object.ad_images.all %}
+                    <a href="#" class="item-thumb"> <img src="{{img.img_route.url}}" width="200" height="100"></a>
+                    {% endfor %}
+                </div> <!-- slider-nav.// -->
+            </article> <!-- gallery-wrap .end// -->
+        </aside>
+        <main class="col-md-6 border-left">
+            <article class="content-body">
+
+                <h2 class="title">{{object.ad_name}}</h2>
+
+                <div class="rating-wrap my-3">
+                    <ul class="rating-stars">
+                        <li style="width:80%" class="stars-active">
+                            <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                        </li>
+                        <li>
+                            <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                        </li>
+                    </ul>
+                    <small class="label-rating text-muted">132 reviews</small>
+                    <small class="label-rating text-success"> <i class="fa fa-clipboard-check"></i> 154 orders </small>
+                </div> <!-- rating-wrap.// -->
+
+                <div class="mb-3">
+                    <var class="price h4">{{object.price}}</var>
+                    <span class="text-muted">/per kg</span>
+                </div> <!-- price-detail-wrap .// -->
+
+                <p>{{object.ad_description}}</p>
+
+
+                <dl class="row">
+                    <dt class="col-sm-3">Model#</dt>
+                    <dd class="col-sm-9">Odsy-1000</dd>
+
+                    <dt class="col-sm-3">Color</dt>
+                    <dd class="col-sm-9">Brown</dd>
+
+                    <dt class="col-sm-3">Delivery</dt>
+                    <dd class="col-sm-9">Russia, USA, and Europe </dd>
+                </dl>
+            </article> <!-- product-info-aside .// -->
+        </main> <!-- col.// -->
+    </div> <!-- row.// -->
+</div> <!-- card.// -->
+<script src="{% static 'ad/js/jquery.slim.min.js' %}"></script>
+<script src="{% static 'ad/js/script.js' %}"></script>
+{% endblock %}
