@@ -16,14 +16,14 @@
                     <div class="card border-left-{% cycle 'primary' 'info' 'success' 'secondary' 'danger' 'warning' %} shadow h-100 pb-2">
                         {% if product.ad_images.count == 1 %}
                         {% for img in product.ad_images.all %}
-                        <a href="{% url 'ad_detail' product.pk %}"><img class="card-img-top img-fluid" src="{{img.img_route.url}}" alt="Card image cap"></a>
+                        <a href="{% url 'ad_detail' product.pk %}"><img class="card-img-top no-border-top-left" src="{{img.img_route.url}}" alt="Card image cap"></a>
                         {% endfor %}
                         {% else %}
                         <div id="carouselAd{{ product.pk }}" class="carousel slide" data-ride="carousel">
                             <div class="carousel-inner">
                                 {% for img in product.ad_images.all %}
                                 <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                                    <a href="{% url 'ad_detail' product.pk %}"><img class="card-img-top d-block w-100" src="{{img.img_route.url}}"></a>
+                                    <a href="{% url 'ad_detail' product.pk %}"><img class="card-img-top no-border-top-left" src="{{img.img_route.url}}"></a>
                                 </div>
                                 {% endfor %}
                             </div>
