@@ -1,0 +1,258 @@
+{% extends 'core/sidebar.html' %}
+{% load static %}
+{% block title %}Editar Mi Perfil{% endblock %} 
+{% block meta %}
+    <meta property="og:title" content="{{object.get_full_name}} en Pa'Ya">
+    <meta property="og:description" content="Revisa mi perfil de Pa'Ya, productos y servicios disponibles.">
+    <meta property="og:image" content="{{ request.scheme  }}://{#{ request.META['HTTP_HOST'] }#}{{object.profile_img.url}}">
+    <meta property="og:url" content="{{ request.scheme  }}://{#{ request.META['HTTP_HOST'] }#}{% url 'profile' object.pk %}">
+    <meta property="og:site_name" content="Pa'Ya">
+    <meta name="twitter:image:alt" content="Foto de perfil de {{object.get_full_name}} en Pa'Ya">
+    <meta name="twitter:card" content="summary_large_image">
+{% endblock %} 
+{% block css %}
+    <link href="{% static 'core/css/img-usuario.css' %}" rel="stylesheet">
+{% endblock %}
+{% block navbar %}
+{% endblock %}
+{% block content %}
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <h2>Perfil</h2>
+                </div>
+            </div>
+            {% if 'update' in request.GET %}
+                <div class="row">
+                    {% if 'success' == request.GET.update %}
+                        <div class="alert w-100 alert-primary alert-dismissible fade show" role="alert">
+                            <strong>¡Éxito!</strong> Se han actualizado tus datos correctamente.
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    {% endif %}
+                    {% if 'error' == request.GET.update %}
+                        <div class="alert w-100 alert-fluid alert-danger alert-dismissible fade show" role="alert">
+                            <strong>¡Uuuups!</strong> Ha sucedido un error al actualizar los datos, intenta nuevamente.
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endif %}
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="row">
+                        <img class="img-usuario bg-secondary" src="{{object.profile_img.url}}">
+                    </div>
+                </div>
+                <div class="col-md-8 mb-2">
+                    <div class="row">
+                        <div class="form-group my-0 py-2">
+                            <h4><strong>Nombre: </strong> {{ object.get_full_name }} </h4>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group my-0 py-2">
+                            <h4><strong>Correo electrónico: </strong> {{ object.email }} </h4>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group my-0 py-2">
+                            <h4><strong>Fecha de nacimiento: </strong> {{ object.birth_date | date:'d-m-Y' }} </h4>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group my-0 py-2">
+                            <h4><strong>Número de teléfono: </strong> {{ object.phone_number }} </h4>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group my-0 py-2">
+                            <h4><strong>Dirección: </strong> {{ object.address }} </h4>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group my-0 py-2">
+                            <h4><strong>En Pa'Ya desde: </strong> {{ object.date_joined | date:'d-m-Y' }} </h4>
+                        </div>
+                    </div>
+                    {% if request.user.email == object.email %}
+                    <div class="row">
+                        <p class="my-0 py-0"><strong>Comparte tu perfil: </strong> <span id="profile_url">{{ request.scheme  }}://{#{ request.META['HTTP_HOST'] }#}{% url 'profile' object.pk %}</span> </p>
+                    </div>
+                    <div class="row pb-2">
+                        <a href="#" onclick="copyLink('profile_url');"  data-toggle="modal" data-target="#modalCompartir" class="text-muted"><i class="far fa-copy"></i> Copiar enlace</a>
+                    </div>
+                    <div class="row">
+                        <a href="#" data-toggle="modal" data-target="#modalCambiarDatos" class="text-muted"><i class="fas fa-edit"></i> Editar mi perfil</a>
+                    </div>
+                    <div class="row">
+                        <a href="#" data-toggle="modal" data-target="#modalCambiarPassword" class="text-muted"><i class="fas fa-edit"></i> Cambiar contraseña</a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            <hr class="my-4">
+            <div class="row">
+                {% if request.user.email == object.email %}
+                    <div class="col-md-4 my-3">
+                        <a href="{% url 'my_products' %}" class="btn btn-block btn-primary btn-lg">Mis productos</a>
+                    </div>
+                    <div class="col-md-4 my-3">
+                        <a href="{% url 'my_stores' %}" class="btn btn-block btn-danger btn-lg">Mis tiendas</a>
+                    </div>
+                    <div class="col-md-4 my-3">
+                        <a href="#" class="btn btn-block btn-success btn-lg">Mis estadísticas</a>
+                    </div>
+                {% else %}
+                    <div class="col-md-6 my-3">
+                        <a href="#" class="btn btn-block btn-primary btn-lg">Productos</a>
+                    </div>
+                    <div class="col-md-6 my-3">
+                        <a href="#" class="btn btn-block btn-danger btn-lg">Estadísticas</a>
+                    </div>
+                {% endif %}
+                
+            </div>
+        </div>
+
+
+        <div class="modal fade" id="modalCompartir" tabindex="-1" role="dialog" aria-labelledby="modalCompartir" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Comparte tu perfil</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Enlace copiado al portapapeles, úsalo para compartir tu perfil en una publicación o mensaje.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Listo</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {# Modal cambiar contraseña #}
+        <div class="modal fade" id="modalCambiarPassword" tabindex="-1" role="dialog" aria-labelledby="modalCambiarPasswordLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Cambiar contraseña</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form action="{% url 'profile-change-password' %}" method="post">
+                        {% csrf_token %}
+                        <div class="modal-body">
+                            <div class="form-group my-0 py-2 text-left">
+                                <label for="id_old_password" class="text-muted">Contraseña actual</label>
+                                <input type="password" name="old_password" required class="form-control" id="id_old_password" placeholder="Contraseña actual">
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group my-0 py-2">
+                                        <label for="id_new_password1" class="text-muted">Nueva contraseña</label>
+                                        <input type="password" name="new_password1" required class="form-control" id="id_new_password1" placeholder="Nueva contraseña">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group my-0 py-2">
+                                        <label for="id_new_password1" class="text-muted">Confirmar contraseña</label>
+                                        <input type="password" name="new_password2" required class="form-control" id="id_new_password2" placeholder="Confirma contraseña">
+                                    </div>
+                                </div>
+                            </div>
+                            <ul>
+                                <li><small id="passwordHelp" class="form-text text-muted mt-0 pt-0 text-left">Mínimo 8 carcateres</small></li>
+                                <li><small id="passwordHelp" class="form-text text-muted mt-0 pt-0 text-left">No puede ser una contraseña de uso común</small></li>
+                                <li><small id="passwordHelp" class="form-text text-muted mt-0 pt-0 text-left">No puede ser completamente numérica</small></li>
+                                <li><small id="passwordHelp" class="form-text text-muted mt-0 pt-0 text-left">No puede ser muy similar a su otra información personal</small></li>
+                            </ul>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">Guardar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {# Modal cambiar datos #}
+        <div class="modal fade" id="modalCambiarDatos" tabindex="-1" role="dialog" aria-labelledby="modalCambiarDatosLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Editar perfil</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form action="{% url 'profile-update' %}" method="post">
+                        {% csrf_token %}
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group my-0 py-2">
+                                        <label for="id_first_name" class="text-muted">Nombre</label>
+                                        <input placeholder="{{ request.user.first_name }}" value="{{ request.user.first_name }}" type="text" name="first_name" maxlength="50" required class="form-control" id="id_first_name">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group my-0 py-2">
+                                        <label for="id_last_name" class="text-muted">Apellido</label>
+                                        <input placeholder="{{ request.user.last_name }}" value="{{ request.user.last_name }}" type="text" name="last_name" maxlength="50" required class="form-control" id="id_last_name">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group my-0 py-2 text-left">
+                                <label for="id_birth_date" class="text-muted">Fecha de nacimiento</label>
+                                <input value="{{ request.user.birth_date |date:'Y-m-d'  }}" type="date" name="birth_date" required class="form-control today" id="id_birth_date">
+                            </div>
+                            <div class="form-group my-0 py-2">
+                                <label for="id_phone_number" class="text-muted">Número de teléfono</label>
+                                <input placeholder="{{ request.user.phone_number }}" value="{{ request.user.phone_number }}" max="99999999" min="10000000" type="number" name="phone_number" maxlength="8" minlength="8" required class="form-control" id="id_phone_number">
+                            </div>
+                            <div class="form-group my-0 py-2">
+                                <label for="id_address" class="text-muted">Dirección</label>
+                                <textarea class= 'form-control' name="address" rows="2" required id="id_address" placeholder="{{ request.user.address }}">{{ request.user.address }}</textarea>
+                            </div>
+                            <div class="form-group my-0 py-2">
+                                <div class="custom-file">
+                                    <input readonly type="file" class="custom-file-input" id="id_profile_img" name="profile_img" accept="image/*">
+                                    <label class="custom-file-label" for="id_profile_img">Foto de perfil</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">Guardar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+{% endblock %}
+{% block js %}
+    <script src="{% static 'core/js/profile-update.js' %}"></script>
+    <script src="{% static 'core/js/file-label-change.js' %}"></script>
+    <script src="{% static 'core/js/max-date-today.js' %}"></script>
+    <script src="{% static 'core/js/collapse-sidebar.js' %}"></script>
+    <script>
+        function copyLink(id){
+            var link = $('#'+id).html();
+            const el = document.createElement('textarea');
+            el.value = link;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+        }
+    </script>
+{% endblock %}

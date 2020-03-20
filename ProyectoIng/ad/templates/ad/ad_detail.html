@@ -67,6 +67,10 @@
         </main> <!-- col.// -->
     </div> <!-- row.// -->
 </div> <!-- card.// -->
-<script src="{% static 'ad/js/jquery.slim.min.js' %}"></script>
-<script src="{% static 'ad/js/script.js' %}"></script>
+{% endblock %}
+{% block js %}
+    {# jQuery esta ya incluido antes de este bloque #}
+    <script src="{% static 'ad/js/script.js' %}"></script>
+    <script src="{% static 'core/js/collapse-sidebar.js' %}"></script>
+
 {% endblock %}

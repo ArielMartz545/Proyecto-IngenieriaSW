@@ -6,24 +6,23 @@
 {% block content %}
 <div class="container-fluid">
     <div class="row">
-        <div class="col-md-10"></div>
-        <div class="col-md-2"> 
-            <a href="{% url 'ad_create' %}" class="btn btn-primary m-1">Nuevo Anuncio</a>
-        </div>
+      <a href="{% url 'ad_create' %}" class="btn btn-primary m-1">Nuevo Anuncio</a>
+    </div>
+    <div class="row">
         {% for data in ads_data %}
           {% if data.id_user == request.user %}
-          <div class="col-md-3 mb-3"> 
+          <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3"> 
             <div class="card border-left-{% cycle 'primary' 'info' 'success' 'secondary' 'danger' 'warning' %} shadow h-100 pb-2">
               {% if data.ad_images.count == 1 %}
                 {% for img in data.ad_images.all %}
-                <img class="card-img-top img-fluid" src="{{img.img_route.url}}" alt="Card image cap">
+                <img class="card-img-top no-border-top-left" src="{{img.img_route.url}}" alt="Card image cap">
                 {% endfor %}
               {% else %}
               <div id="carouselAd{{ data.pk }}" class="carousel slide" data-ride="carousel">
                 <div class="carousel-inner">
                   {% for img in data.ad_images.all %}
                     <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                      <img class=" card-img-top d-block w-100" src="{{img.img_route.url}}">
+                      <img class=" card-img-top no-border-top-left" src="{{img.img_route.url}}">
                     </div>
                   {% endfor %}
                 </div>
@@ -44,7 +43,7 @@
                   <a href="">{{ data.id_category }}</a>
                   {{ data.id_location }}
                 </p>
-                <span>{{data.date_created}}</span>
+                <p>Publicado {{data.date_created|date:'d-m-Y g:ia'}}</p>
                 <a href="#" class="btn btn-success">Editar</a>
                 <a href="#" class="btn btn-danger">Eliminar</a>
               </div>

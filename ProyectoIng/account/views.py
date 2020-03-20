@@ -5,8 +5,9 @@ from django.views.generic.base import TemplateView #Visualizacion de Template , 
 from django.views.generic.edit import UpdateView
 from django.views.generic.detail import DetailView
 from account.models import Account #Modelo de Usuario
-from account.forms import RegistrationForm, UpdateForm #Formulario de registro de usuario
-from django.contrib.auth import logout  #Permite finalizar Sesion
+from account.forms import RegistrationForm, UpdateUserForm #Formulario de registro de usuario
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import logout, update_session_auth_hash  #Permite finalizar Sesion
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils.encoding import force_bytes, force_text
@@ -46,27 +47,42 @@ class CreateUser(CreateView): #Pass,Correo,Nombre,Apellido,Telefono,Direccion,Fe
     def get_success_url(self):
         return reverse_lazy('login')+'?register'
     
-class UpdateUser(UpdateView):
+def update_user(request):
+    #Solo solicitudes por metodo POST
+    if request.method == "POST":
+        form = UpdateUserForm(request.POST, request.FILES or None, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse_lazy('profile', kwargs={'pk': request.user.id})+'?update=success')
+        else:
+            return HttpResponseRedirect(reverse_lazy('profile', kwargs={'pk': request.user.id})+'?update=error')
+    #Cualquier otra redirige al perfil
+    else:
+        return HttpResponseRedirect(reverse_lazy('profile', kwargs={'pk': request.user.id}))
+
+def change_password(request):
+    #Solo solicitudes por metodo POST
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # Actualiza la sesion, si esto no se hace causa un logout
+            return HttpResponseRedirect(reverse_lazy('profile', kwargs={'pk': request.user.id})+'?update=success')
+        else:
+            return HttpResponseRedirect(reverse_lazy('profile', kwargs={'pk': request.user.id})+'?update=error')
+    #Cualquier otra redirige al perfil
+    else:
+        return HttpResponseRedirect(reverse_lazy('profile', kwargs={'pk': request.user.id}))
+
+class DetailUser(DetailView):
     model = Account
-    form_class=UpdateForm
-    template_name= 'profile/profile_update.html' 
+    template_name = 'profile/profile.html'
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         context['categories'] = Category.objects.order_by('category_name')
         context['price_ranges'] = PriceRange.objects.all()
         context['locations'] = Location.objects.filter(correlative_direction__isnull=True)
-        return context
-
-    def get_success_url(self):
-        return reverse_lazy('profile-edit', kwargs={'pk': self.request.user.id})+'?updated'
-
-class DetailUser(DetailView):
-    model = Account
-    template_name = 'profile/profile_show.html'
-
-    def get_context_data(self, *args, **kwars):
-        context = super().get_context_data(*args, **kwars)
         return context
 
     def get_success_url(self):

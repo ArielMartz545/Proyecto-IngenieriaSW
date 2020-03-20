@@ -9,7 +9,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <meta name="author" content="">
-
+  {% block meta %}{% endblock %} 
   <title>{% block title %}{% endblock %} | Pa’Ya</title>
 
   <!-- Custom fonts for this template-->
@@ -341,7 +341,7 @@
               </a>
               <!-- Dropdown - User Information -->
               <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-                <a class="dropdown-item" href="{% url 'profile-view' request.user.pk  %}">
+                <a class="dropdown-item" href="{% url 'profile' request.user.pk  %}">
                   <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                   Perfil
                 </a>
