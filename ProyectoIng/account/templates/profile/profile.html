@@ -79,13 +79,13 @@
                             <h4><strong>En Pa'Ya desde: </strong> {{ object.date_joined | date:'d-m-Y' }} </h4>
                         </div>
                     </div>
-                    {% if request.user.email == object.email %}
                     <div class="row">
-                        <p class="my-0 py-0"><strong>Comparte tu perfil: </strong> <span id="profile_url">{{ request.scheme  }}://{#{ request.META['HTTP_HOST'] }#}{% url 'profile' object.pk %}</span> </p>
+                        <p class="my-0 py-0"><strong>Comparte este perfil: </strong> <span id="profile_url">{{ request.scheme  }}://{#{ request.META['HTTP_HOST'] }#}{% url 'profile' object.pk %}</span> </p>
                     </div>
                     <div class="row pb-2">
                         <a href="#" onclick="copyLink('profile_url');"  data-toggle="modal" data-target="#modalCompartir" class="text-muted"><i class="far fa-copy"></i> Copiar enlace</a>
                     </div>
+                    {% if request.user.email == object.email %}
                     <div class="row">
                         <a href="#" data-toggle="modal" data-target="#modalCambiarDatos" class="text-muted"><i class="fas fa-edit"></i> Editar mi perfil</a>
                     </div>
@@ -124,13 +124,13 @@
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Comparte tu perfil</h5>
+                        <h5 class="modal-title" id="exampleModalLabel">Comparte este perfil</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-                        <p>Enlace copiado al portapapeles, úsalo para compartir tu perfil en una publicación o mensaje.</p>
+                        <p>Enlace copiado al portapapeles, úsalo para compartir este perfil en una publicación o mensaje.</p>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-primary" data-dismiss="modal">Listo</button>
