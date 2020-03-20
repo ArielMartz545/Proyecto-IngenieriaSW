@@ -8,7 +8,7 @@
     <div class="row">
         <div class="col-md-10"></div>
         <div class="col-md-2"> 
-            <a href="#" class="btn btn-primary m-1">Nuevo Anuncio</a>
+            <a href="{% url 'ad_create' %}" class="btn btn-primary m-1">Nuevo Anuncio</a>
         </div>
         {% for data in ads_data %}
           {% if data.id_user == request.user %}
@@ -56,14 +56,3 @@
 </div>
 {% endblock %}
 
-id_user = models.ForeignKey(Account, on_delete=models.CASCADE)
-id_store = models.ForeignKey(Store, on_delete= models.CASCADE,default=None, blank=True, null=True)
-id_location= models.ForeignKey(Location, on_delete= models.CASCADE)
-id_ad_kind= models.ForeignKey(AdKind, on_delete= models.CASCADE)
-id_category= models.ForeignKey(Category, on_delete= models.CASCADE)
-id_unit= models.ForeignKey(Unit, on_delete= models.CASCADE, default = None, blank=True, null=True)
-ad_name= models.CharField(max_length=100)
-ad_description= models.TextField()
-price= models.FloatField()
-date_created = models.DateTimeField(auto_now_add=True)
-ad_images= models.ManyToManyField(Image, related_name="get_images")
