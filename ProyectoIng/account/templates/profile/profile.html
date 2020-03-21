@@ -79,11 +79,14 @@
                             <h4><strong>En Pa'Ya desde: </strong> {{ object.date_joined | date:'d-m-Y' }} </h4>
                         </div>
                     </div>
-                    <div class="row">
-                        <p class="my-0 py-0"><strong>Comparte este perfil: </strong> <span id="profile_url">{{ request.scheme  }}://{#{ request.META['HTTP_HOST'] }#}{% url 'profile' object.pk %}</span> </p>
-                    </div>
-                    <div class="row pb-2">
-                        <a href="#" onclick="copyLink('profile_url');"  data-toggle="modal" data-target="#modalCompartir" class="text-muted"><i class="far fa-copy"></i> Copiar enlace</a>
+                    <div class="row mb-2">
+                        <p class="my-0 py-0">
+                            <strong>Comparte este perfil: </strong>
+                            <span id="profile_url">{{ request.scheme  }}://{#{ request.META['HTTP_HOST'] }#}{% url 'profile' object.pk %}</span>
+                            <a tabindex="0" onclick="copyLink('profile_url');" id="profile_url_copy" data-toggle="popover" title="Enlace copiado al portapapeles" data-content="Comparte el perfil en una publicación o mensaje." class="badge badge-secondary">
+                                <i class="far fa-copy"></i>
+                            </a>
+                        </p>
                     </div>
                     {% if request.user.email == object.email %}
                     <div class="row">
@@ -246,7 +249,7 @@
     <script src="{% static 'core/js/collapse-sidebar.js' %}"></script>
     <script>
         function copyLink(id){
-            var link = $('#'+id).html();
+            const link = $('#'+id).html();
             const el = document.createElement('textarea');
             el.value = link;
             document.body.appendChild(el);
@@ -254,5 +257,20 @@
             document.execCommand('copy');
             document.body.removeChild(el);
         }
+    </script>
+    <script>
+        //Mostrar un popover debajo por 3000ms luego ocultarlo
+        $('[data-toggle="popover"]').popover({
+            placement: 'bottom',
+            //Animacion 300ms para mostrar 100ms para ocultar
+            delay : {
+                "show" : 300,
+                "hide" : 100
+            }
+        }).on('shown.bs.popover', function () {
+            setTimeout(function (a) {
+                a.popover('hide');
+            }, 3000, $(this));
+        });
     </script>
 {% endblock %}
