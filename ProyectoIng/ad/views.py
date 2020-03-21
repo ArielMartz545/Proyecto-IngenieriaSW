@@ -35,8 +35,8 @@ class AdDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        #context['ads'] = Ad.objects.all().order_by('-date_created')
-        return render (reverse_lazy('home'))
+        context['ads'] = Ad.objects.all().order_by('-date_created')
+        return context
 
 
 
