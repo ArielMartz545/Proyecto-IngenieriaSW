@@ -1,0 +1,21 @@
+.whatsapp{
+	background-color:#25d366;
+	color:#FFF;
+	text-align:center;
+  font-size: 19px;
+  margin-right: 0px;
+}
+
+.text-gray-400 {
+  color: #ffffff!important;
+}
+
+.carousel-control-next-icon,.carousel-control-prev-icon {
+  width:20px;height:20px; 
+  background:no-repeat 50%/100% 100%;
+}
+
+a.badge-primary:hover, a.badge-primary:focus {
+  color: #fff;
+  background-color: #25d366;
+}
