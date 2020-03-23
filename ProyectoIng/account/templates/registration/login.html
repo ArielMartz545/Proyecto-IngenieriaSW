@@ -28,6 +28,9 @@
             {% endif %}
             <form action="" method="post">
                 {% csrf_token %} 
+                {% if request.GET.next %}
+                    <input hidden name="next" value="{{ request.GET.next }}">
+                {% endif %}
                 <div class="form-group my-0 py-2">
                     <input type="email" name="username" maxlength="100" autofocus required class="form-control" id="id_username" placeholder="Correo electrónico">
                 </div>
