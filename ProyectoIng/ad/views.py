@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, HttpResponseRedirect
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView
@@ -6,8 +6,9 @@ from .models import Ad, Category, PriceRange
 from location.models import Location
 from account.models import Account
 from images.models import Image
-from ad.forms import AdCreateForm,AdImageForm
-from django.urls import reverse_lazy
+from ad.forms import AdCreateForm, AdImageForm
+from django.urls import reverse_lazy, reverse
+from django.forms import modelformset_factory
 
 
 class ShowAdsListView(ListView):
@@ -42,22 +43,31 @@ class AdDetailView(DetailView):
 
 def AdCreate(request):
     model = Ad
+
+    ad_form=AdCreateForm()
+    img_forms= modelformset_factory(Image, fields=("img_route",), extra=3,)
+
     if  request.method == "POST" :
+        safe_form= AdImageForm()
         ad_form= AdCreateForm(request.POST)
-        img_form= AdImageForm(request.POST,request.FILES )
-        print("img es "+ str(img_form.is_valid()))
-        print(img_form)
-        if ad_form.is_valid() and img_form.is_valid():
-            img= img_form.save()
+        images_formset= img_forms(request.POST or None, request.FILES or None)
+        
+        if ad_form.is_valid() and images_formset.is_valid():
+
             ad= ad_form.save(False)
             ad.id_user = request.user
             ad= ad_form.save()
-            ad.ad_images.add(img)#Esta debe ser una instancia de la tabla transaccional
-            ad.save()
-            print("Almacenado")
-            return render(request,'ad/ad_list.html')
-    else:
-        ad_form=AdCreateForm()
-        img_form=AdImageForm()
 
-    return render(request,'ad/ad_create.html',{'Ad_form': ad_form,'img_form':img_form})
+            for img in images_formset:  
+                img.cleaned_data['img_route']
+                safe_img = img.save()
+                ad.ad_images.add( safe_img )
+                
+            
+            ad.save(False)
+            return HttpResponseRedirect(reverse('my_products'))
+    
+    formset= img_forms(queryset = Image.objects.none())   
+        
+
+    return render(request,'ad/ad_create.html',{'Ad_form': ad_form,'formset':formset})
