@@ -43,28 +43,6 @@ class Unit(models.Model):
         verbose_name= "Unidad"
         verbose_name_plural= "Unidades"
 
-"""Clase Anuncio:
-Atributos: [ID Usuario, ID Tienda, ID ubicacion, ID tipo anuncio, ID Categoria, ID Unidad, 
-            nombre y descripcion del anuncio, precio del anuncio y fecha de creacion]"""
-class Ad(models.Model):
-    id_user = models.ForeignKey(Account, on_delete=models.CASCADE)
-    id_store = models.ForeignKey(Store, on_delete= models.CASCADE,default=None, blank=True, null=True)
-    id_location= models.ForeignKey(Location, on_delete= models.CASCADE)
-    id_ad_kind= models.ForeignKey(AdKind, on_delete= models.CASCADE)
-    id_category= models.ForeignKey(Category, on_delete= models.CASCADE)
-    id_unit= models.ForeignKey(Unit, on_delete= models.CASCADE, default = None, blank=True, null=True)
-    ad_name= models.CharField(max_length=100)
-    ad_description= models.TextField()
-    price= models.FloatField()
-    date_created = models.DateTimeField(auto_now_add=True)
-    ad_images= models.ManyToManyField(Image, related_name="get_images_ad")
-
-    def __str__(self):
-        return self.ad_name
-
-    class Meta():
-        verbose_name= "Anuncio"
-        verbose_name_plural= "Anuncios"
 
 """Clase Moneda
 Atributos: [Nombre de la moneda, cambio]"""
@@ -105,3 +83,29 @@ class CurrencyConversion(models.Model):
     class Meta():
         verbose_name= "Conversión de Moneda"
         verbose_name_plural= "Conversiones de Moneda"
+
+"""Clase Anuncio:
+Atributos: [ID Usuario, ID Tienda, ID ubicacion, ID tipo anuncio, ID Categoria, ID Unidad, 
+            nombre y descripcion del anuncio, precio del anuncio y fecha de creacion]"""
+class Ad(models.Model):
+    id_user = models.ForeignKey(Account, on_delete=models.CASCADE)
+    id_store = models.ForeignKey(Store, on_delete= models.CASCADE,default=None, blank=True, null=True)
+    id_location= models.ForeignKey(Location, on_delete= models.CASCADE)
+    id_ad_kind= models.ForeignKey(AdKind, on_delete= models.CASCADE)
+    id_category= models.ForeignKey(Category, on_delete= models.CASCADE)
+    id_unit= models.ForeignKey(Unit, on_delete= models.CASCADE, default = None, blank=True, null=True)
+    id_currency= models.ForeignKey(Currency, on_delete= models.CASCADE, default= 2 )
+    ad_name= models.CharField(max_length=100)
+    ad_description= models.TextField()
+    price= models.FloatField()
+    date_created = models.DateTimeField(auto_now_add=True)
+    ad_images= models.ManyToManyField(Image, related_name="get_images_ad")
+    active= models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.ad_name
+
+    class Meta():
+        verbose_name= "Anuncio"
+        verbose_name_plural= "Anuncios"
+
