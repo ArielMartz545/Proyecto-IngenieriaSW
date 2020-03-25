@@ -1,0 +1,17 @@
+{% extends 'core/sidebar.html' %}
+{% load static %}
+{% block css %}
+    <link href="{% static 'core/css/card-img-top.css' %}" rel="stylesheet">
+{% endblock %}
+{% block content %}
+<form action="" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{Ad_form.as_p}}
+    <input type="file" name="images" multiple>
+    
+    <button type="Submit">Crear</button>
+</form>
+    
+
+    
+{% endblock %}

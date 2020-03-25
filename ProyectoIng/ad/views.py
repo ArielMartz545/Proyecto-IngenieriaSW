@@ -58,7 +58,7 @@ def AdCreate(request):
             ad.id_user = request.user
             ad= ad_form.save()
 
-            for img in images_formset:  
+            for img in images_formset:
                 img.cleaned_data['img_route']
                 safe_img = img.save()
                 ad.ad_images.add( safe_img )
@@ -71,3 +71,27 @@ def AdCreate(request):
         
 
     return render(request,'ad/ad_create.html',{'Ad_form': ad_form,'formset':formset})
+
+def AdCreate2(request):
+    model = Ad
+
+    ad_form=AdCreateForm()
+    if  request.method == "POST" :
+        safe_form= AdImageForm()
+        ad_form= AdCreateForm(request.POST)
+        
+        if ad_form.is_valid():
+
+            ad= ad_form.save(False)
+            ad.id_user = request.user
+            ad= ad_form.save()
+
+            for file in request.FILES.getlist('images'):
+                instance = Image(img_route=file)
+                instance.save()
+                ad.ad_images.add( instance )
+
+            ad.save(False)
+            return HttpResponseRedirect(reverse('my_products'))
+
+    return render(request,'ad/ad_create2.html',{'Ad_form': ad_form})

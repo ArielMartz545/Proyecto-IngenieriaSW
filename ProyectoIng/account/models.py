@@ -1,5 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+import uuid
+
+def images_directory_path(instance, filename):
+    return '/'.join(['profile_img', str(uuid.uuid4().hex + "." + filename.split(".")[-1])])
 
 class AccountManager(BaseUserManager):
     def create_user(self, email, first_name, last_name, phone_number, address, birth_date, password=None):
@@ -91,7 +95,7 @@ class Account(AbstractBaseUser):
     )
     
     profile_img= models.ImageField(
-        upload_to="profile_img", default="profile_img/default.png"
+        upload_to=images_directory_path, default="profile_img/default.png"
     )
 
     USERNAME_FIELD = 'email'
