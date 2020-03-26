@@ -70,10 +70,10 @@
                             <th scope="row"><h5 class="font-weight-bold">Publicado</h5></th>
                             <td><h5>{{object.date_created | date:'d-m-Y g:ia'}}</h5></td>
                         </tr>
+                        {% if request.user.is_authenticated %}
                         <tr>
                             <th scope="row" colspan="2"><h4>Información de contacto</h4></th>
                         </tr>
-                        {% if request.user.is_authenticated %}
                         <tr>
                             <th scope="row"><h5 class="font-weight-bold">Usuario</h5></th>
                             <td><h5>{{object.id_user.get_full_name}}</h5></td>

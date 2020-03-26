@@ -25,7 +25,7 @@ SECRET_KEY = 'ecl&3n^1jm=8rdos$pvjp6l6j88saw9hegk5h1&d-=p9^cbw@n'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.0.12']
+ALLOWED_HOSTS = []
 
 AUTH_USER_MODEL = 'account.Account'
 
