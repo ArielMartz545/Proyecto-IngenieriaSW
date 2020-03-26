@@ -6,9 +6,6 @@
 {% block content %}
 <div class="container-fluid">
     <div class="row">
-      <a href="{% url 'ad_create' %}" class="ml-auto btn btn-primary m-1">Nuevo Anuncio</a>
-    </div>
-    <div class="row">
         {% for data in ads_data %}
           {% if data.id_user == request.user  %}
             {% if data.active == True %}
@@ -16,14 +13,14 @@
             <div class="card border-left-{% cycle 'primary' 'info' 'success' 'secondary' 'danger' 'warning' %} shadow h-100 pb-2">
               {% if data.ad_images.count == 1 %}
                 {% for img in data.ad_images.all %}
-                <img class="card-img-top no-border-top-left" src="{{img.img_route.url}}" class="img-fluid" alt="Responsive image">
+                <a href="{% url 'ad_detail' data.pk %}"><img class="card-img-top no-border-top-left" src="{{img.img_route.url}}" alt="Responsive image"></a>
                 {% endfor %}
               {% else %}
               <div id="carouselAd{{ data.pk }}" class="carousel slide" data-ride="carousel">
                 <div class="carousel-inner">
                   {% for img in data.ad_images.all %}
                     <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                      <img class=" card-img-top no-border-top-left" src="{{img.img_route.url}}"  class="img-fluid" alt="Responsive image">
+                      <a href="{% url 'ad_detail' data.pk %}"><img class=" card-img-top no-border-top-left" src="{{img.img_route.url}}"  class="img-fluid" alt="Responsive image"></a>
                     </div>
                   {% endfor %}
                 </div>
@@ -38,7 +35,7 @@
               </div>
               {% endif %}
               <div class="card-body">
-                <h5 class="card-title">{{data.ad_name}} </h5>
+                <h5 class="card-title"><a href="{% url 'ad_detail' data.pk %}">{{data.ad_name}}</a> </h5>
                 <h6>{% if data.id_store != None %} {{data.id_store}} {% endif %}</h6>
                 <p class="card-text">{{data.ad_description}} <strong>Precio por {{data.id_unit}}:&nbsp; {{data.price}}</strong> 
                   <a href="">{{ data.id_category }}</a>

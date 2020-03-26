@@ -7,6 +7,8 @@ class Location(models.Model):
     correlative_direction= models.ForeignKey("self",on_delete=models.CASCADE, default="Ninguna", blank=True, null=True)
 
     def __str__(self):
+        if  self.correlative_direction:
+            return self.direction + ", " + self.correlative_direction.direction
         return self.direction
     
     class Meta():

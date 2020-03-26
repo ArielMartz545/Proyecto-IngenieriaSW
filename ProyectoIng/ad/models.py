@@ -94,7 +94,7 @@ class Ad(models.Model):
     id_ad_kind= models.ForeignKey(AdKind, on_delete= models.CASCADE)
     id_category= models.ForeignKey(Category, on_delete= models.CASCADE)
     id_unit= models.ForeignKey(Unit, on_delete= models.CASCADE, default = None, blank=True, null=True)
-    id_currency= models.ForeignKey(Currency, on_delete= models.CASCADE, default= 2 )
+    id_currency= models.ForeignKey(Currency, on_delete= models.CASCADE)
     ad_name= models.CharField(max_length=100)
     ad_description= models.TextField()
     price= models.FloatField()

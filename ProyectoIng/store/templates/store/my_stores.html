@@ -50,7 +50,7 @@
             <div class="form-group">
                 <select class="form-control" name="store_location" id="id_store_location">
                     {% for location in all_locations %}
-                        <option value="{{location.direction}}">{{location.direction}}{% if location.correlative_direction != None %}, {{location.correlative_direction}}{% endif %}</option>
+                        <option value="{{location.direction}}">{{location}}</option>
                     {% endfor %}
                 </select>
             </div>

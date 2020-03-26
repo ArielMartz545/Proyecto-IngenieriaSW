@@ -6,9 +6,6 @@
 {% endblock %}
 {% block content %}
     <div class="row">
-      <a href="{% url 'ad_create' %}" class="ml-auto btn btn-primary m-1">Nuevo Anuncio</a>
-    </div>
-    <div class="row">
         {% for product in products %}
             {% if product.id_category == object %}
                 {% if product.active == True %}
