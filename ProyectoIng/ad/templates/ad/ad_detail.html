@@ -10,105 +10,10 @@
 {% endblock %}
 {% block content %}
 <div id="fb-root"></div>
-<div class="row px-3">
-    <div class="col-12 col-md-4 col-xl-6" id="gallery">
-        <div class="row">
-            {% if object.ad_images.count == 1 %}
-                {% for img in object.ad_images.all %}
-                    <img src="{{img.img_route.url}}" class="img-detail">
-                {% endfor %}
-            {% else %}
-                <div id="ad_{{ object.pk }}" class="carousel slide carousel-fade" data-ride="carousel">
-                    <div class="carousel-inner">
-                        {% for img in object.ad_images.all %}
-                            <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                                <img src="{{img.img_route.url}}" class="img-detail" alt="...">
-                            </div>
-                        {% endfor %}
-                        <a class="carousel-control-prev" href="#ad_{{ object.pk }}" role="button" data-slide="prev">
-                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                            <span class="sr-only">Previous</span>
-                        </a>
-                        <a class="carousel-control-next" href="#ad_{{ object.pk }}" role="button" data-slide="next">
-                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                            <span class="sr-only">Next</span>
-                        </a>
-                    </div>
-                </div> <!-- slider-product.// -->
-            {% endif %}
-        </div>
-        <div class="row my-2">
-            {% for img in object.ad_images.all %}
-                {% if forloop.counter0 <= 3 %}
-                    <div class="col-3 {% if forloop.first%}pl-0{% endif %}">
-                        <img src="{{img.img_route.url}}" class="gallery-img">
-                    </div>
-                {% endif %}
-            {% endfor %}
-            <div class="col-3 pr-0 my-auto">
-                <a href="#" data-toggle="modal" data-target="#exampleModal" class="">Ver en tamaño completo</a>
-            </div>
-        </div>
-    </div>
-    <div class="col-12 col-md-8 col-xl-6">
-        <h4 class="title">{{object.ad_name}}</h4>
-        <table class="table table-sm table-borderless">
-            <tbody>
-                <tr>
-                    <th scope="row" colspan="2"><h5>Detalles</h5></th>
-                </tr>
-                <tr>
-                    <th scope="row">Precio</th>
-                    <td>{{object.id_currency.currency_sign}} {{object.price}}</td>
-                </tr>
-                <tr>
-                    <th scope="row">Descripcion</th>
-                    <td>{{object.ad_description}}</td>
-                </tr>
-                <tr>
-                    <th scope="row">Ubicación</th>
-                    <td>{{object.id_location}}</td>
-                </tr>
-                <tr>
-                    <th scope="row">Publicado</th>
-                    <td>{{object.date_created | date:'d-m-Y g:ia'}}</td>
-                </tr>
-                <tr>
-                    <th scope="row" colspan="2"><h5>Información de contacto</h5></th>
-                </tr>
-                {% if request.user.is_authenticated %}
-                <tr>
-                    <th scope="row">Usuario</th>
-                    <td>{{object.id_user.get_full_name}}</td>
-                </tr>
-                <tr>
-                    <th scope="row">Correo electrónico</th>
-                    <td>{{object.id_user}}</td>
-                </tr>
-                <tr>
-                    <th scope="row">Teléfono</th>
-                    <td>+504 {{object.id_user.phone_number}}</td>
-                </tr>
-                <tr>
-                    <th scope="row">En Pa'Ya desde</th>
-                    <td>{{object.id_user.date_joined | date:'d-m-Y'}}</td>
-                </tr>
-                {% else %}
-                <tr>
-                    <td scope="row" colspan="2">Inicia sesión o registrate para poder ver información del vendedor.</td>
-                </tr>
-                {% endif %}
-            </tbody>
-        </table>
-        <a href="https://api.whatsapp.com/send?phone=504{{object.id_user.phone_number}}&text=Hola%21%20Estoy%20interesado%20en%20tu%20anuncio%20de%20Pa%27Ya." class="btn btn-success" target="_blank"><i class="fab fa-whatsapp"></i> Contactar</a>
-        <div class="fb-share-button" data-href="https://paya.com" data-layout="button" data-size="large"><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fpaya.com%2F&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">Compartir</a></div>
-    </div>
-</div>
 
-
-<div class="card">
+<div class="">
     <div class="row no-gutters">
-        <aside class="col-md-6">
+        <aside class="col-md-4">
             <article class="gallery-wrap">
                 <div class="img-big-wrap">
                     {% if object.ad_images.count == 1 %}
@@ -141,51 +46,59 @@
                 </div> <!-- slider-nav.// -->
             </article> <!-- gallery-wrap .end// -->
         </aside>
-        <main class="col-md-6 border-left">
+        <main class="col-md-6">
             <article class="content-body">
-
-                <h2 class="title">{{object.ad_name}}</h2>
-
-                <div class="mb-3">
-                    <var class="price h4">L. {{object.price}}</var>
-                    
-                    <span class="text-muted"></span>
-                </div> <!-- price-detail-wrap .// -->
-
-
-                <dl class="row">
-                    <dt class="col-sm-3">Descripción</dt>
-                    <dd class="col-sm-9">{{object.ad_description}}</dd>
-
-                    <dt class="col-sm-3">Ubicación</i></dt>
-                    <dd class="col-sm-9">{{object.id_location}}</dd>
-
-                    <dt class="col-sm-3">Publicado</dt>
-                    <dd class="col-sm-9">{{object.date_created}}</dd>
-
-                    {% if request.user.is_authenticated %}
-                        <dt class="col-sm-5"><var class="h5">Información de contacto</var></dt>
-                        <dd class="col-sm-7"></dd>
-
-                        <dt class="col-sm-3">Vendedor</dt>
-                        <dd class="col-sm-9">{{object.id_user.first_name}} {{object.id_user.last_name}}</dd>
-
-                        <dt class="col-sm-3">En Pa'ya desde</dt>
-                        <dd class="col-sm-9">{{object.id_user.date_joined}}</dd>
-
-                        <dt class="col-sm-3">E-mail</dt>
-                        <dd class="col-sm-9">{{object.id_user}}</dd>
-
-                        <dt class="col-sm-3">Teléfono</dt>
-                        <dd class="col-sm-9">+504 {{object.id_user.phone_number}}</dd>
-                        
-                        <dt class="col-sm-3"><a href="https://api.whatsapp.com/send?phone=504{{object.id_user.phone_number}}&text=Hola%21%20Estoy%20interesado%20en%20tu%20anuncio%20de%20Pa%27Ya." class="badge badge-primary whatsapp" target="_blank"><i class="fa fa-whatsapp fa-sm fa-fw mr-2"></i> Contactar</a></dt>
-                        <dt class="col-sm-3"><div class="fb-share-button" data-href="https://paya.com" data-layout="button" data-size="large"><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fpaya.com%2F&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">Compartir</a></div></dt>
-                        </a>
-                    {% else %}
-                    <dd class="col-sm-10"><p>Inicia sesión o registrate para poder contactarte con el vendedor.</p></dt>
-                    {% endif %}
-                </dl>
+                <h3 class="title">{{object.ad_name}}</h3>
+                <table class="table table-sm table-borderless">
+                    <tbody>
+                        <tr>
+                            <th scope="row" colspan="2"><h4>Detalles</h4></th>
+                        </tr>
+                        <tr>
+                            <th scope="row"><h5 class="font-weight-bold">Precio</h5></th>
+                            <td><h5>{{object.id_currency.currency_sign}} {{object.price}}</h5></td>
+                        </tr>
+                        <tr>
+                            <th scope="row"><h5 class="font-weight-bold">Descripcion</h5></th>
+                            <td><h5>{{object.ad_description}}</h5></td>
+                        </tr>
+                        <tr>
+                            <th scope="row"><h5 class="font-weight-bold">Ubicación</h5></th>
+                            <td><h5>{{object.id_location}}</h5></td>
+                        </tr>
+                        <tr>
+                            <th scope="row"><h5 class="font-weight-bold">Publicado</h5></th>
+                            <td><h5>{{object.date_created | date:'d-m-Y g:ia'}}</h5></td>
+                        </tr>
+                        <tr>
+                            <th scope="row" colspan="2"><h4>Información de contacto</h4></th>
+                        </tr>
+                        {% if request.user.is_authenticated %}
+                        <tr>
+                            <th scope="row"><h5 class="font-weight-bold">Usuario</h5></th>
+                            <td><h5>{{object.id_user.get_full_name}}</h5></td>
+                        </tr>
+                        <tr>
+                            <th scope="row"><h5 class="font-weight-bold">Correo electrónico</h5></th>
+                            <td><h5>{{object.id_user}}</h5></td>
+                        </tr>
+                        <tr>
+                            <th scope="row"><h5 class="font-weight-bold">Teléfono</h5></th>
+                            <td><h5>+504 {{object.id_user.phone_number}}</h5></td>
+                        </tr>
+                        <tr>
+                            <th scope="row"><h5 class="font-weight-bold">En Pa'Ya desde</h5></th>
+                            <td><h5>{{object.id_user.date_joined | date:'d-m-Y'}}</h5></td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td scope="row" colspan="2">Inicia sesión o registrate para poder ver información del vendedor.</td>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+                <a href="https://api.whatsapp.com/send?phone=504{{object.id_user.phone_number}}&text=Hola%21%20Estoy%20interesado%20en%20tu%20anuncio%20de%20Pa%27Ya." class="btn btn-success" target="_blank"><i class="fab fa-whatsapp"></i> Contactar</a>
+                <div class="fb-share-button" data-href="https://paya.com" data-layout="button" data-size="large"><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fpaya.com%2F&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">Compartir</a></div>
             </article> <!-- product-info-aside .// -->
         </main> <!-- col.// -->
     </div> <!-- row.// -->
@@ -195,5 +108,6 @@
     {# jQuery esta ya incluido antes de este bloque #}
     <script src="{% static 'ad/js/script.js' %}"></script>
     <script src="{% static 'core/js/collapse-sidebar.js' %}"></script>
+    <script src="{% static 'core/js/img-height.js' %}"></script>
     <script async defer crossorigin="anonymous" src="https://connect.facebook.net/es_ES/sdk.js#xfbml=1&version=v6.0"></script>
 {% endblock %}
