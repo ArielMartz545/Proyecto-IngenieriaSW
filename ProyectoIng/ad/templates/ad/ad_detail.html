@@ -24,7 +24,7 @@
         <div class="col-2" id="img-thumb-container">
             <ul class="thumb list-unstyled">
             {% for img in object.ad_images.all %}
-                <li class="pb-2"><a href="#img-box-container"><img class="img-thumb border" src="{{img.img_route.url}}" alt="thumb"></a></li>
+                <li class="pb-2"><a href="#"><img class="img-thumb border" src="{{img.img_route.url}}" alt="thumb"></a></li>
             {% endfor %}
             </ul>
         </div>

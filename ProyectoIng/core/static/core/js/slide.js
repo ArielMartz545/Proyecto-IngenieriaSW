@@ -17,7 +17,8 @@ $( ".img-thumb" ).hover(
         $('.img-detail').attr('src',$( this ).attr('src'));
     }, function() {}
 );
-$( ".img-thumb" ).click(function() {
+$( ".img-thumb" ).click(function(event) {
+    event.preventDefault();
     $('.img-detail').attr('src',$( this ).attr('src'));
 });
 $( document ).ready(function() {
