@@ -143,7 +143,7 @@
           <span>Regístrate</span></a>
       </li>
       <li class="nav-item active">
-        <a class="nav-link" href="{% url 'login' %}">
+        <a class="nav-link" href="{% url 'login' %}{% block nextSide %}{% endblock %}">
           <i class="fas fa-fw fa-chart-area"></i>
           <span>Ingresar</span></a>
       </li>
@@ -372,7 +372,7 @@
         </nav>
         {% else %}
         <li class="nav-item"> <a class="btn btn-link" href="{% url 'signup' %}" >Regístrate</a> </li>
-        <li class="nav-item active"> <a href="{% url 'login' %}" class="btn btn-primary" >Ingresar</a> </li>
+        <li class="nav-item active"> <a href="{% url 'login' %}{% block nextTop %}{% endblock %}" class="btn btn-primary" >Ingresar</a> </li>
       </ul>
     </nav>
         <!-- End of Topbar -->

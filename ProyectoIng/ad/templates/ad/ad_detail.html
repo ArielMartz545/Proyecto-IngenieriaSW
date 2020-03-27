@@ -8,6 +8,12 @@
 <link href="{% static 'ad/css/ui.css' %}" rel="stylesheet">
 <link href="{% static 'ad/css/custom.css' %}" rel="stylesheet">
 {% endblock %}
+{% block nextTop %}
+?next={% url 'ad_detail' object.pk %}
+{% endblock %}
+{% block nextSide %}
+?next={% url 'ad_detail' object.pk %}
+{% endblock %}
 {% block content %}
 <div id="fb-root"></div>
 
