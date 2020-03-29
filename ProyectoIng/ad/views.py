@@ -20,7 +20,7 @@ class ShowAdsListView(ListView):
         # Sidebar Context
         context['categories'] = Category.objects.order_by('category_name')
         context['price_ranges'] = PriceRange.objects.all()
-        context['locations'] = Location.objects.filter(correlative_direction__isnull=True)
+        context['locations'] = Location.objects.order_by('direction').filter(correlative_direction__isnull=True)
         # Fin Sidebar Context
         context["ads_data"]= Ad.objects.prefetch_related().order_by('-date_created')
         return context
@@ -35,7 +35,7 @@ class CategoryDetailView(DetailView):
         # Sidebar Context
         context['categories'] = Category.objects.order_by('category_name')
         context['price_ranges'] = PriceRange.objects.all()
-        context['locations'] = Location.objects.filter(correlative_direction__isnull=True)
+        context['locations'] = Location.objects.order_by('direction').filter(correlative_direction__isnull=True)
         # Fin Sidebar Context
         context['products']= Ad.objects.all().order_by('-date_created')
         return context
@@ -49,7 +49,7 @@ class AdDetailView(DetailView):
         # Sidebar Context
         context['categories'] = Category.objects.order_by('category_name')
         context['price_ranges'] = PriceRange.objects.all()
-        context['locations'] = Location.objects.filter(correlative_direction__isnull=True)
+        context['locations'] = Location.objects.order_by('direction').filter(correlative_direction__isnull=True)
         # Fin Sidebar Context
         context['ads'] = Ad.objects.all().order_by('-date_created')
         return context
@@ -65,9 +65,9 @@ class CreateAd(CreateView):
         # Sidebar Context
         context['categories'] = Category.objects.order_by('category_name')
         context['price_ranges'] = PriceRange.objects.all()
-        context['locations'] = Location.objects.filter(correlative_direction__isnull=True)
+        context['locations'] = Location.objects.order_by('direction').filter(correlative_direction__isnull=True)
         # Fin Sidebar Context
-        context['all_locations'] = Location.objects.all()
+        context['all_locations'] = Location.objects.all().order_by('direction')
         context['ad_kinds'] = AdKind.objects.all()
         context['units'] = Unit.objects.all()
         context['currencies'] = Currency.objects.all()
@@ -82,6 +82,9 @@ class CreateAd(CreateView):
             for file in request.FILES.getlist('images'):
                 instance = Image(img_route=file)
                 instance.save()
+                ad.ad_images.add( instance )
+            if len(request.FILES.getlist('images'))==0:
+                instance = Images.objects.get(pk=1)
                 ad.ad_images.add( instance )
             ad.save(False)
             return HttpResponseRedirect(reverse_lazy('my_products')+'?created')

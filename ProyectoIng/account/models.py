@@ -93,7 +93,6 @@ class Account(AbstractBaseUser):
     is_superuser = models.BooleanField(
         default=True
     )
-    
     profile_img= models.ImageField(
         upload_to=images_directory_path, default="profile_img/default.png"
     )

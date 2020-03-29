@@ -12,6 +12,6 @@ class main_page(TemplateView):
         context = super().get_context_data(*args, **kwargs)
         context['categories'] = Category.objects.order_by('category_name')
         context['price_ranges'] = PriceRange.objects.all()
-        context['locations'] = Location.objects.filter(correlative_direction__isnull=True)
+        context['locations'] = Location.objects.order_by('direction').filter(correlative_direction__isnull=True)
         return context
 

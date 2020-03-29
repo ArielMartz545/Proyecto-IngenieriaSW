@@ -60,7 +60,7 @@
                 <select class="form-control" name="id_location" id="id_id_location">
                     <option value="" disabled selected>Lugar</option>
                     {% for location in all_locations %}
-                        <option value="{{location.direction}}">{{location}}</option>
+                        <option value="{{location.pk}}">{{location}}</option>
                     {% endfor %}
                 </select>
             </div>

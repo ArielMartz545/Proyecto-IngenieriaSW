@@ -19,8 +19,8 @@ class CreateStore(CreateView): #Pass,Correo,Nombre,Apellido,Telefono,Direccion,F
         context = super().get_context_data(*args, **kwargs)
         context['categories'] = Category.objects.order_by('category_name')
         context['price_ranges'] = PriceRange.objects.all()
-        context['locations'] = Location.objects.filter(correlative_direction__isnull=True)
-        context['all_locations'] = Location.objects.all()
+        context['locations'] = Location.objects.order_by('direction').filter(correlative_direction__isnull=True)
+        context['all_locations'] = Location.objects.all().order_by('direction')
         context['my_stores'] = UsersXStore.objects.prefetch_related('store').filter(user=self.request.user)
         return context
 
