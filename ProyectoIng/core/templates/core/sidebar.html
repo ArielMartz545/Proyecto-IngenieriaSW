@@ -63,7 +63,7 @@
       </div>
       <!-- Nav Item - Utilities Collapse Menu -->
       <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePrices" aria-expanded="true" aria-controls="collapseUtilities">
+        <a class="nav-link collapsed" href="#" id="prices-collapser" data-toggle="collapse" data-target="#collapsePrices" aria-expanded="true" aria-controls="collapseUtilities">
           <i class="fas fa-money-bill-wave"></i>
           <span>Precio</span>
         </a>
@@ -71,27 +71,26 @@
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Rango de precio</h6>
             {% for price_range in price_ranges %}
-              <a class="collapse-item" onclick="searchRange({{price_range.min_price}},{{price_range.max_price}},{{price_range.currency.id}});">{{price_range}}</a>
+              <a href="#" class="collapse-item price-range" min="{{price_range.min_price}}" max="{{price_range.max_price}}" currency="{{price_range.currency.id}}">{{price_range}}</a>
             {% endfor %}
-              <a class="collapse-item" hidden></a>
+            <a hidden href="#" id="custom-price-range-item" class="collapse-item price-range" min="" max="" currency="Lps."></a>
+            <h6 class="collapse-header">Personalizar rango</h6>
             <div class="collapse-item">
-              <div class="form-row mx-0">
-                <div class="form-group col-md-5">
-                  <input type="text" class="form-control form-control-sm" id="minPrice" placeholder="Min">
-                </div>
-                <div class="form-group col-md-5">
-                  <input type="text" class="form-control form-control-sm" id="maxPrice" placeholder="Max">
-                </div>
-                <div class="form-group col-md-2">
-                  <button class="btn btn-primary btn-sm">Ir</button>
-                </div>
+              <div class="form-group col-12 pl-0">
+                <input type="number" class="form-control form-control-sm" id="custom-min-price" placeholder="Min">
+              </div>
+              <div class="form-group col-12 pl-0">
+                <input type="number" class="form-control form-control-sm" id="custom-max-price" placeholder="Max">
+              </div>
+              <div class="form-group col-12 pl-0">
+                <button id="btn-custom-price" class="btn btn-block btn-primary btn-sm">Ir</button>
               </div>
             </div>
           </div>
         </div>
       </li>
       <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseLocations" aria-expanded="true" aria-controls="collapseUtilities">
+        <a class="nav-link collapsed" href="#" id="locations-collapser" data-toggle="collapse" data-target="#collapseLocations" aria-expanded="true" aria-controls="collapseUtilities">
           <i class="fas fa-location-arrow"></i>
           <span>Lugar</span>
         </a>
@@ -99,7 +98,7 @@
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Departamento</h6>
             {% for location in locations %}
-              <a class="collapse-item" onclick="searchLocation('{{location.direction}}');">{{location.direction}}</a>
+              <a href="#" class="collapse-item location" location="{{location.pk}}">{{location}}</a>
             {% endfor %}
           </div>
         </div>
@@ -109,13 +108,12 @@
       <hr class="sidebar-divider">
 
       <!-- Heading -->
+      {% if request.user.is_authenticated %}
       <div class="sidebar-heading">
         Perfil
       </div>
 
       <!-- Nav Item - Pages Collapse Menu -->
-      {% if request.user.is_authenticated %}
-     
       <li class="nav-item">
         <a class="nav-link" href="{% url 'my_products' %}">
           <i class="fas fa-cube"></i>
@@ -139,12 +137,12 @@
       {% else %}
       <li class="nav-item">
         <a class="nav-link" href="{% url 'signup' %}">
-          <i class="fas fa-fw fa-chart-area"></i>
+          <i class="fas fa-fw fa-user-plus"></i>
           <span>Regístrate</span></a>
       </li>
       <li class="nav-item active">
         <a class="nav-link" href="{% url 'login' %}{% block nextSide %}{% endblock %}">
-          <i class="fas fa-fw fa-chart-area"></i>
+          <i class="fas fa-fw fa-user"></i>
           <span>Ingresar</span></a>
       </li>
       {% endif %}
@@ -182,10 +180,14 @@
           </button>
 
           <!-- Topbar Search -->
-          <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+          <form method="post" action="" class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+            {% csrf_token %}
+            <input type="number" hidden name="min_price" id="id_min_price">
+            <input type="number" hidden name="max_price" id="id_max_price">
+            <input type="text" hidden name="location" id="id_location">
             <div class="input-group">
               <div class="input-group-prepend">
-                <select class="btn btn-primary resize-select" name="category" id="search_category_1">
+                <select class="btn btn-primary resize-select" name="category" id="id_category">
                   <option value="0">Todo</option>
                   {% for category in categories %}
                     <option value="{{category.id}}">{{category.category_name}}</option>
@@ -203,18 +205,21 @@
 
           <!-- Topbar Navbar -->
           <ul class="navbar-nav ml-auto">
-            {% if request.user.is_authenticated %}
             <!-- Nav Item - Search Dropdown (Visible Only XS) -->
             <li class="nav-item dropdown no-arrow d-sm-none">
               <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="fas fa-search fa-fw"></i>
+                <i class="fas fa-search fa-fw text-primary"></i>
               </a>
               <!-- Dropdown - Messages -->
               <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in" aria-labelledby="searchDropdown">
-                <form class="form-inline mr-auto w-100 navbar-search">
+                <form method="post" action="" class="form-inline mr-auto w-100 navbar-search">
+                  {% csrf_token %}
+                  <input type="number" hidden name="min_price" id="id_min_price">
+                  <input type="number" hidden name="max_price" id="id_max_price">
+                  <input type="text" hidden name="location" id="id_location">
                   <div class="input-group">
                     <div class="input-group-prepend">
-                      <select class="btn btn-primary resize-select" name="category" id="search_category">
+                      <select class="btn btn-primary resize-select" name="category" id="id_category">
                         <option value="0">Todo</option>
                         {% for category in categories %}
                           <option value="{{category.id}}">{{category.category_name}}</option>
@@ -231,7 +236,7 @@
                 </form>
               </div>
             </li>
-            
+            {% if request.user.is_authenticated %}
             <!-- Nav Item - Alerts -->
             <li class="nav-item dropdown no-arrow mx-1">
               <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -366,17 +371,32 @@
                 </a>
               </div>
             </li>
-
+            {% else %}
+            <!-- Nav Item - Login Dropdown (Visible Only XS) -->
+            <li class="nav-item dropdown no-arrow d-sm-none">
+              <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-user fa-fw text-primary"></i>
+              </a>
+              <!-- Dropdown - Ingreso Registro -->
+              <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+                <a class="dropdown-item" href="{% url 'signup' %}">
+                  <i class="fas fa-user-plus fa-sm fa-fw mr-2 text-primary"></i>
+                  Regístrate
+                </a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="{% url 'login' %}{% block nextSm %}{% endblock %}">
+                  <i class="fas fa-user fa-sm fa-fw mr-2 text-primary"></i>
+                  Ingresar
+                </a>
+              </div>
+            </li>
+            <li class="nav-item d-none d-sm-inline-block"> <a class="btn btn-link" href="{% url 'signup' %}" >Regístrate</a> </li>
+            <li class="nav-item active d-none d-sm-inline-block"> <a href="{% url 'login' %}{% block nextTop %}{% endblock %}" class="btn btn-primary" >Ingresar</a> </li>
+            {% endif %}
           </ul>
-
         </nav>
-        {% else %}
-        <li class="nav-item"> <a class="btn btn-link" href="{% url 'signup' %}" >Regístrate</a> </li>
-        <li class="nav-item active"> <a href="{% url 'login' %}{% block nextTop %}{% endblock %}" class="btn btn-primary" >Ingresar</a> </li>
-      </ul>
-    </nav>
         <!-- End of Topbar -->
-        {% endif %}
+        
 
 
         <!-- Begin Page Content -->
@@ -440,6 +460,7 @@
 
 <!-- Custom scripts for all pages-->
 <script src="{% static 'core/js/sb-admin-2.js' %}"></script>
+<script src="{% static 'core/js/search.js' %}"></script>
 {% block js %}
 {% endblock %}
 </body>

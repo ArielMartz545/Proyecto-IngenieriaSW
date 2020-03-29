@@ -9,12 +9,9 @@
 <link href="{% static 'ad/css/ui.css' %}" rel="stylesheet">
 <link href="{% static 'ad/css/custom.css' %}" rel="stylesheet">
 {% endblock %}
-{% block nextTop %}
-?next={% url 'ad_detail' object.pk %}
-{% endblock %}
-{% block nextSide %}
-?next={% url 'ad_detail' object.pk %}
-{% endblock %}
+{% block nextTop %}?next={% url 'ad_detail' object.pk %}{% endblock %}
+{% block nextSide %}?next={% url 'ad_detail' object.pk %}{% endblock %}
+{% block nextSm %}?next={% url 'ad_detail' object.pk %}{% endblock %}
 {% block content %}
 <div id="fb-root"></div>
 
@@ -28,8 +25,8 @@
                 {% endfor %}
                 </ol>
             </div>
-            <div class="col-10 slide-img-container bg-light">
-                <img class="slide-img border-dark" src="{{ object.ad_images.first.img_route.url }}" alt="Imagen detalle 1">
+            <div class="col-10 slide-img-container bg-white border">
+                <img class="slide-img" src="{{ object.ad_images.first.img_route.url }}" alt="Imagen detalle 1">
             </div>
         </div>
     </div>
