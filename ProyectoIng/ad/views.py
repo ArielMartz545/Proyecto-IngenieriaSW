@@ -84,7 +84,7 @@ class CreateAd(CreateView):
                 instance.save()
                 ad.ad_images.add( instance )
             if len(request.FILES.getlist('images'))==0:
-                instance = Images.objects.get(pk=1)
+                instance = Image.objects.get(pk=1)
                 ad.ad_images.add( instance )
             ad.save(False)
             return HttpResponseRedirect(reverse_lazy('my_products')+'?created')
