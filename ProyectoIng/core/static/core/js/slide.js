@@ -1,31 +1,29 @@
-function setThumbSize(){
-    var width = $("#img-thumb-container").width();
-    $(".img-thumb").width(width);
-    $(".img-thumb").height(width);
+function setSizes(){
+    var thumbWidth = $(".slide-thumbs").width();
+    $(".thumb").width(thumbWidth);
+    $(".thumb").height(thumbWidth);
+    var slideImgWidth = $(".slide-img-container").width();
+    $(".slide-img-container").height(slideImgWidth);
+    $(".slide-thumbs").height(slideImgWidth);
 }
-function setBoxSize(){
-    var width = $("#img-box-container").width();
-    $("#img-box-container").height(width);
-}
-$( ".img-thumb" ).hover(
+$( ".thumb" ).hover(
     function() {
-        $('.img-detail').attr('src',$( this ).attr('src'));
+        //Mostrar la imagen miniatura en grande
+        $('.slide-img').attr('src',$( this ).attr('src'));
+        //Cambiar el alternativo de la imagen
+        $('.slide-img').attr('alt','Imagen detalle '+$( this ).attr('id'));
     }, function() {}
 );
-$( ".img-thumb" ).hover(
-    function() {
-        $('.img-detail').attr('src',$( this ).attr('src'));
-    }, function() {}
-);
-$( ".img-thumb" ).click(function(event) {
+$( ".thumb" ).click(function(event) {
     event.preventDefault();
-    $('.img-detail').attr('src',$( this ).attr('src'));
+    //Mostrar la imagen miniatura en grande
+    $('.slide-img').attr('src',$( this ).attr('src'));
+    //Cambiar el alternativo de la imagen
+    $('.slide-img').attr('alt','Imagen detalle '+$( this ).attr('id'));
 });
 $( document ).ready(function() {
-    setThumbSize();
-    setBoxSize();
+    setSizes();
 });
 $( window ).resize(function() {
-    setThumbSize();
-    setBoxSize();
+    setSizes();
 });
