@@ -2,20 +2,13 @@ from django.shortcuts import render, HttpResponseRedirect
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView
-<<<<<<< Updated upstream
-=======
 from django.views.generic.edit import UpdateView
 from django.views.generic.edit import DeleteView
->>>>>>> Stashed changes
 from .models import Ad, Category, PriceRange, AdKind, Unit, Currency
 from location.models import Location
 from account.models import Account
 from images.models import Image
-<<<<<<< Updated upstream
-from ad.forms import AdCreateForm
-=======
 from ad.forms import AdCreateForm, AdUpdateForm, AdDeleteForm
->>>>>>> Stashed changes
 from django.urls import reverse_lazy, reverse
 from django.forms import modelformset_factory
 
@@ -92,15 +85,10 @@ class CreateAd(CreateView):
                 instance = Image(img_route=file)
                 instance.save()
                 ad.ad_images.add( instance )
-<<<<<<< Updated upstream
             if len(request.FILES.getlist('images'))==0:
                 instance = Image.objects.get(pk=1)
                 ad.ad_images.add( instance )
             ad.save(False)
-            return HttpResponseRedirect(reverse_lazy('my_products')+'?created')
-        return HttpResponseRedirect(reverse_lazy('ad_create')+'?error')
-=======
-            ad.save()
             return HttpResponseRedirect(reverse_lazy('my_products')+'?created')
         return HttpResponseRedirect(reverse_lazy('ad_create')+'?error')
 
@@ -155,4 +143,3 @@ class AdUpdate(UpdateView):
         return HttpResponseRedirect(reverse_lazy('my_products')+'?created') 
         
     
->>>>>>> Stashed changes

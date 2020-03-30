@@ -8,8 +8,6 @@ class AdCreateForm(forms.ModelForm):
         model= Ad
         fields=('ad_name', 'ad_description','price','id_location',
                 'id_ad_kind','id_category','id_unit', 'id_currency',)
-<<<<<<< Updated upstream
-=======
 
 class AdUpdateForm(forms.ModelForm):
     
@@ -33,4 +31,3 @@ class AdDeleteForm(forms.ModelForm):
     class Meta():
         model = Ad
         fields=('active',)
->>>>>>> Stashed changes
