@@ -1,0 +1,118 @@
+{% extends 'core/sidebar.html' %}
+{% load static %}
+{% block title %}{{object}}{% endblock %}
+{% block css %}
+<link href="{% static 'core/css/card-img-top.css' %}" rel="stylesheet">
+<link href="{% static 'core/css/detail.css' %}" rel="stylesheet">
+<link href="{% static 'ad/css/style.css' %}" rel="stylesheet">
+<link href="{% static 'ad/css/ui.css' %}" rel="stylesheet">
+<link href="{% static 'ad/css/custom.css' %}" rel="stylesheet">
+{% endblock %}
+{% block content %}
+<div id="fb-root"></div>
+
+<div class="">
+    <div class="row no-gutters">
+        <aside class="col-md-4">
+            <article class="gallery-wrap">
+                <div class="img-big-wrap">
+                    {% if object.ad_images.count == 1 %}
+                        {% for img in object.ad_images.all %}
+                            <img src="{{img.img_route.url}}" class="d-block w-100">
+                        {% endfor %}
+                    {% else %}
+                    <div id="ad_{{ object.pk }}" class="carousel slide carousel-fade" data-ride="carousel">
+                        <div class="carousel-inner">
+                            {% for img in object.ad_images.all %}
+                                <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                                    <img src="{{img.img_route.url}}" class="d-block w-100" alt="...">
+                                </div>
+                            {% endfor %}
+                            <a class="carousel-control-prev" href="#ad_{{ object.pk }}" role="button" data-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="sr-only">Previous</span>
+                            </a>
+                            <a class="carousel-control-next" href="#ad_{{ object.pk }}" role="button" data-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="sr-only">Next</span>
+                            </a>
+                        </div>
+                    </div> <!-- slider-product.// -->
+                {% endif %}
+                <div class="thumbs-wrap">
+                    {% for img in object.ad_images.all %}
+                    <a href="#" class="item-thumb"> <img src="{{img.img_route.url}}" width="100" height="100"></a>
+                    {% endfor %}
+                </div> <!-- slider-nav.// -->
+            </article> <!-- gallery-wrap .end// -->
+        </aside>
+        <main class="col-md-6">
+            <article class="content-body">
+                <h3 class="title">{{object.ad_name}}</h3>
+                <table class="table table-sm table-borderless">
+                    <tbody>
+                        <tr>
+                            <th scope="row" colspan="2"><h4>Detalles</h4></th>
+                        </tr>
+                        <tr>
+                            <th scope="row"><h5 class="font-weight-bold">Precio</h5></th>
+                            <td><h5>{{object.id_currency.currency_sign}} {{object.price}}</h5></td>
+                        </tr>
+                        <tr>
+                            <th scope="row"><h5 class="font-weight-bold">Descripcion</h5></th>
+                            <td><h5>{{object.ad_description}}</h5></td>
+                        </tr>
+                        <tr>
+                            <th scope="row"><h5 class="font-weight-bold">Ubicación</h5></th>
+                            <td><h5>{{object.id_location}}</h5></td>
+                        </tr>
+                        <tr>
+                            <th scope="row"><h5 class="font-weight-bold">Publicado</h5></th>
+                            <td><h5>{{object.date_created | date:'d-m-Y g:ia'}}</h5></td>
+                        </tr>
+                        <tr>
+                            <th scope="row" colspan="2"><h4>Información de contacto</h4></th>
+                        </tr>
+                        {% if request.user.is_authenticated %}
+                        <tr>
+                            <th scope="row"><h5 class="font-weight-bold">Usuario</h5></th>
+                            <td><h5>{{object.id_user.get_full_name}}</h5></td>
+                        </tr>
+                        <tr>
+                            <th scope="row"><h5 class="font-weight-bold">Correo electrónico</h5></th>
+                            <td><h5>{{object.id_user}}</h5></td>
+                        </tr>
+                        <tr>
+                            <th scope="row"><h5 class="font-weight-bold">Teléfono</h5></th>
+                            <td><h5>+504 {{object.id_user.phone_number}}</h5></td>
+                        </tr>
+                        <tr>
+                            <th scope="row"><h5 class="font-weight-bold">En Pa'Ya desde</h5></th>
+                            <td><h5>{{object.id_user.date_joined | date:'d-m-Y'}}</h5></td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td scope="row" colspan="2">Inicia sesión o registrate para poder ver información del vendedor.</td>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+                <form method="post">{% csrf_token %}
+                    <strong><p>¿Confirma que desea dar de baja el anuuncio? &nbsp;{{ form.active }}</p></strong>
+                    
+                    <input type="submit" value="Dar de Baja" class="btn btn-danger">
+                </form>
+               
+            </article> <!-- product-info-aside .// -->
+        </main> <!-- col.// -->
+    </div> <!-- row.// -->
+</div> <!-- card.// -->
+
+{% endblock %}
+{% block js %}
+    {# jQuery esta ya incluido antes de este bloque #}
+    <script src="{% static 'ad/js/script.js' %}"></script>
+    <script src="{% static 'core/js/collapse-sidebar.js' %}"></script>
+    <script src="{% static 'core/js/img-height.js' %}"></script>
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/es_ES/sdk.js#xfbml=1&version=v6.0"></script>
+{% endblock %}

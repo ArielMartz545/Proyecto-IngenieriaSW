@@ -2,11 +2,20 @@ from django.shortcuts import render, HttpResponseRedirect
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView
+<<<<<<< Updated upstream
+=======
+from django.views.generic.edit import UpdateView
+from django.views.generic.edit import DeleteView
+>>>>>>> Stashed changes
 from .models import Ad, Category, PriceRange, AdKind, Unit, Currency
 from location.models import Location
 from account.models import Account
 from images.models import Image
+<<<<<<< Updated upstream
 from ad.forms import AdCreateForm
+=======
+from ad.forms import AdCreateForm, AdUpdateForm, AdDeleteForm
+>>>>>>> Stashed changes
 from django.urls import reverse_lazy, reverse
 from django.forms import modelformset_factory
 
@@ -83,9 +92,67 @@ class CreateAd(CreateView):
                 instance = Image(img_route=file)
                 instance.save()
                 ad.ad_images.add( instance )
+<<<<<<< Updated upstream
             if len(request.FILES.getlist('images'))==0:
                 instance = Image.objects.get(pk=1)
                 ad.ad_images.add( instance )
             ad.save(False)
             return HttpResponseRedirect(reverse_lazy('my_products')+'?created')
         return HttpResponseRedirect(reverse_lazy('ad_create')+'?error')
+=======
+            ad.save()
+            return HttpResponseRedirect(reverse_lazy('my_products')+'?created')
+        return HttpResponseRedirect(reverse_lazy('ad_create')+'?error')
+
+class AdDelete(UpdateView):
+    model = Ad
+    form_class= AdDeleteForm
+    template_name = 'ad/ad_delete.html'
+    context_object_name = 'Ad'
+    
+    def post(self, request,pk, *args, **kwargs):
+        form =AdDeleteForm(request.POST)
+        ad_object_data = self.object = self.get_object()
+        if form.is_valid():
+            ad= form.save(commit=False)
+            ad= ad_object_data
+            ad.active= False
+            ad.save(False)
+        ad.save()
+        return HttpResponseRedirect(reverse_lazy('my_products')+'?deleted') 
+        
+
+
+class AdUpdate(UpdateView):
+    model = Ad
+    form_class= AdUpdateForm
+    template_name = 'ad/ad_update.html'
+    context_object_name = 'Ad'
+    
+    def post(self, request,pk, *args, **kwargs):
+        form =AdUpdateForm(request.POST)
+        ad_object_data = self.object = self.get_object()
+
+        if form.is_valid():
+            ad= form.save(commit=False)
+            ad.id_user = request.user
+            ad.pk= ad_object_data.pk
+            ad.date_created = ad_object_data.date_created
+            ad.save(False)
+            
+            if request.FILES.getlist('images'):
+                ad.ad_images.clear()
+
+            for file in request.FILES.getlist('images'):
+                    instance = Image(img_route=file)
+                    instance.save()
+                    ad.ad_images.add(instance)
+                    
+            ad.save()
+    
+        
+
+        return HttpResponseRedirect(reverse_lazy('my_products')+'?created') 
+        
+    
+>>>>>>> Stashed changes
