@@ -53,7 +53,6 @@ class AdDetailView(DetailView):
         context['price_ranges'] = PriceRange.objects.all()
         context['locations'] = Location.objects.order_by('direction').filter(correlative_direction__isnull=True)
         # Fin Sidebar Context
-        context['ads'] = Ad.objects.all().order_by('-date_created')
         return context
 
 

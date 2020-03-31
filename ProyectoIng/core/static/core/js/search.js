@@ -4,10 +4,10 @@ $( ".price-range" ).click(function(event) {
     $(this).addClass("bg-secondary text-white");
     var min = $(this).attr("min");
     var max = $(this).attr("max");
-    $("input[name='min_price']").each(function() {
+    $("input[name='min']").each(function() {
         $(this).attr('value',min);
     });
-    $("input[name='max_price']").each(function() {
+    $("input[name='max']").each(function() {
         $(this).attr('value',max);
     });
     if($(this).attr("id") != "custom-price-range-item"){
@@ -74,7 +74,7 @@ $( ".location" ).click(function(event) {
     $( ".location" ).removeClass( "bg-secondary text-white" )
     $(this).addClass("bg-secondary text-white");
     var location = $(this).attr("location");
-    $("input[name='location']").each(function() {
+    $("input[name='l']").each(function() {
         $(this).attr('value',location);
     });
     //Cerrar filtro de lugares luego de seleccionar uno

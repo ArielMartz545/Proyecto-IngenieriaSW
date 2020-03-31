@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'ad',
     'images',
     'location',
+    'search',
 ]
 
 MIDDLEWARE = [

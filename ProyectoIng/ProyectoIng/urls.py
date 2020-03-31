@@ -22,10 +22,12 @@ urlpatterns = [
     path('', include('core.urls')),
     path('stores/', include('store.urls')),
     path('admin/', admin.site.urls),
+    path('ads/',include('ad.urls')),
     path('search/',include('search.urls')),
     #Auth Paths
     path('accounts/',include('account.urls')),
     path('accounts/',include('django.contrib.auth.urls')),
+    
 ]
 #Manejo de Imagenes en modo DEBUG
 if settings.DEBUG:

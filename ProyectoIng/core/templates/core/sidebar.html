@@ -70,6 +70,7 @@
         <div id="collapsePrices" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Rango de precio</h6>
+            <a href="#" class="collapse-item price-range" min="0" max="0" currency="1">Todo</a>
             {% for price_range in price_ranges %}
               <a href="#" class="collapse-item price-range" min="{{price_range.min_price}}" max="{{price_range.max_price}}" currency="{{price_range.currency.id}}">{{price_range}}</a>
             {% endfor %}
@@ -97,8 +98,9 @@
         <div id="collapseLocations" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Departamento</h6>
+            <a href="#" class="collapse-item location" location="0">Todo</a>
             {% for location in locations %}
-              <a href="#" class="collapse-item location" location="{{location.pk}}">{{location}}</a>
+              <a href="#" class="collapse-item location {% if location.pk == l %}bg-secondary{% endif %}" location="{{location.pk}}">{{location}}</a>
             {% endfor %}
           </div>
         </div>
@@ -180,27 +182,27 @@
           </button>
 
           <!-- Topbar Search -->
-          <form method="post" action="" class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
-            {% csrf_token %}
-            <input type="number" hidden name="min_price" id="id_min_price" value="0">
-            <input type="number" hidden name="max_price" id="id_max_price" value="0">
-            <input type="number" hidden name="location" id="id_location" value="0">
+          <form method="get" action="{% url 'search' %}" class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+            
             <div class="input-group">
               <div class="input-group-prepend">
-                <select class="btn btn-primary resize-select" name="category" id="id_category">
+                <select class="btn btn-primary resize-select" name="c" id="id_c">
                   <option value="0">Todo</option>
                   {% for category in categories %}
-                    <option value="{{category.id}}">{{category.category_name}}</option>
+                    <option value="{{category.id}}" {% if category.id == c %}selected{% endif %}>{{category.category_name}}</option>
                   {% endfor %}
                 </select>
               </div>
-              <input type="text" name="search" id="id_search" class="form-control bg-light border-0 small" placeholder="Estoy buscando..." aria-label="Search" aria-describedby="basic-addon2">
+              <input type="text" name="q" id="id_q" class="form-control bg-light border-0 small" value="{{ q }}" placeholder="Estoy buscando..." aria-label="Search" aria-describedby="basic-addon2">
               <div class="input-group-append">
-                <button class="btn btn-primary" type="button">
+                <button class="btn btn-primary" type="submit">
                   <i class="fas fa-search fa-sm"></i>
                 </button>
               </div>
             </div>
+            <input type="number" hidden name="min" id="id_min" value="0{{ min }}">
+            <input type="number" hidden name="max" id="id_max" value="0{{ max }}">
+            <input type="number" hidden name="l" id="id_l" value="0{{ l }}">
           </form>
 
           <!-- Topbar Navbar -->
@@ -212,27 +214,26 @@
               </a>
               <!-- Dropdown - Messages -->
               <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in" aria-labelledby="searchDropdown">
-                <form method="post" action="" class="form-inline mr-auto w-100 navbar-search">
-                  {% csrf_token %}
-                  <input type="number" hidden name="min_price" id="id_min_price" value="0">
-                  <input type="number" hidden name="max_price" id="id_max_price" value="0">
-                  <input type="number" hidden name="location" id="id_location" value="0">
+                <form method="get" action="{% url 'search' %}" class="form-inline mr-auto w-100 navbar-search">
                   <div class="input-group">
                     <div class="input-group-prepend">
-                      <select class="btn btn-primary resize-select" name="category" id="id_category">
+                      <select class="btn btn-primary resize-select" name="c" id="id_c">
                         <option value="0">Todo</option>
                         {% for category in categories %}
-                          <option value="{{category.id}}">{{category.category_name}}</option>
+                          <option value="{{category.id}}" {% if category.id == c %}selected{% endif %}>{{category.category_name}}</option>
                         {% endfor %}
                       </select>
                     </div>
-                    <input type="text"  name="search" id="id_search" class="form-control bg-light border-0 small" placeholder="Estoy buscando..." aria-label="Search" aria-describedby="basic-addon2">
+                    <input type="text" name="q" id="id_q" class="form-control bg-light border-0 small" value="{{ q }}" placeholder="Estoy buscando..." aria-label="Search" aria-describedby="basic-addon2">
                     <div class="input-group-append">
-                      <button class="btn btn-primary" type="button">
+                      <button class="btn btn-primary" type="submit">
                         <i class="fas fa-search fa-sm"></i>
                       </button>
                     </div>
                   </div>
+                  <input type="number" hidden name="min" id="id_min" value="0{{ min }}">
+                  <input type="number" hidden name="max" id="id_max" value="0{{ max }}">
+                  <input type="number" hidden name="l" id="id_l" value="0{{ l }}">
                 </form>
               </div>
             </li>
