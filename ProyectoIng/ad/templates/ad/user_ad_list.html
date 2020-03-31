@@ -19,7 +19,7 @@
                         {% if request.user.pk == user_pk and object_list.count == 0 %}
                         <div class="col-12">
                             <h2 class="m-0 font-weight-bold text-primary">
-                                Mis tiendas
+                                Mis anuncios
                             </h2>
                         </div>
                         {% else %}
@@ -105,14 +105,6 @@
             </div>
             {# FIN Card anuncio #}
         </div>
-        {% empty %}
-        {% if request.user.pk == user_pk %}
-        <h2>Aun no tienes anuncios publicados</h2>
-        {% else %}
-        <h2>{{user_name}} aun no tiene anuncios publicados</h2>
-        {% endif %}
-        <h5>Recuerda que los anuncios se remueven periódicamente para traer lo mas reciente a todos.</h5>
-        <a href="{% url 'ad_create' %}" class="btn btn-primary">Publicar nuevo anuncio</a>
         {% endfor %}
     </div>
     {% if object_list.count != 0 %}

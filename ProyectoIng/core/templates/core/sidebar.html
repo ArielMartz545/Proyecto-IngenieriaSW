@@ -123,11 +123,11 @@
         </a>
         <div id="collapseProfile" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
-            <a href="{% url 'products_user' request.user.pk %}" class="collapse-item">
+            <a href="{% url 'profile' request.user.pk  %}" class="collapse-item">
               <i class="fas fa-address-card"></i> Perfil
             </a>
             <a href="{% url 'products_user' request.user.pk %}" class="collapse-item">
-              <i class="fas fa-cube"></i> Productos
+              <i class="fas fa-cube"></i> Anuncios
             </a>
             <a href="{% url 'user_stores' request.user.pk %}" class="collapse-item">
               <i class="fas fa-store-alt"></i> Tiendas
@@ -361,7 +361,7 @@
                 </a>
                 <a class="dropdown-item" href="{% url 'products_user' request.user.pk %}">
                   <i class="fas fa-cube fa-sm fa-fw mr-2 text-gray-400"></i>
-                  Productos
+                  Anuncios
                 </a>
                 <a class="dropdown-item" href="{% url 'user_stores' request.user.pk %}">
                   <i class="fas fa-store-alt fa-sm fa-fw mr-2 text-gray-400"></i>
