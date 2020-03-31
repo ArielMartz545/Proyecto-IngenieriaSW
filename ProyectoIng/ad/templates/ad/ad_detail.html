@@ -16,72 +16,174 @@
 <div id="fb-root"></div>
 
 <div class="row">
-    <div class="col-12 col-md-5">
-        <div class="row slide">
-            <div class="col-2 slide-thumbs overflow-auto">
-                <ol class="thumbs list-unstyled">
-                {% for img in object.ad_images.all %}
-                    <li class="pb-2"><a href="#"><img class="thumb border" src="{{img.img_route.url}}" alt="Imagen miniatura {{ forloop.counter }}" id="{{ forloop.counter }}"></a></li>
-                {% endfor %}
-                </ol>
-            </div>
-            <div class="col-10 slide-img-container bg-white border">
-                <img class="slide-img" src="{{ object.ad_images.first.img_route.url }}" alt="Imagen detalle 1">
+    <div class="col-12">
+        <div class="card border-left-primary border-bottom-primary shadow mb-4">
+            <div class="card-body py-3">
+                <div class="row">
+                    <div class="col-12 col-md-5">
+                        <div class="row slide">
+                            <div class="col-2 slide-thumbs overflow-auto">
+                                <ol class="thumbs list-unstyled">
+                                {% for img in object.ad_images.all %}
+                                    <li class="pb-2"><a href="#"><img class="thumb border" src="{{img.img_route.url}}" alt="Imagen miniatura {{ forloop.counter }}" id="{{ forloop.counter }}"></a></li>
+                                {% endfor %}
+                                </ol>
+                            </div>
+                            <div class="col-10 slide-img-container">
+                                <img class="slide-img bg-light border" src="{{ object.ad_images.first.img_route.url }}" alt="Imagen detalle 1">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-7">
+                        <div class="row">
+                            <div class="col">
+                                <h2 class="m-0 font-weight-bold text-primary">
+                                    {{object.ad_name}}
+                                </h2>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <h4 class="m-0 font-weight-bold text-dark">
+                                    Detalles
+                                </h4>
+                            </div>
+                        </div>
+                        <div class="row my-3">
+                            <div class="col-md-4">
+                                <h5 class="m-0 ml-2 font-weight-bold text-secondary">
+                                    Precio
+                                </h5>
+                            </div>
+                            <div class="col-md-8">
+                                <h5 class="m-0 ml-4 text-secondary">
+                                    {{object.id_currency.currency_sign}} {{object.price}}
+                                </h5>
+                            </div>
+                        </div>
+                        <div class="row my-3">
+                            <div class="col-12 col-md-4">
+                                <h5 class="m-0 ml-2 font-weight-bold text-secondary">
+                                    Descripcion
+                                </h5>
+                            </div>
+                            <div class="col-12 col-md-8">
+                                <h5 class="m-0 ml-4 text-secondary">
+                                    {{object.ad_description}}
+                                </h5>
+                            </div>
+                        </div>
+                        <div class="row my-3">
+                            <div class="col-12 col-md-4">
+                                <h5 class="m-0 ml-2 font-weight-bold text-secondary">
+                                    Ubicación
+                                </h5>
+                            </div>
+                            <div class="col-12 col-md-8">
+                                <h5 class="m-0 ml-4 text-secondary">
+                                    {{object.id_location}}
+                                </h5>
+                            </div>
+                        </div>
+                        <div class="row my-3">
+                            <div class="col-12 col-md-4">
+                                <h5 class="m-0 ml-2 font-weight-bold text-secondary">
+                                    Publicado
+                                </h5>
+                            </div>
+                            <div class="col-12 col-md-8">
+                                <h5 class="m-0 ml-4 text-secondary">
+                                    {{object.date_created | date:'d-m-Y g:ia'}}
+                                </h5>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <h4 class="m-0 font-weight-bold text-dark">
+                                    Información de contacto
+                                </h4>
+                            </div>
+                        </div>
+                        {% if request.user.is_authenticated %}
+                        <div class="row my-3">
+                            <div class="col-12 col-md-4">
+                                <h5 class="m-0 ml-2 font-weight-bold text-secondary">
+                                    Usuario
+                                </h5>
+                            </div>
+                            <div class="col-12 col-md-8">
+                                <h5 class="m-0 ml-4 text-secondary">
+                                    <a href="{% url 'profile' object.id_user.pk %}">{{object.id_user.get_full_name}}</a>
+                                </h5>
+                            </div>
+                        </div>
+                        <div class="row my-3">
+                            <div class="col-12 col-md-4">
+                                <h5 class="m-0 ml-2 font-weight-bold text-secondary">
+                                    Correo electrónico
+                                </h5>
+                            </div>
+                            <div class="col-12 col-md-8">
+                                <h5 class="m-0 ml-4 text-secondary">
+                                    {{object.id_user}}
+                                </h5>
+                            </div>
+                        </div>
+                        <div class="row my-3">
+                            <div class="col-12 col-md-4">
+                                <h5 class="m-0 ml-2 font-weight-bold text-secondary">
+                                    Teléfono
+                                </h5>
+                            </div>
+                            <div class="col-12 col-md-8">
+                                <h5 class="m-0 ml-4 text-secondary">
+                                    +504 {{object.id_user.phone_number}}
+                                </h5>
+                            </div>
+                        </div>
+                        <div class="row my-3">
+                            <div class="col-12 col-md-4">
+                                <h5 class="m-0 ml-2 font-weight-bold text-secondary">
+                                    En Pa'Ya desde
+                                </h5>
+                            </div>
+                            <div class="col-12 col-md-8">
+                                <h5 class="m-0 ml-4 text-secondary">
+                                    {{object.id_user.date_joined | date:'d-m-Y'}}
+                                </h5>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <a href="https://api.whatsapp.com/send?phone=504{{object.id_user.phone_number}}&text=Hola%21%20Estoy%20interesado%20en%20tu%20anuncio%20de%20Pa%27Ya." class="btn btn-success" target="_blank"><i class="fab fa-whatsapp"></i> Contactar</a>
+                                <div class="fb-share-button" data-href="https://paya.com" data-layout="button" data-size="large"><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fpaya.com%2F&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">Compartir</a></div>
+                            </div>
+                        </div>
+                        {% else %}
+                        <div class="row my-3">
+                            <div class="col-12">
+                                <h5 class="m-0 ml-2 text-secondary">
+                                    Para poder ver la información de contacto y aprovechar Pa'Ya al máximo necesitas haber ingresado con una cuenta.
+                                </h5>
+                            </div>
+                        </div>
+                        <div class="row my-3">
+                            <div class="col-6">
+                                <a class="btn btn-block btn-outline-primary" href="{% url 'signup' %}?next={% url 'ad_detail' object.id %}">
+                                    Regístrate
+                                </a>
+                            </div>
+                            <div class="col-6">
+                                <a class="btn btn-block btn-primary" href="{% url 'login' %}?next={% url 'ad_detail' object.id %}">
+                                    Ingresar
+                                </a>
+                            </div>
+                        </div> 
+                        {% endif %}
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="col-12 col-md-7">
-        <h3 class="title">{{object.ad_name}}</h3>
-        <table class="table table-sm table-borderless">
-            <tbody>
-                <tr>
-                    <th scope="row" colspan="2"><h4>Detalles</h4></th>
-                </tr>
-                <tr>
-                    <th scope="row"><h5 class="font-weight-bold">Precio</h5></th>
-                    <td><h5>{{object.id_currency.currency_sign}} {{object.price}}</h5></td>
-                </tr>
-                <tr>
-                    <th scope="row"><h5 class="font-weight-bold">Descripcion</h5></th>
-                    <td><h5>{{object.ad_description}}</h5></td>
-                </tr>
-                <tr>
-                    <th scope="row"><h5 class="font-weight-bold">Ubicación</h5></th>
-                    <td><h5>{{object.id_location}}</h5></td>
-                </tr>
-                <tr>
-                    <th scope="row"><h5 class="font-weight-bold">Publicado</h5></th>
-                    <td><h5>{{object.date_created | date:'d-m-Y g:ia'}}</h5></td>
-                </tr>
-                {% if request.user.is_authenticated %}
-                <tr>
-                    <th scope="row" colspan="2"><h4>Información de contacto</h4></th>
-                </tr>
-                <tr>
-                    <th scope="row"><h5 class="font-weight-bold">Usuario</h5></th>
-                    <td><h5><a href="{% url 'profile' object.id_user.pk %}">{{object.id_user.get_full_name}}</a></h5></td>
-                </tr>
-                <tr>
-                    <th scope="row"><h5 class="font-weight-bold">Correo electrónico</h5></th>
-                    <td><h5>{{object.id_user}}</h5></td>
-                </tr>
-                <tr>
-                    <th scope="row"><h5 class="font-weight-bold">Teléfono</h5></th>
-                    <td><h5>+504 {{object.id_user.phone_number}}</h5></td>
-                </tr>
-                <tr>
-                    <th scope="row"><h5 class="font-weight-bold">En Pa'Ya desde</h5></th>
-                    <td><h5>{{object.id_user.date_joined | date:'d-m-Y'}}</h5></td>
-                </tr>
-                {% else %}
-                <tr>
-                    <td scope="row" colspan="2">Inicia sesión o registrate para poder ver información del vendedor.</td>
-                </tr>
-                {% endif %}
-            </tbody>
-        </table>
-        <a href="https://api.whatsapp.com/send?phone=504{{object.id_user.phone_number}}&text=Hola%21%20Estoy%20interesado%20en%20tu%20anuncio%20de%20Pa%27Ya." class="btn btn-success" target="_blank"><i class="fab fa-whatsapp"></i> Contactar</a>
-        <div class="fb-share-button" data-href="https://paya.com" data-layout="button" data-size="large"><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fpaya.com%2F&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">Compartir</a></div>
     </div>
 </div>
 {% endblock %}

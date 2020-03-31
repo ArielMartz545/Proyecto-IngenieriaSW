@@ -16,114 +16,129 @@
 {% block navbar %}
 {% endblock %}
 {% block content %}
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-12">
-                    <h2>Perfil</h2>
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-left-primary border-bottom-primary shadow mb-4">
+                <div class="card-header py-3">
+                    <div class="row">
+                        {% if request.user.pk == object.pk %}
+                        <div class="col-12">
+                            <h2 class="m-0 font-weight-bold text-primary">
+                                Mi Perfil
+                            </h2>
+                        </div>
+                        {% else %}
+                            <h2 class="m-0 font-weight-bold text-primary">
+                                Perfil
+                            </h2>
+                        {% endif %}
+                    </div>
                 </div>
-            </div>
-            {% if 'update' in request.GET %}
-                <div class="row">
-                    {% if 'success' == request.GET.update %}
-                        <div class="alert w-100 alert-primary alert-dismissible fade show" role="alert">
-                            <strong>¡Éxito!</strong> Se han actualizado tus datos correctamente.
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
+                <div class="card-body">
+                    {% if 'update' in request.GET %}
+                        <div class="row">
+                            {% if 'success' == request.GET.update %}
+                                <div class="alert w-100 alert-primary alert-dismissible fade show" role="alert">
+                                    <strong>¡Éxito!</strong> Se han actualizado tus datos correctamente.
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                            {% endif %}
+                            {% if 'error' == request.GET.update %}
+                                <div class="alert w-100 alert-fluid alert-danger alert-dismissible fade show" role="alert">
+                                    <strong>¡Uuuups!</strong> Ha sucedido un error al actualizar los datos, intenta nuevamente.
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                            {% endif %}
                         </div>
                     {% endif %}
-                    {% if 'error' == request.GET.update %}
-                        <div class="alert w-100 alert-fluid alert-danger alert-dismissible fade show" role="alert">
-                            <strong>¡Uuuups!</strong> Ha sucedido un error al actualizar los datos, intenta nuevamente.
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="profile-img-container w-100 bg-secondary">
+                                <img class="profile-img" src="{{object.profile_img.url}}" alt="Imagen de perfil">
+                            </div>
                         </div>
-                    {% endif %}
+                        <div class="col-md-8 mb-2">
+                            <div class="row">
+                                <div class="form-group my-0 py-2">
+                                    <h4><strong>Nombre: </strong> {{ object.get_full_name }} </h4>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group my-0 py-2">
+                                    <h4><strong>Correo electrónico: </strong> {{ object.email }} </h4>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group my-0 py-2">
+                                    <h4><strong>Fecha de nacimiento: </strong> {{ object.birth_date | date:'d-m-Y' }} </h4>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group my-0 py-2">
+                                    <h4><strong>Número de teléfono: </strong> {{ object.phone_number }} </h4>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group my-0 py-2">
+                                    <h4><strong>Dirección: </strong> {{ object.address }} </h4>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group my-0 py-2">
+                                    <h4><strong>En Pa'Ya desde: </strong> {{ object.date_joined | date:'d-m-Y' }} </h4>
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <p class="my-0 py-0">
+                                    <strong>Comparte este perfil: </strong>
+                                    <span id="profile_url">{{ request.scheme  }}://{#{ request.META['HTTP_HOST'] }#}{% url 'profile' object.pk %}</span>
+                                    <a tabindex="0" onclick="copyLink('profile_url');" id="profile_url_copy" data-toggle="popover" title="Enlace copiado al portapapeles" data-content="Comparte el perfil en una publicación o mensaje." class="badge badge-secondary">
+                                        <i class="far fa-copy"></i>
+                                    </a>
+                                </p>
+                            </div>
+                            {% if request.user.email == object.email %}
+                            <div class="row">
+                                <a href="#" data-toggle="modal" data-target="#modalCambiarDatos" class="text-muted"><i class="fas fa-edit"></i> Editar mi perfil</a>
+                            </div>
+                            <div class="row">
+                                <a href="#" data-toggle="modal" data-target="#modalCambiarPassword" class="text-muted"><i class="fas fa-edit"></i> Cambiar contraseña</a>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <hr class="my-4">
+                    <div class="row">
+                        {% if request.user.email == object.email %}
+                            <div class="col-md-4 my-3">
+                                <a href="{% url 'products_user' request.user.pk %}" class="btn btn-block btn-primary btn-lg">Mis anuncios</a>
+                            </div>
+                            <div class="col-md-4 my-3">
+                                <a href="{% url 'user_stores' request.user.pk %}" class="btn btn-block btn-danger btn-lg">Mis tiendas</a>
+                            </div>
+                            <div class="col-md-4 my-3">
+                                <a href="#" class="btn btn-block btn-success btn-lg">Mis estadísticas</a>
+                            </div>
+                        {% else %}
+                            <div class="col-md-6 my-3">
+                                <a href="{% url 'products_user' object.pk %}" class="btn btn-block btn-primary btn-lg">Anuncios</a>
+                            </div>
+                            <div class="col-md-6 my-3">
+                                <a href="#" class="btn btn-block btn-danger btn-lg">Estadísticas</a>
+                            </div>
+                        {% endif %}
+                        
+                    </div>
                 </div>
-            {% endif %}
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="profile-img-container w-100 bg-secondary">
-                        <img class="profile-img" src="{{object.profile_img.url}}" alt="Imagen de perfil">
-                    </div>
-                </div>
-                <div class="col-md-8 mb-2">
-                    <div class="row">
-                        <div class="form-group my-0 py-2">
-                            <h4><strong>Nombre: </strong> {{ object.get_full_name }} </h4>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="form-group my-0 py-2">
-                            <h4><strong>Correo electrónico: </strong> {{ object.email }} </h4>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="form-group my-0 py-2">
-                            <h4><strong>Fecha de nacimiento: </strong> {{ object.birth_date | date:'d-m-Y' }} </h4>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="form-group my-0 py-2">
-                            <h4><strong>Número de teléfono: </strong> {{ object.phone_number }} </h4>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="form-group my-0 py-2">
-                            <h4><strong>Dirección: </strong> {{ object.address }} </h4>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="form-group my-0 py-2">
-                            <h4><strong>En Pa'Ya desde: </strong> {{ object.date_joined | date:'d-m-Y' }} </h4>
-                        </div>
-                    </div>
-                    <div class="row mb-2">
-                        <p class="my-0 py-0">
-                            <strong>Comparte este perfil: </strong>
-                            <span id="profile_url">{{ request.scheme  }}://{#{ request.META['HTTP_HOST'] }#}{% url 'profile' object.pk %}</span>
-                            <a tabindex="0" onclick="copyLink('profile_url');" id="profile_url_copy" data-toggle="popover" title="Enlace copiado al portapapeles" data-content="Comparte el perfil en una publicación o mensaje." class="badge badge-secondary">
-                                <i class="far fa-copy"></i>
-                            </a>
-                        </p>
-                    </div>
-                    {% if request.user.email == object.email %}
-                    <div class="row">
-                        <a href="#" data-toggle="modal" data-target="#modalCambiarDatos" class="text-muted"><i class="fas fa-edit"></i> Editar mi perfil</a>
-                    </div>
-                    <div class="row">
-                        <a href="#" data-toggle="modal" data-target="#modalCambiarPassword" class="text-muted"><i class="fas fa-edit"></i> Cambiar contraseña</a>
-                    </div>
-                    {% endif %}
-                </div>
-            </div>
-            <hr class="my-4">
-            <div class="row">
-                {% if request.user.email == object.email %}
-                    <div class="col-md-4 my-3">
-                        <a href="{% url 'my_products' %}" class="btn btn-block btn-primary btn-lg">Mis productos</a>
-                    </div>
-                    <div class="col-md-4 my-3">
-                        <a href="{% url 'my_stores' %}" class="btn btn-block btn-danger btn-lg">Mis tiendas</a>
-                    </div>
-                    <div class="col-md-4 my-3">
-                        <a href="#" class="btn btn-block btn-success btn-lg">Mis estadísticas</a>
-                    </div>
-                {% else %}
-                    <div class="col-md-6 my-3">
-                        <a href="#" class="btn btn-block btn-primary btn-lg">Productos</a>
-                    </div>
-                    <div class="col-md-6 my-3">
-                        <a href="#" class="btn btn-block btn-danger btn-lg">Estadísticas</a>
-                    </div>
-                {% endif %}
-                
             </div>
         </div>
+    </div>
 
-
-        {% if request.user.email == object.email %}
+        {% if request.user.pk == object.pk %}
         {# Modal cambiar contraseña #}
         <div class="modal fade" id="modalCambiarPassword" tabindex="-1" role="dialog" aria-labelledby="modalCambiarPasswordLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">

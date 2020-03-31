@@ -1,0 +1,164 @@
+{% extends 'core/sidebar.html' %}
+{% load static %}
+{% block title %}
+    {% if request.user.pk == user_pk %}
+    Mis tiendas
+    {% else %}
+    Tiendas de {{user_name}}
+    {% endif %}
+{% endblock %}
+{% block css %}
+    <link href="{% static 'core/css/card-img-top.css' %}" rel="stylesheet">
+{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-left-primary border-bottom-primary shadow mb-4">
+                <div class="card-header py-3">
+                    <div class="row">
+                        {% if request.user.pk == user_pk and object_list.count == 0 %}
+                        <div class="col-12">
+                            <h2 class="m-0 font-weight-bold text-primary">
+                                Mis tiendas
+                            </h2>
+                        </div>
+                        {% else %}
+                            {% if request.user.pk == user_pk %}
+                                <div class="col-sm-8">
+                                    <h2 class="m-0 font-weight-bold text-primary">
+                                        Mis tiendas
+                                    </h2>
+                                </div>
+                                <div class="col-sm-4">
+                                    <button type="button" class="btn btn-primary btn-block" href="#" data-toggle="modal" data-target="#modalCrearTienda">Crear tienda</button>
+                                </div>
+                            {% else %}
+                                <div class="col-12">
+                                    <h2 class="m-0 font-weight-bold text-primary">
+                                        Tiendas de {{user_name}}
+                                    </h2>
+                                </div>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+                {% if object_list.count == 0 %}
+                <div class="card-body">
+                    {% if request.user.pk == user_pk %}
+                        <h4 class="font-weight-bold">Aun no tienes una tienda creada</h4>
+                        <p>Las tiendas te ayudan a vender productos de manera no personal. Si tus productos representan una marca o tienda, deberías crear una. Podrás publicar productos con la tienda o con tu cuenta personal.</p>
+                        <h5 class="font-weight-bold">Crear una tienda</h5>
+                        <form action="{% url 'create_store' %}" method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <input required type="text" type="text" class="form-control" name="store_name" id="id_store_name" placeholder="Nombre de la tienda">
+                            </div>
+                            <div class="form-group">
+                                <textarea required aria-describedby="help_ad_description" class="form-control" rows="2" name="store_description" id="id_store_description" placeholder="Describe tu tienda, si quieres brinda detalles de la dirección y formas de contacto."></textarea>
+                            </div>
+                            <div class="form-group">
+                                <select class="form-control" name="store_location" id="id_store_location">
+                                    {% for location in all_locations %}
+                                        <option value="{{location.pk}}">{{location}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block">Crear tienda</button>
+                        </form>
+                    {% else %}
+                        <h2 class="small font-weight-bold">{{user_name}} aun no tiene una tienda creada</h2>
+                        <h3 class="small font-weight-bold">Las tiendas te ayudan a vender productos de manera no personal, si tus productos representan una marca o tienda deberías crear una, podrás publicar productos con la tienda o con tu cuenta personal.</h3>
+                        <a href="{% url 'user_stores' request.user.id %}" class="btn btn-primary">Ir a Mis tiendas</a>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            {% for data in object_list %}
+            <div class="card border-left-{% cycle 'info' 'success' 'secondary' 'danger' 'warning' 'primary' %} shadow mb-4">
+                <div class="card-header py-3">
+                    <h2 class="m-0 font-weight-bold text-dark">
+                        {{data.store.store_name}}
+                    </h2>
+                </div>
+                <div class="card-body">
+                    <p class="lead">{{data.store.store_description}}</p>
+                    <p>{{data.store.store_location}}</p>
+                </div>
+                <div class="card-footer">
+                    <p class="lead">
+                        <a class="btn btn-outline-{% cycle 'info' 'success' 'secondary' 'danger' 'warning' 'primary' %} btn-block" href="#" role="button">Manejar {{data.store.store_name}}</a>
+                    </p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% if object_list.count != 0 %}
+    <div class="row">
+        <div class="col-12">
+            {% if page_obj.has_other_pages %}
+            <ul class="pagination">
+                {% if page_obj.has_previous %}
+                    <li class="page-item"><a class="page-link" href="{% url 'user_stores' user_pk %}?page={{ page_obj.previous_page_number }}">Anterior</a></li>
+                {% endif %}
+                {% if page_obj.number != 1 %}
+                    <li class="page-item"><a class="page-link" href="{% url 'user_stores' user_pk %}?page=1">Primera</a></li>
+                {% endif %}
+                <li class="page-item active"><a class="page-link" href="#">{{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</a></li>
+                {% if page_obj.number != page_obj.paginator.num_pages %}
+                <li class="page-item"><a class="page-link" href="{% url 'user_stores' user_pk %}?page={{ page_obj.paginator.num_pages }}">Última</a></li>
+                {% endif %}
+                {% if page_obj.has_next %}
+                <li class="page-item"><a class="page-link" href="{% url 'user_stores' user_pk %}?page={{ page_obj.next_page_number }}">Siguiente</a></li>
+                {% endif %}
+            </ul>
+            {% else %}
+            <p>Página 1 de 1 </p>
+            {% endif %}
+            <p>{{ page_obj.paginator.per_page }} tiendas por página </p>
+        </div>
+    </div>
+    {% endif %}
+
+    {#Modal formulario crear tienda, solo se muestra cuando el usuario ya tiene tiendas creadas para no sobrecargar la interface#}
+    <div class="modal fade" id="modalCrearTienda" tabindex="-1" role="dialog" aria-labelledby="modalCrearTienda" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="exampleModalLabel">Crear una tienda</h2>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="{% url 'create_store' %}" method="POST" enctype="multipart/form-data">
+            <div class="modal-body">
+                <p>Las tiendas te ayudan a vender productos de manera no personal. Si tus productos representan una marca o tienda, deberías crear una. Podrás publicar productos con la tienda o con tu cuenta personal.</p>
+                {% csrf_token %}
+                <div class="form-group">
+                    <input required type="text" type="text" class="form-control" name="store_name" id="id_store_name" placeholder="Nombre de la tienda">
+                </div>
+                <div class="form-group">
+                    <textarea required aria-describedby="help_ad_description" class="form-control" rows="2" name="store_description" id="id_store_description" placeholder="Describe tu tienda, si quieres brinda detalles de la dirección y formas de contacto."></textarea>
+                </div>
+                <div class="form-group">
+                    <select class="form-control" name="store_location" id="id_store_location">
+                        {% for location in all_locations %}
+                            <option value="{{location.pk}}">{{location}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Crear</button>
+            </div>
+            </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

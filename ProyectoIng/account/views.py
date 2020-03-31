@@ -34,11 +34,15 @@ class CreateUser(CreateView): #Pass,Correo,Nombre,Apellido,Telefono,Direccion,Fe
             user.save()
             current_site = get_current_site(request)
             mail_subject = 'Activa tu cuenta.'
+            next_url = request.GET['next']
+            if next_url is None:
+                next_url = ""
             message_html = render_to_string('registration/activation_mail.html', {
                 'user': user.get_full_name(),
                 'domain': current_site.domain,
                 'uid':urlsafe_base64_encode(force_bytes(user.pk)),
                 'token':account_activation_token.make_token(user),
+                'next_url': next_url,
             })
             send_mail(mail_subject, strip_tags(message_html), settings.EMAIL_HOST_USER,[user.email],fail_silently=False,html_message=message_html)
             return HttpResponseRedirect(reverse_lazy('login')+'?register')
@@ -102,6 +106,9 @@ def terminos(request):
     return render(request, 'registration/terms.html' )
 
 def activate(request, uidb64, token):
+    next_url = request.GET['next']
+    if next_url is None:
+        next_url = ""
     try:
         uid = force_text(urlsafe_base64_decode(uidb64))
         user = Account.objects.get(pk=uid)
@@ -110,9 +117,9 @@ def activate(request, uidb64, token):
     if user is not None and account_activation_token.check_token(user, token):
         user.is_active = True
         user.save()
-        return HttpResponseRedirect(reverse_lazy('login')+'?activated')
+        return HttpResponseRedirect(reverse_lazy('login')+'?activated&next='+next_url)
     else:
-        return HttpResponseRedirect(reverse_lazy('login')+'?invalid_activation')
+        return HttpResponseRedirect(reverse_lazy('login')+'?invalid_activation&next='+next_url)
 
 
 

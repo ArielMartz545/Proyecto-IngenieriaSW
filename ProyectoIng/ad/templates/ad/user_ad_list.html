@@ -1,6 +1,12 @@
 {% extends 'core/sidebar.html' %}
 {% load static %}
-{% block title %}Busqueda{% endblock %} 
+{% block title %}
+    {% if request.user.pk == user_pk %}
+    Mis anuncios
+    {% else %}
+    Anuncios de {{user_name}}
+    {% endif %}
+{% endblock %}
 {% block css %}
     <link href="{% static 'core/css/card-img-top.css' %}" rel="stylesheet">
 {% endblock %}
@@ -10,30 +16,40 @@
             <div class="card border-left-primary border-bottom-primary shadow mb-4">
                 <div class="card-header py-3">
                     <div class="row">
-                        {% if object_list.count == 0 %}
+                        {% if request.user.pk == user_pk and object_list.count == 0 %}
                         <div class="col-12">
                             <h2 class="m-0 font-weight-bold text-primary">
-                                Buscando anuncios de {{category_name}} en {{location_name}}
+                                Mis tiendas
                             </h2>
                         </div>
                         {% else %}
-                        <div class="col-sm-8">
-                            <h2 class="m-0 font-weight-bold text-primary">
-                                Buscando anuncios de {{category_name}} en {{location_name}}
-                            </h2>
-                        </div>
-                        <div class="col-sm-4">
-                            <a href="{% url 'ad_create' %}" class="btn btn-primary btn-block">Crear un anuncio</a>
-                        </div>
+                            {% if request.user.pk == user_pk %}
+                                <div class="col-sm-8">
+                                    <h2 class="m-0 font-weight-bold text-primary">
+                                        Mis anuncios
+                                    </h2>
+                                </div>
+                                <div class="col-sm-4">
+                                    <a href="{% url 'ad_create' %}" class="btn btn-primary btn-block">Crear un anuncio</a>
+                                </div>
+                            {% else %}
+                                <div class="col-12">
+                                    <h2 class="m-0 font-weight-bold text-primary">
+                                        Anuncios de {{user_name}}
+                                    </h2>
+                                </div>
+                            {% endif %}
                         {% endif %}
                     </div>
                 </div>
                 {% if object_list.count == 0 %}
                 <div class="card-body">
-                    <h3>No se han encontrado coincidencias.</h3>
-                    <p>Categorizamos nuestros anuncios para ayudarte a encontrar lo que buscas de manera más rápida, recuerda que en la barra superior puedes seleccionar la categoría en la que deseas buscar anuncios.</p>
-                    <p>¿Busca anuncios en algún lugar en específico? En la barra lateral encontraras filtros de lugares.</p>
-                    <p>¿Cuál es tu presupuesto? La barra lateral tambien contiene filtro por precio, si ningún rango se ajusta, puedes indicar tu presupuesto.</p>
+                    {% if request.user.pk == user_pk %}
+                        <h3>Aun no tienes anuncios publicados.</h3>
+                    {% else %}
+                        <h3>{{user_name}} aun no tiene anuncios publicados.</h3>
+                    {% endif %}
+                    <p>Si deseas vender un articulo o prestar un servicios, deberías crear un anuncio.</p>
                     <p>Periodicamente se remueven anuncios para mostrar sólo los más recientes..</p>
                     <a href="{% url 'ad_create' %}" class="btn btn-primary btn-block">Crear un anuncio</a>
                 </div>
@@ -89,6 +105,14 @@
             </div>
             {# FIN Card anuncio #}
         </div>
+        {% empty %}
+        {% if request.user.pk == user_pk %}
+        <h2>Aun no tienes anuncios publicados</h2>
+        {% else %}
+        <h2>{{user_name}} aun no tiene anuncios publicados</h2>
+        {% endif %}
+        <h5>Recuerda que los anuncios se remueven periódicamente para traer lo mas reciente a todos.</h5>
+        <a href="{% url 'ad_create' %}" class="btn btn-primary">Publicar nuevo anuncio</a>
         {% endfor %}
     </div>
     {% if object_list.count != 0 %}
@@ -97,27 +121,25 @@
         {% if page_obj.has_other_pages %}
         <ul class="pagination">
             {% if page_obj.has_previous %}
-                <li class="page-item"><a class="page-link" href="{% url 'search' %}?c={{ c }}&q={{ q }}&min={{ min }}&max={{ max }}&l={{ l }}&page={{ page_obj.previous_page_number }}">Anterior</a></li>
+                <li class="page-item"><a class="page-link" href="{% url 'products_user' user_pk %}?page={{ page_obj.previous_page_number }}">Anterior</a></li>
             {% endif %}
             {% if page_obj.number != 1 %}
-                <li class="page-item"><a class="page-link" href="{% url 'search' %}?c={{ c }}&q={{ q }}&min={{ min }}&max={{ max }}&l={{ l }}&page=1">Primera</a></li>
+                <li class="page-item"><a class="page-link" href="{% url 'products_user' user_pk %}?page=1">Primera</a></li>
             {% endif %}
             <li class="page-item active"><a class="page-link" href="#">{{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</a></li>
             {% if page_obj.number != page_obj.paginator.num_pages %}
-            <li class="page-item"><a class="page-link" href="{% url 'search' %}?c={{ c }}&q={{ q }}&min={{ min }}&max={{ max }}&l={{ l }}&page={{ page_obj.paginator.num_pages }}">Última</a></li>
+            <li class="page-item"><a class="page-link" href="{% url 'products_user' user_pk %}?page={{ page_obj.paginator.num_pages }}">Última</a></li>
             {% endif %}
             {% if page_obj.has_next %}
-            <li class="page-item"><a class="page-link" href="{% url 'search' %}?c={{ c }}&q={{ q }}&min={{ min }}&max={{ max }}&l={{ l }}&page={{ page_obj.next_page_number }}">Siguiente</a></li>
+            <li class="page-item"><a class="page-link" href="{% url 'products_user' user_pk %}?page={{ page_obj.next_page_number }}">Siguiente</a></li>
             {% endif %}
         </ul>
         {% else %}
         <p>Página 1 de 1 </p>
         {% endif %}
         <p>{{ page_obj.paginator.per_page }} anuncios por página </p>
-        </div>
-    </div>
-    {% endif %}
+      </div>
+  </div>
+  {% endif %}
 {% endblock %}
-{% block js %}
 
-{% endblock %}

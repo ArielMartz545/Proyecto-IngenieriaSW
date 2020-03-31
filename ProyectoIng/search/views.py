@@ -104,5 +104,5 @@ class SearchView(ListView):
             queryset = queryset.filter(id_location__pk=l) | queryset.filter(id_location__correlative_direction__pk=l)
         #Filtro de nombre o descripcion
         queryset = queryset.filter(ad_name__contains=q) | queryset.filter(ad_description__contains=q)
-        queryset = queryset.filter(active=True)
+        queryset = queryset.filter(active=True).order_by('-date_created')
         return queryset

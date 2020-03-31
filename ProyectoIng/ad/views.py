@@ -13,9 +13,10 @@ from django.urls import reverse_lazy, reverse
 from django.forms import modelformset_factory
 
 
-class ShowAdsListView(ListView):
+class UserAds(ListView):
     model= Ad
-    template_name="ad_list.html"
+    template_name="ad/user_ad_list.html"
+    paginate_by = 20
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
@@ -24,23 +25,54 @@ class ShowAdsListView(ListView):
         context['price_ranges'] = PriceRange.objects.all()
         context['locations'] = Location.objects.order_by('direction').filter(correlative_direction__isnull=True)
         # Fin Sidebar Context
-        context["ads_data"]= Ad.objects.prefetch_related().order_by('-date_created')
+        uid = self.kwargs['uid']
+        try:
+            user = Account.objects.get(pk=self.kwargs['uid'])
+        except:
+            user = self.request.user
+        context['user_name'] = user.get_full_name
+        context['user_pk'] = user.pk
         return context
-#id_user ,id_store ,id_location,id_ad_kind,id_category,id_unit,ad_name,ad_description,price,date_created
+    def get_queryset(self):
+        uid = self.kwargs['uid']
+        try:
+            user = Account.objects.get(pk=uid)
+        except:
+            user = self.request.user
+        queryset = Ad.objects.filter(id_user__id=user.id)
+        queryset = queryset.filter(active=True).order_by('-date_created')
+        return queryset
 
-class CategoryDetailView(DetailView):
-    model = Category
-    template_name = 'ad/category_products.html'
+class CategoryAds(ListView):
+    model= Ad
+    template_name="ad/category_ad_list.html"
+    paginate_by = 20
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
         # Sidebar Context
         context['categories'] = Category.objects.order_by('category_name')
         context['price_ranges'] = PriceRange.objects.all()
         context['locations'] = Location.objects.order_by('direction').filter(correlative_direction__isnull=True)
         # Fin Sidebar Context
-        context['products']= Ad.objects.all().order_by('-date_created')
+        c = self.kwargs['cid']
+        try:
+            category = Category.objects.get(pk=c)
+            context['category_name'] = category.category_name
+            context['c'] = c
+        except:
+            context['category_name'] = "Todas las categorías"
+            context['c'] = 0
         return context
+    def get_queryset(self):
+        cid = self.kwargs['cid']
+        try:
+            category = Category.objects.get(pk=cid)
+            queryset = Ad.objects.filter(id_category__id=category.id)
+        except:
+            queryset = Ad.objects.all()
+        queryset = queryset.filter(active=True).order_by('-date_created')
+        return queryset
 
 class AdDetailView(DetailView):
     model = Ad 
