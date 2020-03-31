@@ -9,8 +9,8 @@
 {% block content %}
     <div class="row">
         <div class="col-12">
-            <div class="card border-left-primary border-bottom-primary shadow mb-4">
-                <div class="card-header py-3">
+            <div class="card border-left-primary border-bottom-primary shadow mb-3">
+                <div class="card-header py-2">
                     <div class="row">
                         {% if object_list.count == 0 %}
                         <div class="col-12">
@@ -72,8 +72,8 @@
                 <h6>{% if data.id_store != None %} {{data.id_store}} {% endif %}</h6>
                 <p>Precio: {{ data.id_currency.currency_sign }}{{ data.price }}</p>
                 <p>Categoría: <a href="{% url 'search' %}?c={{ data.id_category.pk }}">{{ data.id_category }}</a></p>
-                <p>Lugar: <a href="{% url 'search' %}?l={{ data.id_location.pk }}">{{ data.id_location }}</a></p>
-                <p>Publicado {{data.date_created|date:'d-m-Y g:ia'}}</p>
+                <p>Lugar: <a href="{% url 'search' %}?l={{ data.id_location.pk }}">{{ data.id_location }}</a>
+                Publicado {{data.date_created|date:'d-m-Y g:ia'}}</p>
                 <a href="{% url 'ad_detail' data.pk %}" class="btn btn-block btn-outline-{% cycle 'info' 'success' 'secondary' 'danger' 'warning' 'primary' %}">Ver más</a>
                 {% if data.id_user == request.user  %}
                 <div class="row">

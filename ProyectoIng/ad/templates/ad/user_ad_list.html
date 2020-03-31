@@ -87,9 +87,8 @@
                 <h5 class="card-title"><a href="{% url 'ad_detail' data.pk %}">{{data.ad_name}}</a> </h5>
                 <h6>{% if data.id_store != None %} {{data.id_store}} {% endif %}</h6>
                 <p>Precio: {{ data.id_currency.currency_sign }}{{ data.price }}</p>
-                <p>Categoría: <a href="{% url 'search' %}?c={{ data.id_category.pk }}">{{ data.id_category }}</a></p>
+                <a href="{% url 'search' %}?c={{ data.id_category.pk }}">{{ data.id_category }}</a>
                 <p>Lugar: <a href="{% url 'search' %}?l={{ data.id_location.pk }}">{{ data.id_location }}</a></p>
-                <p>Publicado {{data.date_created|date:'d-m-Y g:ia'}}</p>
                 <a href="{% url 'ad_detail' data.pk %}" class="btn btn-block btn-outline-{% cycle 'info' 'success' 'secondary' 'danger' 'warning' 'primary' %}">Ver más</a>
                 {% if data.id_user == request.user  %}
                 <div class="row">

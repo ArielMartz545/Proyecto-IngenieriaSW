@@ -120,7 +120,7 @@ class CreateAd(CreateView):
                 instance = Image.objects.get(pk=1)
                 ad.ad_images.add( instance )
             ad.save(False)
-            return HttpResponseRedirect(reverse_lazy('my_products')+'?created')
+            return HttpResponseRedirect(reverse_lazy('products_user',kwargs={'uid':self.request.user})+'?created')
         return HttpResponseRedirect(reverse_lazy('ad_create')+'?error')
 
 class AdDelete(UpdateView):
@@ -138,7 +138,8 @@ class AdDelete(UpdateView):
             ad.active= False
             ad.save(False)
         ad.save()
-        return HttpResponseRedirect(reverse_lazy('my_products')+'?deleted') 
+        return HttpResponseRedirect(reverse_lazy('products_user',kwargs={'uid':self.request.user})+'?deleted')
+ 
         
 
 
@@ -171,6 +172,7 @@ class AdUpdate(UpdateView):
     
         
 
-        return HttpResponseRedirect(reverse_lazy('my_products')+'?created') 
+        return HttpResponseRedirect(reverse_lazy('products_user',kwargs={'uid':self.request.user})+'?updated')
+ 
         
     
