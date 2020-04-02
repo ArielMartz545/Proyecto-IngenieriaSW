@@ -48,6 +48,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_extensions',
+    'django_crontab',
+    'request',
     'core',
     'store',
     'ad',
@@ -55,6 +57,7 @@ INSTALLED_APPS = [
     'location',
     'search',
     'scrape',
+    
 ]
 
 MIDDLEWARE = [
@@ -143,3 +146,9 @@ MEDIA_ROOT=os.path.join(BASE_DIR,"media")
 #AUTH REDIRECT
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL= 'login'
+
+#CronJobs
+CRONJOBS = [
+   ('* * */1 * *', 'scrape.cron.scrapcoin'),
+   ('*/1 * * * *', 'scrape.cron.test'),
+]
