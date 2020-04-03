@@ -151,4 +151,5 @@ LOGOUT_REDIRECT_URL= 'login'
 CRONJOBS = [
    ('* * */1 * *', 'scrape.cron.scrapcoin'),
    ('*/1 * * * *', 'scrape.cron.test'),
+   ('* * */1 * *', 'ad.cron.delete_old_ads'),
 ]
