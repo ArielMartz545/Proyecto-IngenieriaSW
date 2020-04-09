@@ -1,0 +1,121 @@
+{% extends 'core/sidebar.html' %}
+{% load static %}
+{% block title %}Editar Mi Perfil{% endblock %}
+{% block meta %}
+<meta property="og:title" content="{{object.get_full_name}} en Pa'Ya">
+<meta property="og:description" content="Revisa mi perfil de Pa'Ya, productos y servicios disponibles.">
+<meta property="og:image" content="{{ request.scheme  }}://{#{ request.META['HTTP_HOST'] }#}{{object.profile_img.url}}">
+<meta property="og:url"
+    content="{{ request.scheme  }}://{#{ request.META['HTTP_HOST'] }#}{% url 'profile' object.pk %}">
+<meta property="og:site_name" content="Pa'Ya">
+<meta name="twitter:image:alt" content="Foto de perfil de {{object.get_full_name}} en Pa'Ya">
+<meta name="twitter:card" content="summary_large_image">
+{% endblock %}
+{% block css %}
+<link href="{% static 'core/css/profile.css' %}" rel="stylesheet">
+<link href="{% static 'store/css/style.css' %}" rel="stylesheet">
+{% endblock %}
+{% block navbar %}
+{% endblock %}
+{% block content %}
+<!-- Jumbotron Header -->
+{% if 'update' in request.GET %}
+<div class="row">
+    {% if 'success' == request.GET.update %}
+    <div class="alert w-100 alert-primary alert-dismissible fade show" role="alert">
+        <strong>¡Éxito!</strong> Se han actualizado los datos correctamente.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% endif %}
+    {% if 'error' == request.GET.update %}
+    <div class="alert w-100 alert-fluid alert-danger alert-dismissible fade show" role="alert">
+        <strong>¡Uuuups!</strong> Ha sucedido un error al actualizar los datos, intenta nuevamente.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% endif %}
+</div>
+{% endif %}
+<header class="jumbotron my-2">
+    <h1 class="display-3">{{ object.store_name}}</h1>
+    <div class="row">
+        <div class="col-md-5">
+        </div>
+    </div>
+    <p class="lead">{{ object.store_description }}</p>
+    <p class="lead">{{ object.store_location }}</p>
+    <a href="{% url 'update_store' object.pk %}" class="btn btn-primary btn-lg">Editar Tienda</a>
+    <a href="#" class="btn btn-primary btn-lg">Crear Anuncio</a>
+</header>
+
+<div class="row text-center">
+
+    <div class="col-lg-3 col-md-6 mb-4">
+        <div class="card h-100">
+            <img class="card-img-top" src="http://placehold.it/500x325" alt="">
+            <div class="card-body">
+                <h4 class="card-title">Card title</h4>
+                <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sapiente esse
+                    necessitatibus neque.</p>
+            </div>
+            <div class="card-footer">
+                <a href="#" class="btn btn-primary">Find Out More!</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6 mb-4">
+        <div class="card h-100">
+            <img class="card-img-top" src="http://placehold.it/500x325" alt="">
+            <div class="card-body">
+                <h4 class="card-title">Card title</h4>
+                <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Explicabo magni sapiente,
+                    tempore debitis beatae culpa natus architecto.</p>
+            </div>
+            <div class="card-footer">
+                <a href="#" class="btn btn-primary">Find Out More!</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6 mb-4">
+        <div class="card h-100">
+            <img class="card-img-top" src="http://placehold.it/500x325" alt="">
+            <div class="card-body">
+                <h4 class="card-title">Card title</h4>
+                <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sapiente esse
+                    necessitatibus neque.</p>
+            </div>
+            <div class="card-footer">
+                <a href="#" class="btn btn-primary">Find Out More!</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6 mb-4">
+        <div class="card h-100">
+            <img class="card-img-top" src="http://placehold.it/500x325" alt="">
+            <div class="card-body">
+                <h4 class="card-title">Card title</h4>
+                <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Explicabo magni sapiente,
+                    tempore debitis beatae culpa natus architecto.</p>
+            </div>
+            <div class="card-footer">
+                <a href="#" class="btn btn-primary">Find Out More!</a>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+{% endblock %}
+{% block js %}
+<script src="{% static 'core/js/file-label-change.js' %}"></script>
+<script src="{% static 'core/js/max-date-today.js' %}"></script>
+<script src="{% static 'core/js/collapse-sidebar.js' %}"></script>
+<script src="{% static 'core/js/profile.js' %}"></script>
+{% endblock %}

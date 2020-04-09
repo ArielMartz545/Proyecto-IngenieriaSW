@@ -3,6 +3,7 @@
 {% block content %}
     <form method="post" class= "form-group"enctype="multipart/form-data">{% csrf_token %}
         {{ form.as_p }}
+        <p>Selecciona imagenes para tu anuncio</p>
         <input type="file"  class="" id="id_images" name="images" accept="image/*" multiple> &nbsp;
         <input type="submit" class= "btn btn-primary"value="Update">
     </form>

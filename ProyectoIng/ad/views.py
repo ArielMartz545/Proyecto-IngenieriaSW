@@ -172,7 +172,7 @@ class AdUpdate(UpdateView):
     
         
 
-        return HttpResponseRedirect(reverse_lazy('products_user',kwargs={'uid':self.request.user})+'?updated')
+        return HttpResponseRedirect(reverse_lazy('products_user',kwargs={'uid':self.request.user.id})+'?updated')
  
         
     

@@ -1,14 +1,16 @@
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic.base import TemplateView
+from django.views.generic.detail import DetailView
 from ad.models import Category, PriceRange
 from location.models import Location
+from store.models import Store
 from django.views.generic.list import ListView
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView, UpdateView
 from .models import Store, UsersXStore
-from .forms import StoreForm
+from .forms import StoreForm, StoreUpdateForm
 from django.http import  HttpResponseRedirect
-
+from django.views import View
 # Create your views here.
 
 class CreateStore(CreateView): #Pass,Correo,Nombre,Apellido,Telefono,Direccion,FechaN
@@ -63,3 +65,21 @@ class UserStores(ListView):
             user = self.request.user
         """
         return UsersXStore.objects.prefetch_related('store').filter(user=self.request.user).order_by('-store__store_name')
+
+class StoreDetailView(DetailView):
+    model = Store 
+    template_name = 'store/stores.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['stores'] = Store.objects.all()
+        context['locations'] = Location.objects.order_by('direction').filter(correlative_direction__isnull=True)
+        return context
+
+class StoreUpdate(UpdateView):
+    model = Store
+    form_class = StoreUpdateForm
+    template_name = 'store/store_update.html'
+
+    def get_success_url(self):
+        return reverse_lazy('update_store',kwargs={'pk': self.object.id})+'?updated'
