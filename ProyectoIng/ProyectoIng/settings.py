@@ -68,6 +68,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_globals.middleware.Global',
 ]
 
 ROOT_URLCONF = 'ProyectoIng.urls'
@@ -150,6 +151,5 @@ LOGOUT_REDIRECT_URL= 'login'
 #CronJobs
 CRONJOBS = [
    ('* * */1 * *', 'scrape.cron.scrapcoin'),
-   ('*/1 * * * *', 'scrape.cron.test'),
-   ('* * */1 * *', 'ad.cron.delete_old_ads'),
+   ('*/1 * * * *', 'ad.cron.delete_old_ads'),
 ]
