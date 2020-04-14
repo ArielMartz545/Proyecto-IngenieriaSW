@@ -3,6 +3,9 @@ from account.models import Account
 from store.models import Store
 from location.models import Location
 from images.models import Image
+from scrape.models import Exchange
+
+from django.forms.models import model_to_dict
 
 # Create your models here.
 """Clase Categoria
@@ -104,6 +107,16 @@ class Ad(models.Model):
 
     def __str__(self):
         return self.ad_name
+    
+    def dollar_to_lempiras(self):
+        dolar_value_object=Exchange.objects.get(pk=1)
+        dolar_value_dict= model_to_dict(dolar_value_object)
+        return self.price * dolar_value_dict['exchange']
+    
+    def lempiras_to_dollar(self):
+        dolar_value_object=Exchange.objects.get(pk=1)
+        dolar_value_dict= model_to_dict(dolar_value_object)
+        return self.price / dolar_value_dict['exchange']
 
     class Meta():
         verbose_name= "Anuncio"

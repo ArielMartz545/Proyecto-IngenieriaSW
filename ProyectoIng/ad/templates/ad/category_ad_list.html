@@ -70,7 +70,18 @@
               <div class="card-body">
                 <h5 class="card-title"><a href="{% url 'ad_detail' data.pk %}">{{data.ad_name}}</a> </h5>
                 <h6>{% if data.id_store != None %} {{data.id_store}} {% endif %}</h6>
-                <p>Precio: {{ data.id_currency.currency_sign }}{{ data.price }}</p>
+                  {% if data.id_currency.currency_sign == 'L' %}
+                      <p>Precio Lempiras: {{ data.id_currency.currency_sign }}
+                        {{data.price}} </p>
+                      <p>Precio Dolar:$
+                        {{data.lempiras_to_dollar|floatformat:"2"}}
+                  {% else %}
+                      <p>Precio Dolar: {{ data.id_currency.currency_sign }}
+                      {{data.price}} </p>
+                      <p>Precio Lempiras:L
+                      {{data.dollar_to_lempiras|floatformat:"2"}} <br>
+                  {% endif %}
+                </p>
                 <p>Categoría: <a href="{% url 'search' %}?c={{ data.id_category.pk }}">{{ data.id_category }}</a></p>
                 <p>Lugar: <a href="{% url 'search' %}?l={{ data.id_location.pk }}">{{ data.id_location }}</a>
                 Publicado {{data.date_created|date:'d-m-Y g:ia'}}</p>
