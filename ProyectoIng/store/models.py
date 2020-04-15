@@ -11,6 +11,8 @@ class Store(models.Model):
     store_description= models.TextField(null=False,blank=False)
     store_location = models.ForeignKey(Location, on_delete=models.CASCADE)
     store_images= models.ManyToManyField(Image, related_name="get_images_store")
+    #Booleano para saber si la tienda esta activa o no (Borrada o no)
+    active= models.BooleanField(default=True)
 
     def __str__(self):
         return self.store_name
@@ -18,6 +20,13 @@ class Store(models.Model):
     class Meta():
         verbose_name= "Tienda"
         verbose_name_plural= "Tiendas"
+
+    def user_is_owner(self, user):
+        users = UsersXStore.objects.values('user').get(store = self)
+        for u in users.values():
+            if user.id == u:
+                return True
+        return False
 
 class UsersXStore(models.Model):
     store= models.ForeignKey(Store, on_delete=models.CASCADE)

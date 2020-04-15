@@ -1,0 +1,118 @@
+{% extends 'core/sidebar.html' %}
+{% load static %}
+{% block title %}
+    Crear anuncio
+{% endblock %}
+{% block content %}
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-left-primary border-bottom-primary shadow mb-4">
+                <div class="card-header py-3">
+                    <div class="row">
+                        <div class="col-12">
+                            <h2 class="m-0 font-weight-bold text-primary">
+                                Publicar un anuncio
+                                
+                            </h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <form action="" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <input required type="text" class="form-control" name="ad_name" id="id_ad_name" placeholder="Nombre del anuncio" maxlength="100">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <textarea required aria-describedby="help_ad_description" class="form-control" rows="5" name="ad_description" id="id_ad_description" placeholder="Describe tu producto o servicio"></textarea>
+                                    <small id="help_ad_description" class="form-text text-muted">Tu información de contacto se incluirá de por defecto, si lo deseas, puedes incluir más detalles aquí.</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 col-md-6">
+                                <div class="form-group">
+                                    <input required type="number" class="form-control" name="price" id="id_price" placeholder="Precio" step="any">
+                                </div>
+                            </div>
+                            <div class="col-5 col-md-2">
+                                <div class="form-group">
+                                    <select class="form-control" name="id_currency" id="id_id_currency">
+                                        {% for currency in currencies %}
+                                            <option value="{{currency.pk}}">{{currency.currency_sign}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-2 col-md-1 my-auto">
+                                <label>por</label>
+                            </div>
+                            <div class="col-5 col-md-3">
+                                <div class="form-group">
+                                    <select class="form-control" name="id_unit" id="id_id_unit">
+                                        {% for unit in units %}
+                                            <option value="{{unit.pk}}">{{unit}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <select class="form-control" name="id_location" id="id_id_location">
+                                        <option value="" disabled selected>Lugar</option>
+                                        {% for location in all_locations %}
+                                            <option value="{{location.pk}}">{{location}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <select class="form-control" name="id_ad_kind" id="id_id_ad_kind">
+                                        <option value="" disabled selected>Tipo de anuncio</option>
+                                        {% for kind in ad_kinds %}
+                                            <option value="{{kind.pk}}">{{kind}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <select required placeholder="Categoría" class="form-control" name="id_category" id="id_id_category">
+                                        <option value="" disabled selected>Categoría</option>
+                                        {% for category in categories %}
+                                            <option value="{{category.pk}}">{{category}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="custom-file">
+                                    <input type="file" multiple class="custom-file-input" id="id_images" name="images" accept="image/*" aria-describedby="help_images" required>
+                                    <label class="custom-file-label" for="id_images">Fotos</label>
+                                    <small id="help_images" class="form-text text-muted">Puedes seleccionar varias fotos, si usas un ordenador puedes arrastrarlas aquí.</small>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="Submit" class="btn btn-primary btn-block my-2">Publicar anuncio</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+{% block js %}
+    <script src="{% static 'core/js/file-label-change.js' %}"></script>
+{% endblock %}

@@ -19,39 +19,17 @@
 {% endblock %}
 {% block content %}
 <!-- Jumbotron Header -->
-{% if 'updated' in request.GET %}
-<div class="row">
-    {% if 'success' == request.GET.updated %}
-        <div class="alert w-100 alert-success alert-dismissible fade show" role="alert">
-            <strong>¡Éxito!</strong> Se han actualizado los datos correctamente.
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-    {% endif %}
-    {% if 'error' == request.GET.updated %}
-        <div class="alert w-100 alert-fluid alert-danger alert-dismissible fade show" role="alert">
-            <strong>¡Uuuups!</strong> Ha sucedido un error al actualizar los datos, intenta nuevamente.
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-    {% endif %}
-</div>
-{% endif %}
 <header class="jumbotron my-2">
-    <h1 class="display-3">{{ object.store_name }}</h1>
+    <h1 class="display-3">{{ object.store_name}}</h1>
     <div class="row">
         <div class="col-md-5">
         </div>
     </div>
     <p class="lead">{{ object.store_description }}</p>
     <p class="lead">{{ object.store_location }}</p>
-    <a href="{% url 'update_store' object.pk %}" class="btn btn-primary btn-lg">Editar Tienda!</a>
-    <a href="{% url 'store_ad_create' object.pk %}" class="btn btn-primary btn-lg">Crear Anuncio</a>
-    <a href="{% url 'delete_store' object.pk%}" class="btn btn-danger btn-lg">Eliminar</a>
+    <a href="{% url 'update_store' object.pk %}" class="btn btn-primary btn-lg">Editar Tienda</a>
+    <a href="#" class="btn btn-primary btn-lg">Crear Anuncio</a>
 </header>
-
 <div class="row text-center">
 
     <div class="col-lg-3 col-md-6 mb-4">
@@ -110,6 +88,12 @@
         </div>
     </div>
 </div>
+<form method="post">{% csrf_token %}
+    <strong>
+        <p>¿Confirma que desea dar de baja el anuuncio? &nbsp;{{ form.active }}</p>
+    </strong>
+    <input type="submit" value="Dar de Baja" class="btn btn-danger">
+</form>
 {% endblock %}
 {% block js %}
 <script src="{% static 'core/js/file-label-change.js' %}"></script>
