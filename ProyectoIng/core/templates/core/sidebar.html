@@ -49,9 +49,23 @@
       </li>
       
       <li class="nav-item">
-        <a class="nav-link" href="{% if request.user.is_authenticated %}{% url 'ad_create' %}{% else %}{% url 'login' %}{% endif %}">
+        <a class="nav-link" href="{% if request.user.is_authenticated %}{% url 'ad_create' %}{% else %}{% url 'login' %}?next={% url 'ad_create' %}{% endif %}">
           <i class="fas fa-plus"></i>
           <span>Crear anuncio</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="#" id="currency-collapser" data-toggle="collapse" data-target="#collapseCurrency" aria-expanded="true" aria-controls="collapseUtilities">
+          <i class="fas fa-coins"></i>
+          <span>Moneda</span>
+        </a>
+        <div id="collapseCurrency" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">Moneda preferida</h6>
+            {% for currency in currencies %}
+              <a href="#" class="collapse-item currency-display" {% if currency.pk is 1 %}selected{% endif %} currency="{{currency.pk}}">{{currency}} ({{currency.currency_sign}})</a>
+            {% endfor %}
+          </div>
+        </div>
       </li>
       
       
@@ -413,21 +427,7 @@
         
 
 
-        <!-- Begin Page Content -->
-        <!----------Exchange---------------->
-        <div class="row">
-          <div class="col-md-11">
-              
-          </div>
-          <div class="col-md-1">
-            <select class="form-control  mb-2 p-12" >
-              <option value="{{request.session.dolar_exchange.exchange}}">{{request.session.dolar_exchange.sign}}</option>
-              <option value="1">L</option>
-            </select>
-          </div>
-        </div>
-        <!--------------------------------->
-        
+        <!-- Begin Page Content -->       
         <div class="container-fluid">
           
           {% block content %}
@@ -491,6 +491,7 @@
 <!-- Custom scripts for all pages-->
 <script src="{% static 'core/js/sb-admin-2.js' %}"></script>
 <script src="{% static 'core/js/search.js' %}"></script>
+<script src="{% static 'core/js/currency-display.js' %}"></script>
 {% block js %}
 {% endblock %}
 </body>

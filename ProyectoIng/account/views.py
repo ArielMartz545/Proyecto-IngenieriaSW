@@ -18,7 +18,7 @@ from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from django.conf import settings
 from django.utils.html import strip_tags
-from ad.models import Category, PriceRange
+from ad.models import Category, PriceRange, Currency
 from location.models import Location
 
 # Create your views here.
@@ -87,6 +87,7 @@ class DetailUser(DetailView):
         context['categories'] = Category.objects.order_by('category_name')
         context['price_ranges'] = PriceRange.objects.all()
         context['locations'] = Location.objects.order_by('direction').filter(correlative_direction__isnull=True)
+        context['currencies'] = Currency.objects.all()
         return context
 
     def get_success_url(self):

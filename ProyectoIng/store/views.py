@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic.base import TemplateView
-from ad.models import Category, PriceRange
+from ad.models import Category, PriceRange, Currency
 from location.models import Location
 from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView
@@ -42,6 +42,7 @@ class UserStores(ListView):
         context['categories'] = Category.objects.order_by('category_name')
         context['price_ranges'] = PriceRange.objects.all()
         context['locations'] = Location.objects.order_by('direction').filter(correlative_direction__isnull=True)
+        context['currencies'] = Currency.objects.all()
         # Fin Sidebar Context
         context['all_locations'] = Location.objects.all().order_by('direction')
         #Lo comentado entre comillas serviria si se desea permitir a otros usuarios ver las tiendas que poseen los demas usuarios

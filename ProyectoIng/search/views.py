@@ -2,7 +2,7 @@ from django.shortcuts import render
 
 # Create your views here.
 from django.views.generic.list import ListView
-from ad.models import Ad, Category, PriceRange
+from ad.models import Ad, Category, PriceRange, Currency
 from location.models import Location
 
 class SearchView(ListView):
@@ -16,6 +16,7 @@ class SearchView(ListView):
         context['categories'] = Category.objects.order_by('category_name')
         context['price_ranges'] = PriceRange.objects.all()
         context['locations'] = Location.objects.order_by('direction').filter(correlative_direction__isnull=True)
+        context['currencies'] = Currency.objects.all()
         # Fin Sidebar Context
         q = self.request.GET.get("q")
         if q is None:

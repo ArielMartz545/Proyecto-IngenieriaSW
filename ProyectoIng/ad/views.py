@@ -24,6 +24,7 @@ class UserAds(ListView):
         context['categories'] = Category.objects.order_by('category_name')
         context['price_ranges'] = PriceRange.objects.all()
         context['locations'] = Location.objects.order_by('direction').filter(correlative_direction__isnull=True)
+        context['currencies'] = Currency.objects.all()
         # Fin Sidebar Context
         uid = self.kwargs['uid']
         try:
@@ -54,6 +55,7 @@ class CategoryAds(ListView):
         context['categories'] = Category.objects.order_by('category_name')
         context['price_ranges'] = PriceRange.objects.all()
         context['locations'] = Location.objects.order_by('direction').filter(correlative_direction__isnull=True)
+        context['currencies'] = Currency.objects.all()
         # Fin Sidebar Context
         c = self.kwargs['cid']
         try:
@@ -84,6 +86,7 @@ class AdDetailView(DetailView):
         context['categories'] = Category.objects.order_by('category_name')
         context['price_ranges'] = PriceRange.objects.all()
         context['locations'] = Location.objects.order_by('direction').filter(correlative_direction__isnull=True)
+        context['currencies'] = Currency.objects.all()
         # Fin Sidebar Context
         return context
 

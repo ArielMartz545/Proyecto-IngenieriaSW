@@ -107,16 +107,20 @@ class Ad(models.Model):
 
     def __str__(self):
         return self.ad_name
-    
-    def dollar_to_lempiras(self):
+
+    def exchange(self):
         dolar_value_object=Exchange.objects.get(pk=1)
         dolar_value_dict= model_to_dict(dolar_value_object)
-        return self.price * dolar_value_dict['exchange']
-    
-    def lempiras_to_dollar(self):
-        dolar_value_object=Exchange.objects.get(pk=1)
-        dolar_value_dict= model_to_dict(dolar_value_object)
-        return self.price / dolar_value_dict['exchange']
+        if  self.id_currency.pk == 1:
+            return self.price / dolar_value_dict['exchange']
+        else:
+            return self.price * dolar_value_dict['exchange']
+
+    def exchange_currency(self):
+        if  self.id_currency.pk == 1:
+            return Currency.objects.get(pk = 2)
+        else:
+            return Currency.objects.get(pk = 1)
 
     class Meta():
         verbose_name= "Anuncio"

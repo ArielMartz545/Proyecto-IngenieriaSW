@@ -86,9 +86,16 @@
               <div class="card-body">
                 <h5 class="card-title"><a href="{% url 'ad_detail' data.pk %}">{{data.ad_name}}</a> </h5>
                 <h6>{% if data.id_store != None %} {{data.id_store}} {% endif %}</h6>
-                <p>Precio: {{ data.id_currency.currency_sign }}{{ data.price }}</p>
-                <a href="{% url 'search' %}?c={{ data.id_category.pk }}">{{ data.id_category }}</a>
-                <p>Lugar: <a href="{% url 'search' %}?l={{ data.id_location.pk }}">{{ data.id_location }}</a></p>
+                <div class="price-{{ data.id_currency.pk }}">
+                  <p  class="my-0">Precio: {{ data.id_currency.currency_sign }} {{data.price|floatformat:"2"}}</p>
+                </div>
+                <div class="price-{{ data.exchange_currency.pk }}">
+                  <p class="my-0">Precio: {{data.exchange_currency.currency_sign}} {{data.exchange|floatformat:"2"}}</p>
+                  <p class="my-0 font-italic"><small>Precio original en {{ data.id_currency }}. Cambio al día de hoy según <a href="https://www.bch.hn/index.php" target="_blank">BCH</a>.</small></p>
+                </div>
+                <p class="my-0">Categoría: <a href="{% url 'search' %}?c={{ data.id_category.pk }}">{{ data.id_category }}</a></p>
+                <p class="my-0">Lugar: <a href="{% url 'search' %}?l={{ data.id_location.pk }}">{{ data.id_location }}</a></p>
+                <p class="mt-0">Publicado: {{data.date_created|date:'d-m-Y g:ia'}}</p>
                 <a href="{% url 'ad_detail' data.pk %}" class="btn btn-block btn-outline-{% cycle 'info' 'success' 'secondary' 'danger' 'warning' 'primary' %}">Ver más</a>
                 {% if data.id_user == request.user  %}
                 <div class="row">
