@@ -252,12 +252,13 @@
                         <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <form action="{# url 'evaluate' object.pk #}" method="post">
+                    <form action="{% url 'rate_user' %}" method="POST">
                         {% csrf_token %}
+                        <input type="number" value="{{ object.pk }}" hidden name="id_evaluated_user">
                         <div class="modal-body">
                             <div class="form-group my-0 py-2">
-                                <label for="id_puntos">Puntos</label>
-                                <select class="form-control" id="id_puntos">
+                                <label for="id_points">Puntos :)</label>
+                                <select class="form-control" name="id_points">
                                 <option value='1'>1</option>
                                 <option value='2'>2</option>
                                 <option value='3'>3</option>
@@ -266,8 +267,8 @@
                                 </select>
                             </div>
                             <div class="form-group my-0 py-2">
-                                <label for="id_comentario" class="text-muted">Comentario</label>
-                                <textarea class= 'form-control' name="address" rows="2" required id="id_comentario" placeholder="Comentario"></textarea>
+                                <label for="id_comment" class="text-muted">Comentario</label>
+                                <textarea class= 'form-control' rows="2" required name="id_comment" placeholder="Comentario"></textarea>
                             </div>
                         </div>
                         <div class="modal-footer">
