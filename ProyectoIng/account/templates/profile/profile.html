@@ -152,7 +152,7 @@
                         <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <form action="{% url 'profile-change-password' %}" method="post">
+                    <form action="{% url 'profile-change-password'  %}" method="post">
                         {% csrf_token %}
                         <div class="modal-body">
                             <div class="form-group my-0 py-2 text-left">

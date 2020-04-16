@@ -95,18 +95,22 @@ class StoreDelete(UpdateView):
     template_name = 'store/store_delete.html'
     context_object_name = 'Store'
 
+    #Sobrecargando el metodo post
     def post(self, request, pk, *args, **kwargs):
         form = StoreDeleteForm(request.POST)
         store_object_data = self.object = self.get_object()
         if form.is_valid():
             store = form.save(commit=False)
             store = store_object_data
+            #Se pasa el campo por defecto de Activo = True, a False. 
             store.active = False
             store.save(False)
+        else:
+            return HttpResponseRedirect(reverse_lazy('user_stores', kwargs={'uid': self.request.user})+'?deleted=error')
         store.save()
         return HttpResponseRedirect(reverse_lazy('user_stores', kwargs={'uid': self.request.user})+'?deleted=success')
 
-
+""" Vista para crear anuncios desde una tienda"""
 class CreateAdStore(CreateView):
     model = Ad
     form_class=AdCreateForm
@@ -125,12 +129,17 @@ class CreateAdStore(CreateView):
         context['currencies'] = Currency.objects.all()
         return context
 
+    #sobrecarga del metodo post
     def post(self, request, *args, **kwargs):
+        #Obteniendo el id de la tienda
         id_store = self.kwargs['pk']
+        """ Se verifica que la tienda exista, 
+            Si la tienda no existe store = None y se hace y redireccionamiento dado que la tienda no fue encontrada"""
         try:
             store = Store.objects.get(pk = id_store)
         except:
             return reverse_lazy('user_stores',kwargs={'pk': self.request.user.id})+'?error=storeNotFound'
+        """ Verificando que el usuario que hizo la peticion es el administardor de la pagina, si no es asi hace redireccionamiento """
         if not store.user_is_owner(request.user):
             return reverse_lazy('user_stores',kwargs={'pk': self.request.user.id})+'?error=storeNotOwned'
         form = AdCreateForm(request.POST)
@@ -150,5 +159,5 @@ class CreateAdStore(CreateView):
             ad.save(False)
             print(store)
             return HttpResponseRedirect(reverse_lazy('store_detail',kwargs={'pk': store.pk})+'?created=success')
-        return HttpResponseRedirect(reverse_lazy('user_stores')+'?error')
+        return HttpResponseRedirect(reverse_lazy('user_stores')+'?created=error')
 

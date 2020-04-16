@@ -21,8 +21,11 @@ class Store(models.Model):
         verbose_name= "Tienda"
         verbose_name_plural= "Tiendas"
 
+    """ Este metodo recibe un usuario y su fin es devolver  True si el usuario recibido es administrador de la tienda """
     def user_is_owner(self, user):
-        users = UsersXStore.objects.values('user').get(store = self)
+        #La siguiente linea obtiene los correos de todos los usuarios owners de esa tienda en especifico, los guarda en un diccionario
+        users = UsersXStore.objects.values('user').get(store = self) #El equivalente SQL de: de SELECT user FROM UsersXStore WHERE store = self 
+        #Recorre los valores de los id de los usuarios de la consulta anterior y si el usuario recibido se encuentra como owner devuelve true.
         for u in users.values():
             if user.id == u:
                 return True
