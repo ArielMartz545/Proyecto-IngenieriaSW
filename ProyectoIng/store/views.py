@@ -29,8 +29,16 @@ class CreateStore(CreateView): #Pass,Correo,Nombre,Apellido,Telefono,Direccion,F
             user_store.user = request.user
             user_store.store = store
             user_store.save()
-            return HttpResponseRedirect(reverse_lazy('user_stores',kwargs={'uid': request.user.id})+'?added')
-        return HttpResponseRedirect(reverse_lazy('user_stores',kwargs={'uid': request.user.id})+'?error')
+            for file in request.FILES.getlist('images'):
+                instance = Image(img_route=file)
+                instance.save()
+                store.store_images.add( instance )
+            if len(request.FILES.getlist('images'))==0:
+                instance = Image.objects.get(pk=1)
+                store.store_images.add( instance )
+            store.save(False)
+            return HttpResponseRedirect(reverse_lazy('user_stores',kwargs={'uid': request.user.id})+'?added=success')
+        return HttpResponseRedirect(reverse_lazy('user_stores',kwargs={'uid': request.user.id})+'?added=error')
     
     def get(self, request, *args, **kwargs):
         return HttpResponseRedirect(reverse_lazy('user_stores',kwargs={'uid': request.user.id}))
