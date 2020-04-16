@@ -11,6 +11,9 @@ from images.models import Image
 from ad.forms import AdCreateForm, AdUpdateForm, AdDeleteForm
 from django.urls import reverse_lazy, reverse
 from django.forms import modelformset_factory
+from favorites.models import Favorites
+from django.core.mail import send_mail
+from django.conf import settings
 
 
 class UserAds(ListView):
@@ -123,6 +126,11 @@ class CreateAd(CreateView):
                 instance = Image.objects.get(pk=1)
                 ad.ad_images.add( instance )
             ad.save(False)
+            favs = Favorites.objects.all().filter(id_favorite_user = request.user)
+            emails = []
+            for fav in favs:
+                emails.append(fav.id_user.email)
+            send_mail('Anuncio nuevo', 'Anuncio de tus favoritos', settings.EMAIL_HOST_USER,emails,fail_silently=False)
             return HttpResponseRedirect(reverse_lazy('products_user',kwargs={'uid':self.request.user})+'?created')
         return HttpResponseRedirect(reverse_lazy('ad_create')+'?error')
 
