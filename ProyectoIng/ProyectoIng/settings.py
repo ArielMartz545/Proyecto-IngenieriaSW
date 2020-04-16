@@ -57,7 +57,6 @@ INSTALLED_APPS = [
     'location',
     'search',
     'scrape',
-    'favorites',
     
 ]
 
