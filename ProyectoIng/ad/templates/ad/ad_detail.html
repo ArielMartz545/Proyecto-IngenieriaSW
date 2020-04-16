@@ -24,13 +24,16 @@
                         <div class="row slide">
                             <div class="col-2 slide-thumbs overflow-auto">
                                 <ol class="thumbs list-unstyled">
-                                {% for img in object.ad_images.all %}
-                                    <li class="pb-2"><a href="#"><img class="thumb border" src="{{img.img_route.url}}" alt="Imagen miniatura {{ forloop.counter }}" id="{{ forloop.counter }}"></a></li>
-                                {% endfor %}
+                                    {% for img in object.ad_images.all %}
+                                    <li class="pb-2"><a href="#"><img class="thumb border" src="{{img.img_route.url}}"
+                                                alt="Imagen miniatura {{ forloop.counter }}"
+                                                id="{{ forloop.counter }}"></a></li>
+                                    {% endfor %}
                                 </ol>
                             </div>
                             <div class="col-10 slide-img-container">
-                                <img class="slide-img bg-light border" src="{{ object.ad_images.first.img_route.url }}" alt="Imagen detalle 1">
+                                <img class="slide-img bg-light border" src="{{ object.ad_images.first.img_route.url }}"
+                                    alt="Imagen detalle 1">
                             </div>
                         </div>
                     </div>
@@ -49,7 +52,7 @@
                                 </h4>
                             </div>
                         </div>
-                        <div class="row my-3">
+                        <div class="row my-3 price-{{ object.id_currency.pk }}">
                             <div class="col-md-4">
                                 <h5 class="m-0 ml-2 font-weight-bold text-secondary">
                                     Precio
@@ -57,8 +60,23 @@
                             </div>
                             <div class="col-md-8">
                                 <h5 class="m-0 ml-4 text-secondary">
-                                    {{object.id_currency.currency_sign}} {{object.price}}
+                                    {{ object.id_currency.currency_sign }} {{object.price|floatformat:"2"}}
                                 </h5>
+                            </div>
+                        </div>
+                        <div class="row my-3 price-{{ object.exchange_currency.pk }}">
+                            <div class="col-md-4">
+                                <h5 class="m-0 ml-2 font-weight-bold text-secondary">
+                                    Precio
+                                </h5>
+                            </div>
+                            <div class="col-md-8">
+                                <h5 class="m-0 ml-4 text-secondary">
+                                    {{object.exchange_currency.currency_sign}} {{object.exchange|floatformat:"2"}}
+                                </h5>
+                                <p class="ml-4 my-0 font-italic"><small>Precio original en {{ object.id_currency }}. Cambio al
+                                        día de hoy según <a href="https://www.bch.hn/index.php"
+                                            target="_blank">BCH</a>.</small></p>
                             </div>
                         </div>
                         <div class="row my-3">
@@ -155,30 +173,38 @@
                         </div>
                         <div class="row">
                             <div class="col-12">
-                                <a href="https://api.whatsapp.com/send?phone=504{{object.id_user.phone_number}}&text=Hola%21%20Estoy%20interesado%20en%20tu%20anuncio%20de%20Pa%27Ya." class="btn btn-success" target="_blank"><i class="fab fa-whatsapp"></i> Contactar</a>
-                                <div class="fb-share-button" data-href="https://paya.com" data-layout="button" data-size="large"><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fpaya.com%2F&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">Compartir</a></div>
+                                <a href="https://api.whatsapp.com/send?phone=504{{object.id_user.phone_number}}&text=Hola%21%20Estoy%20interesado%20en%20tu%20anuncio%20de%20Pa%27Ya."
+                                    class="btn btn-success" target="_blank"><i class="fab fa-whatsapp"></i>
+                                    Contactar</a>
+                                <div class="fb-share-button" data-href="https://paya.com" data-layout="button"
+                                    data-size="large"><a target="_blank"
+                                        href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fpaya.com%2F&amp;src=sdkpreparse"
+                                        class="fb-xfbml-parse-ignore">Compartir</a></div>
                             </div>
                         </div>
                         {% else %}
                         <div class="row my-3">
                             <div class="col-12">
                                 <h5 class="m-0 ml-2 text-secondary">
-                                    Para poder ver la información de contacto y aprovechar Pa'Ya al máximo necesitas haber ingresado con una cuenta.
+                                    Para poder ver la información de contacto y aprovechar Pa'Ya al máximo necesitas
+                                    haber ingresado con una cuenta.
                                 </h5>
                             </div>
                         </div>
                         <div class="row my-3">
                             <div class="col-6">
-                                <a class="btn btn-block btn-outline-primary" href="{% url 'signup' %}?next={% url 'ad_detail' object.id %}">
+                                <a class="btn btn-block btn-outline-primary"
+                                    href="{% url 'signup' %}?next={% url 'ad_detail' object.id %}">
                                     Regístrate
                                 </a>
                             </div>
                             <div class="col-6">
-                                <a class="btn btn-block btn-primary" href="{% url 'login' %}?next={% url 'ad_detail' object.id %}">
+                                <a class="btn btn-block btn-primary"
+                                    href="{% url 'login' %}?next={% url 'ad_detail' object.id %}">
                                     Ingresar
                                 </a>
                             </div>
-                        </div> 
+                        </div>
                         {% endif %}
                     </div>
                 </div>
@@ -188,10 +214,11 @@
 </div>
 {% endblock %}
 {% block js %}
-    {# jQuery esta ya incluido antes de este bloque #}
-    <script src="{% static 'ad/js/script.js' %}"></script>
-    <script src="{% static 'core/js/collapse-sidebar.js' %}"></script>
-    <script src="{% static 'core/js/img-height.js' %}"></script>
-    <script src="{% static 'core/js/slide.js' %}"></script>
-    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/es_ES/sdk.js#xfbml=1&version=v6.0"></script>
+{# jQuery esta ya incluido antes de este bloque #}
+<script src="{% static 'ad/js/script.js' %}"></script>
+<script src="{% static 'core/js/collapse-sidebar.js' %}"></script>
+<script src="{% static 'core/js/img-height.js' %}"></script>
+<script src="{% static 'core/js/slide.js' %}"></script>
+<script async defer crossorigin="anonymous"
+    src="https://connect.facebook.net/es_ES/sdk.js#xfbml=1&version=v6.0"></script>
 {% endblock %}

@@ -1,5 +1,4 @@
 from django.urls import path
-
 from .views import UserAds, CategoryAds, AdDetailView, CreateAd, AdUpdate, AdDelete
 
 urlpatterns = [
