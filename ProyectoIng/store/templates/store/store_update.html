@@ -1,0 +1,20 @@
+{% extends 'core/sidebar.html' %}
+{% load static %}
+{% block content %}
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <a class="btn btn-primary" href="{% url 'store_detail' object.id %}" role="button">Volver</a>
+    <input type="submit" class="btn btn-success" value="Guardas los cambios">
+</form>
+{% if 'updated' in request.GET %}
+<p>HOLA</p>
+{% elif 'error' in request.GET %}
+<div class="alert w-100 alert-fluid alert-danger alert-dismissible fade show" role="alert">
+    <strong>¡Uuuups!</strong> Ha sucedido un error al actualizar los datos, intenta nuevamente.
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+{% endif %}
+{% endblock %}

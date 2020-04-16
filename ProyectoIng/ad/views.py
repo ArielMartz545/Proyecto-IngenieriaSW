@@ -126,6 +126,7 @@ class CreateAd(CreateView):
             return HttpResponseRedirect(reverse_lazy('products_user',kwargs={'uid':self.request.user})+'?created')
         return HttpResponseRedirect(reverse_lazy('ad_create')+'?error')
 
+
 class AdDelete(UpdateView):
     model = Ad
     form_class= AdDeleteForm
@@ -175,7 +176,7 @@ class AdUpdate(UpdateView):
     
         
 
-        return HttpResponseRedirect(reverse_lazy('products_user',kwargs={'uid':self.request.user})+'?updated')
+        return HttpResponseRedirect(reverse_lazy('products_user',kwargs={'uid':self.request.user.id})+'?updated')
  
         
     

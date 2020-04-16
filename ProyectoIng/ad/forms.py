@@ -9,12 +9,25 @@ class AdCreateForm(forms.ModelForm):
         fields=('ad_name', 'ad_description','price','id_location',
                 'id_ad_kind','id_category','id_unit', 'id_currency',)
 
+
 class AdUpdateForm(forms.ModelForm):
     
     class Meta():
         model = Ad
+        #Campos del objeto para actualizar
         fields=('ad_name', 'ad_description','price','id_location',
                 'id_ad_kind','id_category','id_unit', 'id_currency',)
+        #Sustitucion de los nombres de los campos para ser mostrados al usuario
+        labels={
+            'ad_name':'Nombre del anuncio', 
+            'ad_description':'Descripción de tu anuncio',
+            'price':'Precio',
+            'id_location':'Ubicación',
+            'id_ad_kind':'Elige el tipo de anuncio',
+            'id_category':'Selecciona la categoria de tu anuncio',
+            'id_unit':'Unidad', 
+            'id_currency':'Moneda'
+        }
         widgets = {
             'ad_name': forms.TextInput (attrs={'class':'form-control'}),
             'ad_description': forms.Textarea (attrs={'class':'form-control'}),
