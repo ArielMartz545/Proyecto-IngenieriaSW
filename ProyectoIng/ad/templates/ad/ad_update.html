@@ -1,10 +1,88 @@
 {% extends 'core/sidebar.html' %}
 {% load static %}
 {% block content %}
-    <form method="post" class= "form-group"enctype="multipart/form-data">{% csrf_token %}
-        {{ form.as_p }}
-        <p>Selecciona imagenes para tu anuncio</p>
-        <input type="file"  class="" id="id_images" name="images" accept="image/*" multiple> &nbsp;
-        <input type="submit" class= "btn btn-primary"value="Update">
-    </form>
+<div class="row">
+    <div class="col-12">
+        <div class="card border-left-primary border-bottom-primary shadow mb-4">
+            <div class="card-header py-3">
+                <div class="row">
+                    <div class="col-12">
+                        <h2 class="m-0 font-weight-bold text-primary">
+                            Editar Anuncio
+                            
+                        </h2>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <form action="" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                {{form.ad_name}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                {{form.ad_description}}
+                                <small id="help_ad_description" class="form-text text-muted">Tu información de contacto se incluirá de por defecto, si lo deseas, puedes incluir más detalles aquí.</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-md-6">
+                            <div class="form-group">
+                                {{form.price}}
+                            </div>
+                        </div>
+                        <div class="col-5 col-md-2">
+                            <div class="form-group">
+                                {{form.id_currency}}
+                            </div>
+                        </div>
+                        <div class="col-2 col-md-1 my-auto">
+                            <label>por</label>
+                        </div>
+                        <div class="col-5 col-md-3">
+                            <div class="form-group">
+                                {{form.id_unit}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                {{form.id_location}}
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                {{form.id_ad_kind}}
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                {{form.id_category}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="custom-file">
+                                <input type="file" multiple class="custom-file-input" id="id_images" name="images" accept="image/*" aria-describedby="help_images" required>
+                                <label class="custom-file-label" for="id_images">Fotos</label>
+                                <small id="help_images" class="form-text text-muted">Puedes seleccionar varias fotos, si usas un ordenador puedes arrastrarlas aquí.</small>
+                            </div>
+                        </div>
+                    </div>
+                    <input type="submit" class= "btn btn-primary"value="Update">                
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %}

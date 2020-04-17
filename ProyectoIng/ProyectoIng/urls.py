@@ -25,7 +25,7 @@ urlpatterns = [
     path('ads/',include('ad.urls')),
     path('search/',include('search.urls')),
     path('ratings/', include('rating.urls')),
-
+    path('favorites/', include('favorites.urls')),
     #Auth Paths
     path('accounts/',include('account.urls')),
     path('accounts/',include('django.contrib.auth.urls')),

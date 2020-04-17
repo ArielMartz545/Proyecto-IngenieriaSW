@@ -18,7 +18,7 @@
 {% endblock %}
 {% block content %}
     <div class="row">
-        <div class="col-12 mt-5">
+        <div class="col-12 mt-2">
             <div class="card border-left-primary border-bottom-primary shadow mb-4 mx-5">
                 <div class="card-header py-3">
                     <div class="row mb-3">
@@ -26,7 +26,8 @@
                             <div class="profile-block">
                                 <div class="profile-block-thumb cover-container" style="background-image: linear-gradient(rgba(255,255,255,0.3), rgba(255,255,255,0.3)), url('{{object.cover_img.img_route.url}}');"></div>
                                 <div class="profile-img">
-                                        <img src="{{object.user_img.img_route.url}}" alt="" title="">        
+                                        <img src="{{object.user_img.img_route.url}}" alt="" title="">  
+                                           
                                 </div>
                             </div>
                         </div>
@@ -62,33 +63,66 @@
                         </div>
                         {% else %}
                             <h2 class="m-0 font-weight-bold text-primary">
-                                Perfil
-                            </h2>
+                                Perfil &nbsp; 
+                            </h2> 
+                            <form action="{% url 'ad_favorite' %}" method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" value={{object.pk}} id="fav_user" name="fav_user">
+                                <button class= "btn btn-danger m-0 p-1" ><i class="fas fa-heart fa-2x"></i></button>
+                                &nbsp;
+                                <small class=" pt-3 mt-0">Agregar a favoritos</small>
+                            </form>
+                            
                         {% endif %}
                     </div>
                 </div>
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-12 mb-2">
-                            <div class="form-group my-0 py-2">
-                                <h4><strong>Nombre: </strong> {{ object.get_full_name }} </h4>
+                            <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group my-0 py-1">
+                                    <h5><strong>Nombre: </strong> {{ object.get_full_name }} </h5>
+                                </div>
                             </div>
-                            <div class="form-group my-0 py-2">
-                                <h4><strong>Correo electrónico: </strong> {{ object.email }} </h4>
+                            
+                            <div class="col-md-6">
+                                <div class="form-group my-0 py-1">
+                                <h5><strong>Correo electrónico: </strong> {{ object.email }} </h5>
+                                </div>
                             </div>
-                            <div class="form-group my-0 py-2">
-                                <h4><strong>Fecha de nacimiento: </strong> {{ object.birth_date | date:'d-m-Y' }} </h4>
+                            
+
+                            <div class="col-md-6">
+                              <div class="form-group my-0 py-1">
+                                <h5><strong>Fecha de nacimiento: </strong> {{ object.birth_date | date:'d-m-Y' }} </h5>
+                              </div>  
                             </div>
-                            <div class="form-group my-0 py-2">
-                                <h4><strong>Número de teléfono: </strong> {{ object.phone_number }} </h4>
+                            
+
+                            <div class="col-md-6">
+                               <div class="form-group my-0 py-1">
+                                <h5><strong>Número de teléfono: </strong> {{ object.phone_number }} </h5>
+                              </div> 
                             </div>
-                            <div class="form-group my-0 py-2">
-                                <h4><strong>Dirección: </strong> {{ object.address }} </h4>
+                            
+
+                            <div class="col-md-6">
+                               <div class="form-group my-0 py-1">
+                                <h5><strong>Dirección: </strong> {{ object.address }} </h5>
+                               </div> 
                             </div>
-                            <div class="form-group my-0 py-2">
-                                <h4><strong>En Pa'Ya desde: </strong> {{ object.date_joined | date:'d-m-Y' }} </h4>
+                            
+
+                            <div class="col-md-6">
+                               <div class="form-group my-0 py-1">
+                                <h5><strong>En Pa'Ya desde: </strong> {{ object.date_joined | date:'d-m-Y' }} </h5>
+                              </div> 
                             </div>
-                            <div class="form-group mb-2">
+                            
+
+                            <div class="col-md-6">
+                                <div class="form-group mb-2">
                                 <p class="my-0 py-0">
                                     <strong>Comparte este perfil: </strong>
                                     <span id="profile_url">{{ request.scheme  }}://{#{ request.META['HTTP_HOST'] }#}{% url 'profile' object.pk %}</span>
@@ -97,6 +131,8 @@
                                     </a>
                                 </p>
                             </div>
+                            </div>
+                        </div>
                             {% if request.user.email == object.email %}
                             <div class="form-group">
                                 <a href="#" data-toggle="modal" data-target="#modalCambiarDatos" class="text-muted"><i class="fas fa-edit"></i> Editar mi perfil</a>
@@ -151,19 +187,19 @@
                     <form action="{% url 'profile-change-password'  %}" method="post">
                         {% csrf_token %}
                         <div class="modal-body">
-                            <div class="form-group my-0 py-2 text-left">
+                            <div class="form-group my-0 py-1 text-left">
                                 <label for="id_old_password" class="text-muted">Contraseña actual</label>
                                 <input type="password" name="old_password" required class="form-control" id="id_old_password" placeholder="Contraseña actual">
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
-                                    <div class="form-group my-0 py-2">
+                                    <div class="form-group my-0 py-1">
                                         <label for="id_new_password1" class="text-muted">Nueva contraseña</label>
                                         <input type="password" name="new_password1" required class="form-control" id="id_new_password1" placeholder="Nueva contraseña">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
-                                    <div class="form-group my-0 py-2">
+                                    <div class="form-group my-0 py-1">
                                         <label for="id_new_password1" class="text-muted">Confirmar contraseña</label>
                                         <input type="password" name="new_password2" required class="form-control" id="id_new_password2" placeholder="Confirma contraseña">
                                     </div>
@@ -199,37 +235,37 @@
                         <div class="modal-body">
                             <div class="row">
                                 <div class="col-md-6">
-                                    <div class="form-group my-0 py-2">
+                                    <div class="form-group my-0 py-1">
                                         <label for="id_first_name" class="text-muted">Nombre</label>
                                         <input placeholder="{{ request.user.first_name }}" value="{{ request.user.first_name }}" type="text" name="first_name" maxlength="50" required class="form-control" id="id_first_name">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
-                                    <div class="form-group my-0 py-2">
+                                    <div class="form-group my-0 py-1">
                                         <label for="id_last_name" class="text-muted">Apellido</label>
                                         <input placeholder="{{ request.user.last_name }}" value="{{ request.user.last_name }}" type="text" name="last_name" maxlength="50" required class="form-control" id="id_last_name">
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-group my-0 py-2 text-left">
+                            <div class="form-group my-0 py-1 text-left">
                                 <label for="id_birth_date" class="text-muted">Fecha de nacimiento</label>
                                 <input value="{{ request.user.birth_date |date:'Y-m-d'  }}" type="date" name="birth_date" required class="form-control today" id="id_birth_date">
                             </div>
-                            <div class="form-group my-0 py-2">
+                            <div class="form-group my-0 py-1">
                                 <label for="id_phone_number" class="text-muted">Número de teléfono</label>
                                 <input placeholder="{{ request.user.phone_number }}" value="{{ request.user.phone_number }}" max="99999999" min="10000000" type="number" name="phone_number" maxlength="8" minlength="8" required class="form-control" id="id_phone_number">
                             </div>
-                            <div class="form-group my-0 py-2">
+                            <div class="form-group my-0 py-1">
                                 <label for="id_address" class="text-muted">Dirección</label>
                                 <textarea class= 'form-control' name="address" rows="2" required id="id_address" placeholder="{{ request.user.address }}">{{ request.user.address }}</textarea>
                             </div>
-                            <div class="form-group my-0 py-2">
+                            <div class="form-group my-0 py-1">
                                 <div class="custom-file">
                                     <input type="file" class="custom-file-input" id="id_user_img" name="user_img" accept="image/*">
                                     <label class="custom-file-label" for="id_profile_img">Foto de perfil</label>
                                 </div>
                             </div>
-                            <div class="form-group my-0 py-2">
+                            <div class="form-group my-0 py-1">
                                 <div class="custom-file">
                                     <input type="file" class="custom-file-input" id="id_cover_img" name="cover_img" accept="image/*">
                                     <label class="custom-file-label" for="id_profile_img">Foto de portada</label>
@@ -258,7 +294,7 @@
                         {% csrf_token %}
                         <input type="number" value="{{ object.pk }}" hidden name="id_evaluated_user">
                         <div class="modal-body">
-                            <div class="form-group my-0 py-2">
+                            <div class="form-group my-0 py-1">
                                 <label for="id_points">Puntos :)</label>
                                 <select class="form-control" name="id_points">
                                 <option value='1'>1</option>
@@ -268,7 +304,7 @@
                                 <option value='5'>5</option>
                                 </select>
                             </div>
-                            <div class="form-group my-0 py-2">
+                            <div class="form-group my-0 py-1">
                                 <label for="id_comment" class="text-muted">Comentario</label>
                                 <textarea class= 'form-control' rows="2" required name="id_comment" placeholder="Comentario"></textarea>
                             </div>

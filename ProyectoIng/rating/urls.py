@@ -1,6 +1,5 @@
 from django.urls import path
-from .views import rate_user
-from .views import rate_store
+from .views import rate_user, rate_store
 
 
 urlpatterns = [

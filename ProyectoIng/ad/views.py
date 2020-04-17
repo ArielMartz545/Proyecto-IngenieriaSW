@@ -14,6 +14,8 @@ from django.forms import modelformset_factory
 from favorites.models import Favorites
 from django.core.mail import send_mail
 from django.conf import settings
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required
 
 
 class UserAds(ListView):
@@ -93,7 +95,7 @@ class AdDetailView(DetailView):
         # Fin Sidebar Context
         return context
 
-
+@method_decorator(login_required, name='dispatch')
 class CreateAd(CreateView):
     model = Ad
     form_class=AdCreateForm
@@ -134,7 +136,7 @@ class CreateAd(CreateView):
             return HttpResponseRedirect(reverse_lazy('products_user',kwargs={'uid':self.request.user})+'?created')
         return HttpResponseRedirect(reverse_lazy('ad_create')+'?error')
 
-
+@method_decorator(login_required, name='dispatch')
 class AdDelete(UpdateView):
     model = Ad
     form_class= AdDeleteForm
@@ -154,7 +156,7 @@ class AdDelete(UpdateView):
  
         
 
-
+@method_decorator(login_required, name='dispatch')
 class AdUpdate(UpdateView):
     model = Ad
     form_class= AdUpdateForm
