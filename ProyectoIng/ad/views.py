@@ -43,7 +43,7 @@ class UserAds(ListView):
             user = Account.objects.get(pk=uid)
         except:
             user = self.request.user
-        queryset = Ad.objects.filter(id_user__id=user.id)
+        queryset = Ad.objects.filter(id_user__id=user.id, id_store__id=None)
         queryset = queryset.filter(active=True).order_by('-date_created')
         return queryset
 
