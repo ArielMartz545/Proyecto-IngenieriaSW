@@ -54,21 +54,29 @@ def update_user(request):
         form = UpdateUserForm(request.POST, request.FILES or None, instance=request.user)
         if form.is_valid():
             user = form.save()
+            #Obtener la imagen de perfil si subio una, sino asigna valor de False a user_img_route
             user_img_route = request.FILES.get("user_img", False)
+            #Obtener la imagen de portada si subio una, sino asigna valor de False a cover_img_route
             cover_img_route = request.FILES.get("cover_img", False)
+            #Solo si se subio imagen de perfil
             if  user_img_route:
+                #Si la imagen anterior es la imagen por defecto crear nuevo registro
                 if  user.user_img.pk == 1:
                     user_img = Image(img_route = user_img_route)
                     user.user_img = user_img
                     user.user_img.save()
+                #Si la imagen anterior no es la imagen por defecto modificar la ruta nada mas para evitar crear nuevos registros
                 else:
                     user.user_img.img_route = user_img_route
                     user.user_img.save()
+            #Solo si se subio imagen de portada
             if  cover_img_route:
+                #Si la imagen anterior es la imagen por defecto crear nuevo registro
                 if  user.cover_img.pk == 1:
                     cover_img = Image(img_route = cover_img_route)
                     user.cover_img = cover_img
                     user.cover_img.save()
+                #Si la imagen anterior no es la imagen por defecto modificar la ruta nada mas para evitar crear nuevos registros
                 else:
                     user.cover_img.img_route = cover_img_route
                     user.cover_img.save()
