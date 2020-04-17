@@ -1,12 +1,14 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from images.models import Image
+from location.models import Location
 import uuid
 
 def images_directory_path(instance, filename):
     return '/'.join(['profile_img', str(uuid.uuid4().hex + "." + filename.split(".")[-1])])
 
 class AccountManager(BaseUserManager):
-    def create_user(self, email, first_name, last_name, phone_number, address, birth_date, password=None):
+    def create_user(self, email, first_name, last_name, phone_number, birth_date, password=None):
         if not email:
             raise ValueError("Debes ingresar tu correo para registrarte")
         if not first_name:
@@ -15,8 +17,6 @@ class AccountManager(BaseUserManager):
             raise ValueError("Debes ingresar tu apellido para registrarte")
         if not phone_number:
             raise ValueError("Debes ingresar número de teléfono para registrarte")
-        if not address:
-            raise ValueError("Debes ingresar tu direccion para registrarte")
         if not birth_date:
             raise ValueError("Debes ingresar tu fecha de nacimiento para registrarte")
         user = self.model(
@@ -24,20 +24,18 @@ class AccountManager(BaseUserManager):
             first_name = first_name,
             last_name = last_name,
             phone_number = phone_number,
-            address = address,
             birth_date = birth_date
         )
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email, first_name, last_name, phone_number, address, birth_date, password=None):
+    def create_superuser(self, email, first_name, last_name, phone_number, birth_date, password=None):
         user = self.create_user(
             email = self.normalize_email(email),
             first_name = first_name,
             last_name = last_name,
             phone_number = phone_number,
-            address = address,
             birth_date = birth_date,
             password=password
         )
@@ -68,7 +66,8 @@ class Account(AbstractBaseUser):
         max_length=20,
     )
     address = models.TextField(
-        verbose_name='Dirección'
+        verbose_name='Dirección',
+        null=True
     )
     birth_date = models.DateField(
         verbose_name='Fecha de nacimiento'
@@ -93,12 +92,28 @@ class Account(AbstractBaseUser):
     is_superuser = models.BooleanField(
         default=True
     )
-    profile_img= models.ImageField(
-        upload_to=images_directory_path, default="profile_img/default.png"
+    user_img= models.ForeignKey(
+        Image,
+        null=True,
+        on_delete=models.CASCADE,
+        related_name="profile_img",
+        default="1"
+    )
+    cover_img= models.ForeignKey(
+        Image, 
+        null=True,
+        on_delete=models.CASCADE,
+        related_name="cover_img",
+        default="1"
+    )
+    location = models.ForeignKey(
+        Location, 
+        on_delete=models.CASCADE,
+        null=True
     )
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['first_name','last_name','phone_number','address','birth_date']
+    REQUIRED_FIELDS = ['first_name','last_name','phone_number','birth_date']
 
     objects = AccountManager()
 

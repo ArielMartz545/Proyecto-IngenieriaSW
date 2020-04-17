@@ -19,10 +19,10 @@ def rate_user(request):
         except:
             return HttpResponseRedirect(reverse_lazy('home')) 
             
-        comments = request.POST.get('id_comment')
+        comment = request.POST.get('id_comment')
 
-        if comments is None:
-            comments = ""
+        if comment is None:
+            comment = ""
 
         try:
             evaluated_user = Account.objects.get(pk=evaluated_user_id) 
@@ -38,7 +38,7 @@ def rate_user(request):
             rating = Rating(evaluated_user=evaluated_user, evaluator_user=request.user)
 
         
-        rating.comments = comments
+        rating.comment = comment
         rating.points = points
         rating.save()
         return HttpResponseRedirect(reverse_lazy('profile', kwargs={'pk': evaluated_user_id}))
@@ -59,10 +59,10 @@ def rate_store(request):
         except:
             return HttpResponseRedirect(reverse_lazy('home'))
     
-        comments = request.POST.get('id_comment')
+        comment = request.POST.get('id_comment')
 
-        if comments is None:
-            comments = ""
+        if comment is None:
+            comment = ""
 
         try:
             evaluated_store = Account.objects.get(pk=evaluated_store_id) 
@@ -76,7 +76,7 @@ def rate_store(request):
         except:
             rating = Rating(evaluated_store=evaluated_store, evaluator_user=request.user)
 
-        rating.comments = comments
+        rating.comment = comment
         rating.points = points
         rating.save()
 

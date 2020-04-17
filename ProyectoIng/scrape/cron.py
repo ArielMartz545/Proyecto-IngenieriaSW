@@ -21,7 +21,7 @@ def scrapcoin():#ScrapeCoinData
     
     exchange= Exchange()
     exchange.pk= 1
-    exchange.uniti = str(unit)
+    exchange.unit = str(unit)
     exchange.unit = "$"
     exchange.exchange = exchange_data
     exchange.save()

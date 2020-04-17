@@ -5,56 +5,198 @@
     <link href="{% static 'core/css/card-img-top.css' %}" rel="stylesheet">
 {% endblock %}
 {% block content %}
+    {% if ad_search %}
+    {# BUSQUEDA DE ANUNCIOS #}
     <div class="row">
-        <div class="col-12">
-            <div class="card border-left-primary border-bottom-primary shadow mb-4">
-                <div class="card-header py-3">
-                    <div class="row">
-                        {% if object_list.count == 0 %}
-                        <div class="col-12">
-                            <h2 class="m-0 font-weight-bold text-primary">
-                                Buscando anuncios de {{category_name}} en {{location_name}}
-                            </h2>
-                        </div>
-                        {% else %}
-                        <div class="col-sm-8">
-                            <h2 class="m-0 font-weight-bold text-primary">
-                                Buscando anuncios de {{category_name}} en {{location_name}}
-                            </h2>
-                        </div>
-                        <div class="col-sm-4">
-                            <a href="{% url 'ad_create' %}" class="btn btn-primary btn-block">Crear un anuncio</a>
-                        </div>
-                        {% endif %}
-                    </div>
-                </div>
-                {% if object_list.count == 0 %}
-                <div class="card-body">
-                    <h3>No se han encontrado coincidencias.</h3>
-                    <p>Categorizamos nuestros anuncios para ayudarte a encontrar lo que buscas de manera más rápida, recuerda que en la barra superior puedes seleccionar la categoría en la que deseas buscar anuncios.</p>
-                    <p>¿Busca anuncios en algún lugar en específico? En la barra lateral encontraras filtros de lugares.</p>
-                    <p>¿Cuál es tu presupuesto? La barra lateral tambien contiene filtro por precio, si ningún rango se ajusta, puedes indicar tu presupuesto.</p>
-                    <p>Periodicamente se remueven anuncios para mostrar sólo los más recientes..</p>
-                    <a href="{% url 'ad_create' %}" class="btn btn-primary btn-block">Crear un anuncio</a>
-                </div>
-                {% endif %}
+      <div class="col-12">
+        <div class="card border-left-primary border-bottom-primary shadow mb-4">
+          <div class="card-header py-3">
+            <div class="row">
+              {% if object_list.count == 0 %}
+              <div class="col-12">
+                <h2 class="m-0 font-weight-bold text-primary">
+                  Buscando Anuncios de {{category_name}} en {{location_name}}
+                </h2>
+              </div>
+              {% else %}
+              <div class="col-sm-8">
+                <h2 class="m-0 font-weight-bold text-primary">
+                  Buscando Anuncios de {{category_name}} en {{location_name}}
+                </h2>
+              </div>
+              <div class="col-sm-4">
+                <a href="{% url 'ad_create' %}" class="btn btn-primary btn-block">Crear un anuncio</a>
+              </div>
+              {% endif %}
             </div>
+          </div>
+          {% if object_list.count == 0 %}
+          <div class="card-body">
+            <h3>No se han encontrado coincidencias.</h3>
+            <p>Categorizamos nuestros anuncios para ayudarte a encontrar lo que buscas de manera más rápida, recuerda que en la barra superior puedes seleccionar la categoría en la que deseas buscar anuncios.</p>
+            <p>¿Busca anuncios en algún lugar en específico? En la barra lateral encontrarás filtros de lugares.</p>
+            <p>¿Cuál es tu presupuesto? La barra lateral tambien contiene filtro por precio, si ningún rango se ajusta, puedes indicar tu presupuesto.</p>
+            <p>¿Busca usuarios o tiendas? En la barra de busqueda encontrarás filtros de usuarios y tiendas.</p>
+            <p>Periodicamente se remueven anuncios para mostrar sólo los más recientes..</p>
+            <a href="{% url 'ad_create' %}" class="btn btn-primary btn-block">Crear un anuncio</a>
+          </div>
+          {% endif %}
         </div>
+      </div>
     </div>
     <div class="row">
+      {% for data in object_list %}
+      <div class="col-12 col-sm-6 col-md-5 col-lg-3 mb-3">
+        {# Card anuncio #}
+        <div class="card border-left-{% cycle 'info' 'success' 'secondary' 'danger' 'warning' 'primary' %} shadow h-100 pb-2">
+          {% if data.ad_images.count == 1 %}
+          <a href="{% url 'ad_detail' data.pk %}"><img class="card-img-top no-border-top-left" src="{{data.ad_images.first.img_route.url}}" alt="Responsive image"></a>
+          {% else %}
+          <div id="carouselAd{{ data.pk }}" class="carousel slide" data-ride="carousel">
+            <div class="carousel-inner">
+              {% for img in data.ad_images.all %}
+              <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                <a href="{% url 'ad_detail' data.pk %}"><img class=" card-img-top no-border-top-left" src="{{img.img_route.url}}"  class="img-fluid" alt="Responsive image"></a>
+              </div>
+              {% endfor %}
+            </div>
+            <a class="carousel-control-prev" href="#carouselAd{{ data.pk }}" role="button" data-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#carouselAd{{ data.pk }}" role="button" data-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="sr-only">Next</span>
+            </a>
+          </div>
+          {% endif %}
+          <div class="card-body">
+            <h5 class="card-title"><a href="{% url 'ad_detail' data.pk %}">{{data.ad_name}}</a> </h5>
+            <h6>{% if data.id_store != None %} {{data.id_store}} {% endif %}</h6>
+            <div class="price-{{ data.id_currency.pk }}">
+              <p  class="my-0">Precio: {{ data.id_currency.currency_sign }} {{data.price|floatformat:"2"}}</p>
+            </div>
+            <div class="price-{{ data.exchange_currency.pk }}">
+              <p class="my-0">Precio: {{data.exchange_currency.currency_sign}} {{data.exchange|floatformat:"2"}}</p>
+              <p class="my-0 font-italic"><small>Precio original en {{ data.id_currency }}. Cambio al día de hoy según <a href="https://www.bch.hn/index.php" target="_blank">BCH</a>.</small></p>
+            </div>
+            <p class="my-0">Categoría: <a href="{% url 'search' %}?c={{ data.id_category.pk }}">{{ data.id_category }}</a></p>
+            <p class="my-0">Lugar: <a href="{% url 'search' %}?l={{ data.id_location.pk }}">{{ data.id_location }}</a></p>
+            <p class="mt-0">Publicado: {{data.date_created|date:'d-m-Y g:ia'}}</p>
+            <a href="{% url 'ad_detail' data.pk %}" class="btn btn-block btn-outline-{% cycle 'info' 'success' 'secondary' 'danger' 'warning' 'primary' %}">Ver más</a>
+            {% if data.id_user == request.user  %}
+            <div class="row">
+              <div class="col-sm-6 mt-3">
+                <a href="{% url 'ad_update' data.pk%}" class="btn btn-info btn-block">Editar</a>
+              </div>
+              <div class="col-sm-6 mt-3">
+                <a href="{% url 'ad_delete' data.pk%}" class="btn btn-danger btn-block">Eliminar</a>
+              </div>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+            {# FIN Card anuncio #}
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+      {% if user_search %}
+      {# BUSQUEDA DE USUARIOS #}
+      <div class="row">
+        <div class="col-12">
+          <div class="card border-left-primary border-bottom-primary shadow mb-4">
+            <div class="card-header py-3">
+              <div class="row">
+                <div class="col-12">
+                  <h2 class="m-0 font-weight-bold text-primary">
+                    Buscando Usuarios en {{location_name}}
+                  </h2>
+                </div>
+              </div>
+            </div>
+            {% if object_list.count == 0 %}
+            <div class="card-body">
+              <h3>No se han encontrado coincidencias.</h3>
+              <p>Puedes buscar usuarios por su nombre o correo electrónico</p>
+              <p>¿Busca usuarios en algún lugar en específico? En la barra lateral encontrarás filtros de lugares.</p>
+              <p>¿No estás buscando usuarios? En la barra de busqueda puedes elegir una categoría de productos, servicios o tiendas para buscar.</p>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      <div class="row">
         {% for data in object_list %}
         <div class="col-12 col-sm-6 col-md-5 col-lg-3 mb-3">
-            {# Card anuncio #}
-            <div class="card border-left-{% cycle 'info' 'success' 'secondary' 'danger' 'warning' 'primary' %} shadow h-100 pb-2">
-              {% if data.ad_images.count == 1 %}
-                <a href="{% url 'ad_detail' data.pk %}"><img class="card-img-top no-border-top-left" src="{{data.ad_images.first.img_route.url}}" alt="Responsive image"></a>
+          {# Card usuario #}
+          <div class="card border-left-{% cycle 'info' 'success' 'secondary' 'danger' 'warning' 'primary' %} shadow h-100 pb-2">
+            <a href="{% url 'profile' data.pk %}"><img class="card-img-top no-border-top-left" src="{{data.profile_img.url}}" alt="Responsive image"></a>
+            <div class="card-body">
+              <h5 class="card-title"><a href="{% url 'profile' data.pk %}">{{data.get_full_name}}</a> </h5>
+              <p class="my-0">Correo: <a href="{% url 'profile' data.pk %}">{{ data.email }}</a></p>
+              {#<p class="my-0">Lugar: <a href="{% url 'search' %}?l={{ data.id_location.pk }}&c={{c}}">{{ data.id_location }}</a></p>#}
+              <p class="mt-0">En Pa'Ya desde: {{data.date_joined|date:'d-m-Y'}}</p>
+              <a href="{% url 'profile' data.pk %}" class="btn btn-block btn-outline-{% cycle 'info' 'success' 'secondary' 'danger' 'warning' 'primary' %}">Ver perfil</a>
+            </div>
+          </div>
+              {# FIN Card usuario #}
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      {# BUSQUEDA DE TIENDAS #}
+      <div class="row">
+        <div class="col-12">
+          <div class="card border-left-primary border-bottom-primary shadow mb-4">
+            <div class="card-header py-3">
+              <div class="row">
+                {% if object_list.count == 0 %}
+                <div class="col-12">
+                  <h2 class="m-0 font-weight-bold text-primary">
+                    Buscando Tiendas en {{location_name}}
+                  </h2>
+                </div>
+                {% else %}
+                <div class="col-sm-8">
+                  <h2 class="m-0 font-weight-bold text-primary">
+                    Buscando Tiendas en {{location_name}}
+                  </h2>
+                </div>
+                <div class="col-sm-4">
+                  <a href="{% url 'user_stores' request.user.pk %}" class="btn btn-primary btn-block">Crear una tienda</a>
+                </div>
+                {% endif %}
+              </div>
+            </div>
+            {% if object_list.count == 0 %}
+            <div class="card-body">
+              <h3>No se han encontrado coincidencias.</h3>
+              <p>Puedes buscar tiendas por su nombre o descripción.</p>
+              <p>¿Busca tiendas en algún lugar en específico? En la barra lateral encontrarás filtros de lugares.</p>
+              <p>¿No estás buscando tiendas? En la barra de busqueda puedes elegir una categoría de productos, servicios o usuarios para buscar.</p>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        {% for data in object_list %}
+        <div class="col-12 col-sm-6 col-md-5 col-lg-3 mb-3">
+          {# Card tienda #}
+          <div class="card border-left-{% cycle 'info' 'success' 'secondary' 'danger' 'warning' 'primary' %} shadow h-100 pb-2">
+            {% if data.store_images.count == 0 %}
+            <a href="{% url 'store_detail' data.pk %}"><img class="card-img-top no-border-top-left" src="{{default_image.img_route.url}}" alt="Responsive image"></a>
+            {% else %}
+              {% if data.store_images.count == 1 %}
+              <a href="{% url 'store_detail' data.pk %}"><img class="card-img-top no-border-top-left" src="{{data.store_images.first.img_route.url}}" alt="Responsive image"></a>
               {% else %}
               <div id="carouselAd{{ data.pk }}" class="carousel slide" data-ride="carousel">
                 <div class="carousel-inner">
-                  {% for img in data.ad_images.all %}
-                    <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                      <a href="{% url 'ad_detail' data.pk %}"><img class=" card-img-top no-border-top-left" src="{{img.img_route.url}}"  class="img-fluid" alt="Responsive image"></a>
-                    </div>
+                  {% for img in data.store_images.all %}
+                  <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                    <a href="{% url 'store_detail' data.pk %}"><img class=" card-img-top no-border-top-left" src="{{img.img_route.url}}"  class="img-fluid" alt="Responsive image"></a>
+                  </div>
                   {% endfor %}
                 </div>
                 <a class="carousel-control-prev" href="#carouselAd{{ data.pk }}" role="button" data-slide="prev">
@@ -67,36 +209,21 @@
                 </a>
               </div>
               {% endif %}
-              <div class="card-body">
-                <h5 class="card-title"><a href="{% url 'ad_detail' data.pk %}">{{data.ad_name}}</a> </h5>
-                <h6>{% if data.id_store != None %} {{data.id_store}} {% endif %}</h6>
-                <div class="price-{{ data.id_currency.pk }}">
-                  <p  class="my-0">Precio: {{ data.id_currency.currency_sign }} {{data.price|floatformat:"2"}}</p>
-                </div>
-                <div class="price-{{ data.exchange_currency.pk }}">
-                  <p class="my-0">Precio: {{data.exchange_currency.currency_sign}} {{data.exchange|floatformat:"2"}}</p>
-                  <p class="my-0 font-italic"><small>Precio original en {{ data.id_currency }}. Cambio al día de hoy según <a href="https://www.bch.hn/index.php" target="_blank">BCH</a>.</small></p>
-                </div>
-                <p class="my-0">Categoría: <a href="{% url 'search' %}?c={{ data.id_category.pk }}">{{ data.id_category }}</a></p>
-                <p class="my-0">Lugar: <a href="{% url 'search' %}?l={{ data.id_location.pk }}">{{ data.id_location }}</a></p>
-                <p class="mt-0">Publicado: {{data.date_created|date:'d-m-Y g:ia'}}</p>
-                <a href="{% url 'ad_detail' data.pk %}" class="btn btn-block btn-outline-{% cycle 'info' 'success' 'secondary' 'danger' 'warning' 'primary' %}">Ver más</a>
-                {% if data.id_user == request.user  %}
-                <div class="row">
-                  <div class="col-sm-6 mt-3">
-                    <a href="{% url 'ad_update' data.pk%}" class="btn btn-info btn-block">Editar</a>
-                  </div>
-                  <div class="col-sm-6 mt-3">
-                    <a href="{% url 'ad_delete' data.pk%}" class="btn btn-danger btn-block">Eliminar</a>
-                  </div>
-                </div>
-                {% endif %}
-              </div>
+            {% endif %}
+            <div class="card-body">
+              <h5 class="card-title"><a href="{% url 'store_detail' data.pk %}">{{data.store_name}}</a> </h5>
+              <p class="my-0">Lugar: <a href="{% url 'search' %}?l={{ data.store_location.pk }}&c={{c}}">{{ data.store_location }}</a></p>
+              {#<p class="mt-0">En Pa'Ya desde: {{data.date_joined|date:'d-m-Y'}}</p>#}
+              <a href="{% url 'store_detail' data.pk %}" class="btn btn-block btn-outline-{% cycle 'info' 'success' 'secondary' 'danger' 'warning' 'primary' %}">Ver más</a>
             </div>
-            {# FIN Card anuncio #}
+          </div>
+              {# FIN Card usuario #}
         </div>
         {% endfor %}
-    </div>
+      </div>
+      {% endif %}
+    {% endif %}
+    {# PAGINACION #}
     {% if object_list.count != 0 %}
     <div class="row">
         <div class="col-12">
@@ -119,7 +246,7 @@
         {% else %}
         <p>Página 1 de 1 </p>
         {% endif %}
-        <p>{{ page_obj.paginator.per_page }} anuncios por página </p>
+        <p>{{ page_obj.paginator.per_page }}{% if ad_search %} anuncios {% else %}{% if user_search %} usuarios {% else %} tiendas {% endif %}{% endif %} por página </p>
         </div>
     </div>
     {% endif %}

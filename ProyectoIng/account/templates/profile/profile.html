@@ -1,6 +1,6 @@
 {% extends 'core/sidebar.html' %}
 {% load static %}
-{% block title %}Editar Mi Perfil{% endblock %} 
+{% block title %}{{ object.get_full_name }}{% endblock %} 
 {% block meta %}
     <meta property="og:title" content="{{object.get_full_name}} en Pa'Ya">
     <meta property="og:description" content="Revisa mi perfil de Pa'Ya, productos y servicios disponibles.">
@@ -12,14 +12,47 @@
 {% endblock %} 
 {% block css %}
     <link href="{% static 'core/css/profile.css' %}" rel="stylesheet">
+    <link href="{% static 'core/css/cover.css' %}" rel="stylesheet">
 {% endblock %}
 {% block navbar %}
 {% endblock %}
 {% block content %}
     <div class="row">
-        <div class="col-12">
-            <div class="card border-left-primary border-bottom-primary shadow mb-4">
+        <div class="col-12 mt-5">
+            <div class="card border-left-primary border-bottom-primary shadow mb-4 mx-5">
                 <div class="card-header py-3">
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <div class="profile-block">
+                                <div class="profile-block-thumb cover-container" style="background-image: linear-gradient(rgba(255,255,255,0.3), rgba(255,255,255,0.3)), url('{{object.cover_img.img_route.url}}');"></div>
+                                <div class="profile-img">
+                                        <img src="{{object.user_img.img_route.url}}" alt="" title="">        
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% if 'update' in request.GET %}
+                    <div class="row">
+                        <div class="col-12">
+                        {% if 'success' == request.GET.update %}
+                            <div class="alert w-100 alert-primary alert-dismissible fade show" role="alert">
+                                <strong>¡Éxito!</strong> Se han actualizado tus datos correctamente.
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        {% endif %}
+                        {% if 'error' == request.GET.update %}
+                            <div class="alert w-100 alert-fluid alert-danger alert-dismissible fade show" role="alert">
+                                <strong>¡Uuuups!</strong> Ha sucedido un error al actualizar los datos, intenta nuevamente.
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        {% endif %}
+                        </div>
+                    </div>
+                    {% endif %}
                     <div class="row">
                         {% if request.user.pk == object.pk %}
                         <div class="col-12">
@@ -35,64 +68,27 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    {% if 'update' in request.GET %}
-                        <div class="row">
-                            {% if 'success' == request.GET.update %}
-                                <div class="alert w-100 alert-primary alert-dismissible fade show" role="alert">
-                                    <strong>¡Éxito!</strong> Se han actualizado tus datos correctamente.
-                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                            {% endif %}
-                            {% if 'error' == request.GET.update %}
-                                <div class="alert w-100 alert-fluid alert-danger alert-dismissible fade show" role="alert">
-                                    <strong>¡Uuuups!</strong> Ha sucedido un error al actualizar los datos, intenta nuevamente.
-                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                            {% endif %}
-                        </div>
-                    {% endif %}
                     <div class="row">
-                        <div class="col-md-4">
-                            <div class="profile-img-container w-100 bg-secondary">
-                                <img class="profile-img" src="{{object.profile_img.url}}" alt="Imagen de perfil">
+                        <div class="col-md-12 mb-2">
+                            <div class="form-group my-0 py-2">
+                                <h4><strong>Nombre: </strong> {{ object.get_full_name }} </h4>
                             </div>
-                        </div>
-                        <div class="col-md-8 mb-2">
-                            <div class="row">
-                                <div class="form-group my-0 py-2">
-                                    <h4><strong>Nombre: </strong> {{ object.get_full_name }} </h4>
-                                </div>
+                            <div class="form-group my-0 py-2">
+                                <h4><strong>Correo electrónico: </strong> {{ object.email }} </h4>
                             </div>
-                            <div class="row">
-                                <div class="form-group my-0 py-2">
-                                    <h4><strong>Correo electrónico: </strong> {{ object.email }} </h4>
-                                </div>
+                            <div class="form-group my-0 py-2">
+                                <h4><strong>Fecha de nacimiento: </strong> {{ object.birth_date | date:'d-m-Y' }} </h4>
                             </div>
-                            <div class="row">
-                                <div class="form-group my-0 py-2">
-                                    <h4><strong>Fecha de nacimiento: </strong> {{ object.birth_date | date:'d-m-Y' }} </h4>
-                                </div>
+                            <div class="form-group my-0 py-2">
+                                <h4><strong>Número de teléfono: </strong> {{ object.phone_number }} </h4>
                             </div>
-                            <div class="row">
-                                <div class="form-group my-0 py-2">
-                                    <h4><strong>Número de teléfono: </strong> {{ object.phone_number }} </h4>
-                                </div>
+                            <div class="form-group my-0 py-2">
+                                <h4><strong>Dirección: </strong> {{ object.address }} </h4>
                             </div>
-                            <div class="row">
-                                <div class="form-group my-0 py-2">
-                                    <h4><strong>Dirección: </strong> {{ object.address }} </h4>
-                                </div>
+                            <div class="form-group my-0 py-2">
+                                <h4><strong>En Pa'Ya desde: </strong> {{ object.date_joined | date:'d-m-Y' }} </h4>
                             </div>
-                            <div class="row">
-                                <div class="form-group my-0 py-2">
-                                    <h4><strong>En Pa'Ya desde: </strong> {{ object.date_joined | date:'d-m-Y' }} </h4>
-                                </div>
-                            </div>
-                            <div class="row mb-2">
+                            <div class="form-group mb-2">
                                 <p class="my-0 py-0">
                                     <strong>Comparte este perfil: </strong>
                                     <span id="profile_url">{{ request.scheme  }}://{#{ request.META['HTTP_HOST'] }#}{% url 'profile' object.pk %}</span>
@@ -102,10 +98,10 @@
                                 </p>
                             </div>
                             {% if request.user.email == object.email %}
-                            <div class="row">
+                            <div class="form-group">
                                 <a href="#" data-toggle="modal" data-target="#modalCambiarDatos" class="text-muted"><i class="fas fa-edit"></i> Editar mi perfil</a>
                             </div>
-                            <div class="row">
+                            <div class="form-group">
                                 <a href="#" data-toggle="modal" data-target="#modalCambiarPassword" class="text-muted"><i class="fas fa-edit"></i> Cambiar contraseña</a>
                             </div>
                             {% endif %}
@@ -229,8 +225,14 @@
                             </div>
                             <div class="form-group my-0 py-2">
                                 <div class="custom-file">
-                                    <input type="file" class="custom-file-input" id="id_profile_img" name="profile_img" accept="image/*">
+                                    <input type="file" class="custom-file-input" id="id_user_img" name="user_img" accept="image/*">
                                     <label class="custom-file-label" for="id_profile_img">Foto de perfil</label>
+                                </div>
+                            </div>
+                            <div class="form-group my-0 py-2">
+                                <div class="custom-file">
+                                    <input type="file" class="custom-file-input" id="id_cover_img" name="cover_img" accept="image/*">
+                                    <label class="custom-file-label" for="id_profile_img">Foto de portada</label>
                                 </div>
                             </div>
                         </div>
@@ -284,6 +286,5 @@
 {% block js %}
     <script src="{% static 'core/js/file-label-change.js' %}"></script>
     <script src="{% static 'core/js/max-date-today.js' %}"></script>
-    <script src="{% static 'core/js/collapse-sidebar.js' %}"></script>
     <script src="{% static 'core/js/profile.js' %}"></script>
 {% endblock %}

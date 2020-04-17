@@ -10,7 +10,9 @@ class Store(models.Model):
     store_name= models.CharField(max_length=100,null=False,blank=False)
     store_description= models.TextField(null=False,blank=False)
     store_location = models.ForeignKey(Location, on_delete=models.CASCADE)
-    store_images= models.ManyToManyField(Image, related_name="get_images_store")
+    store_profile_img= models.ForeignKey(Image, on_delete=models.CASCADE,related_name="store_profile_img", default="1", null=True)
+    store_cover_img= models.ForeignKey(Image, on_delete=models.CASCADE,related_name="store_cover_img",default="1", null=True)
+    date_created =models.DateTimeField(auto_now_add=True)
     #Booleano para saber si la tienda esta activa o no (Borrada o no)
     active= models.BooleanField(default=True)
 

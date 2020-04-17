@@ -9,12 +9,12 @@ class RegistrationForm(UserCreationForm):
     class Meta(forms.ModelForm):
         model= Account
         fields= ("email","first_name","last_name","birth_date",
-                "phone_number","address","password1",'password2',)
+                "phone_number","password1",'password2',)
 
 class UpdateUserForm(UserChangeForm):
     class Meta(forms.ModelForm):
         model= Account
         fields= ("first_name","last_name","birth_date",
-                "phone_number","address","profile_img",)
+                "phone_number","address")
                 
         

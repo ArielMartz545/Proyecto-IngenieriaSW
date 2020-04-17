@@ -1,0 +1,39 @@
+.profile-block {
+    margin: auto;
+    position: relative;
+	width: 100%;
+}
+.cover-container{
+	border-radius: 5px;
+    background-position:center;
+    background-repeat:no-repeat;
+    background-size:cover ;
+}
+.profile-block-thumb{
+    display: block;
+    height: 350px;
+    overflow: hidden;
+    position: relative;
+    text-decoration: none;
+}
+.profile-img img{
+    bottom: 15px;
+    box-shadow: none;
+    display: block;
+    left: 15px;
+    padding:1px;
+    position: absolute;
+    height: 160px;
+    width: 160px;
+    object-fit: cover;
+    background: rgba(0, 0, 0, 0.3) none repeat scroll 0 0;
+    z-index:9;
+}
+.profile-img img {
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.07);
+    height:170px;
+    padding: 2px;
+    width:170px;
+}

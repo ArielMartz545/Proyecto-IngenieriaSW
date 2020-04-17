@@ -11,7 +11,7 @@ class Rating(models.Model):
     evaluator_user = models.ForeignKey(Account, related_name="evaluator_user", on_delete=models.CASCADE)
     evaluated_store = models.ForeignKey(Store, null=True, on_delete=models.CASCADE)
     points = models.IntegerField()
-    comments = models.TextField( null=True)
+    comment = models.TextField( null=True)
 
 
     def __str__(self):
@@ -24,5 +24,5 @@ class Rating(models.Model):
             return self.evaluator_user.get_full_name()+' gave '+ str (self.points ) +' to '+ self.evaluated_user.get_full_name()
 
     class Meta():
-        verbose_name= "rating evaluated"
-        verbose_name_plural= "Ratings User"
+        verbose_name= "Evaluación"
+        verbose_name_plural= "Evaluaciones"

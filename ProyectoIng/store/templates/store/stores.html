@@ -12,7 +12,8 @@
 <meta name="twitter:card" content="summary_large_image">
 {% endblock %}
 {% block css %}
-<link href="{% static 'core/css/profile.css' %}" rel="stylesheet">
+
+<link href="{% static 'core/css/cover.css' %}" rel="stylesheet">
 <link href="{% static 'store/css/style.css' %}" rel="stylesheet">
 {% endblock %}
 {% block navbar %}
@@ -57,68 +58,20 @@
     </div>
 </header>
 
-<div class="row text-center">
-
-    <div class="col-lg-3 col-md-6 mb-4">
-        <div class="card h-100">
-            <img class="card-img-top" src="http://placehold.it/500x325" alt="">
-            <div class="card-body">
-                <h4 class="card-title">Card title</h4>
-                <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sapiente esse
-                    necessitatibus neque.</p>
-            </div>
-            <div class="card-footer">
-                <a href="#" class="btn btn-primary">Find Out More!</a>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-lg-3 col-md-6 mb-4">
-        <div class="card h-100">
-            <img class="card-img-top" src="http://placehold.it/500x325" alt="">
-            <div class="card-body">
-                <h4 class="card-title">Card title</h4>
-                <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Explicabo magni sapiente,
-                    tempore debitis beatae culpa natus architecto.</p>
-            </div>
-            <div class="card-footer">
-                <a href="#" class="btn btn-primary">Find Out More!</a>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-lg-3 col-md-6 mb-4">
-        <div class="card h-100">
-            <img class="card-img-top" src="http://placehold.it/500x325" alt="">
-            <div class="card-body">
-                <h4 class="card-title">Card title</h4>
-                <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sapiente esse
-                    necessitatibus neque.</p>
-            </div>
-            <div class="card-footer">
-                <a href="#" class="btn btn-primary">Find Out More!</a>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-lg-3 col-md-6 mb-4">
-        <div class="card h-100">
-            <img class="card-img-top" src="http://placehold.it/500x325" alt="">
-            <div class="card-body">
-                <h4 class="card-title">Card title</h4>
-                <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Explicabo magni sapiente,
-                    tempore debitis beatae culpa natus architecto.</p>
-            </div>
-            <div class="card-footer">
-                <a href="#" class="btn btn-primary">Find Out More!</a>
+<div class="row mb-3">
+    <div class="col-md-12">
+        <div class="profile-block">
+            <div class="profile-block-thumb cover-container" style="background-image: linear-gradient(rgba(255,255,255,0.3), rgba(255,255,255,0.3)), url('{{object.store_cover_img.img_route.url}}');"></div>
+            <div class="profile-img">
+                    <img src="{{object.store_profile_img.img_route.url}}" alt="" title="">        
             </div>
         </div>
     </div>
 </div>
+
 {% endblock %}
 {% block js %}
 <script src="{% static 'core/js/file-label-change.js' %}"></script>
 <script src="{% static 'core/js/max-date-today.js' %}"></script>
 <script src="{% static 'core/js/collapse-sidebar.js' %}"></script>
-<script src="{% static 'core/js/profile.js' %}"></script>
 {% endblock %}

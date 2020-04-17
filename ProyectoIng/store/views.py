@@ -29,13 +29,24 @@ class CreateStore(CreateView): #Pass,Correo,Nombre,Apellido,Telefono,Direccion,F
             user_store.user = request.user
             user_store.store = store
             user_store.save()
-            for file in request.FILES.getlist('images'):
-                instance = Image(img_route=file)
-                instance.save()
-                store.store_images.add( instance )
-            if len(request.FILES.getlist('images'))==0:
-                instance = Image.objects.get(pk=1)
-                store.store_images.add( instance )
+            store_profile_img_route = request.FILES.get("store_profile_img", False)
+            store_cover_img_route = request.FILES.get("store_cover_img", False)
+            if  store_profile_img_route:
+                if  store.store_profile_img.pk == 1:
+                    store_profile_img = Image(img_route = store_profile_img_route)
+                    store.store_profile_image = store_profile_img
+                    store.store_profile_img.save()
+                else:
+                    store.store_profile_img.img_route = store_profile_img_route
+                    store.store_profile_img.save()
+            if  store_cover_img_route:
+                if  store.store_cover_img.pk == 1:
+                    store_cover_img = Image(img_route = store_cover_img_route)
+                    store.store_cover_img = store_cover_img
+                    store.store_cover_img.save()
+                else:
+                    store.store_cover_img.img_route = store_cover_img_route
+                    store.store_cover_img.save()
             store.save(False)
             return HttpResponseRedirect(reverse_lazy('user_stores',kwargs={'uid': request.user.id})+'?added=success')
         return HttpResponseRedirect(reverse_lazy('user_stores',kwargs={'uid': request.user.id})+'?added=error')

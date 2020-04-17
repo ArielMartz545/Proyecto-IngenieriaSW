@@ -20,6 +20,7 @@ from django.conf import settings
 from django.utils.html import strip_tags
 from ad.models import Category, PriceRange, Currency
 from location.models import Location
+from images.models import Image
 
 # Create your views here.
 class CreateUser(CreateView): #Pass,Correo,Nombre,Apellido,Telefono,Direccion,FechaN
@@ -34,15 +35,11 @@ class CreateUser(CreateView): #Pass,Correo,Nombre,Apellido,Telefono,Direccion,Fe
             user.save()
             current_site = get_current_site(request)
             mail_subject = 'Activa tu cuenta.'
-            next_url = request.GET['next']
-            if next_url is None:
-                next_url = ""
             message_html = render_to_string('registration/activation_mail.html', {
                 'user': user.get_full_name(),
                 'domain': current_site.domain,
                 'uid':urlsafe_base64_encode(force_bytes(user.pk)),
                 'token':account_activation_token.make_token(user),
-                'next_url': next_url,
             })
             send_mail(mail_subject, strip_tags(message_html), settings.EMAIL_HOST_USER,[user.email],fail_silently=False,html_message=message_html)
             return HttpResponseRedirect(reverse_lazy('login')+'?register')
@@ -56,7 +53,26 @@ def update_user(request):
     if request.method == "POST":
         form = UpdateUserForm(request.POST, request.FILES or None, instance=request.user)
         if form.is_valid():
-            form.save()
+            user = form.save()
+            user_img_route = request.FILES.get("user_img", False)
+            cover_img_route = request.FILES.get("cover_img", False)
+            if  user_img_route:
+                if  user.user_img.pk == 1:
+                    user_img = Image(img_route = user_img_route)
+                    user.user_img = user_img
+                    user.user_img.save()
+                else:
+                    user.user_img.img_route = user_img_route
+                    user.user_img.save()
+            if  cover_img_route:
+                if  user.cover_img.pk == 1:
+                    cover_img = Image(img_route = cover_img_route)
+                    user.cover_img = cover_img
+                    user.cover_img.save()
+                else:
+                    user.cover_img.img_route = cover_img_route
+                    user.cover_img.save()
+            user.save()
             return HttpResponseRedirect(reverse_lazy('profile', kwargs={'pk': request.user.id})+'?update=success')
         else:
             return HttpResponseRedirect(reverse_lazy('profile', kwargs={'pk': request.user.id})+'?update=error')
@@ -107,9 +123,6 @@ def terminos(request):
     return render(request, 'registration/terms.html' )
 
 def activate(request, uidb64, token):
-    next_url = request.GET['next']
-    if next_url is None:
-        next_url = ""
     try:
         uid = force_text(urlsafe_base64_decode(uidb64))
         user = Account.objects.get(pk=uid)
@@ -118,9 +131,9 @@ def activate(request, uidb64, token):
     if user is not None and account_activation_token.check_token(user, token):
         user.is_active = True
         user.save()
-        return HttpResponseRedirect(reverse_lazy('login')+'?activated&next='+next_url)
+        return HttpResponseRedirect(reverse_lazy('login')+'?activated')
     else:
-        return HttpResponseRedirect(reverse_lazy('login')+'?invalid_activation&next='+next_url)
+        return HttpResponseRedirect(reverse_lazy('login')+'?invalid_activation')
 
 
 

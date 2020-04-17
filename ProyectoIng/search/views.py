@@ -2,11 +2,15 @@ from django.shortcuts import render
 
 # Create your views here.
 from django.views.generic.list import ListView
+from django.db.models import Value
+from django.db.models.functions import Concat
 from ad.models import Ad, Category, PriceRange, Currency
 from location.models import Location
+from account.models import Account
+from store.models import Store
+from images.models import Image
 
 class SearchView(ListView):
-    model = Ad
     template_name="search/search.html"
     paginate_by = 20
 
@@ -45,6 +49,18 @@ class SearchView(ListView):
             location_name = str(Location.objects.get(pk=l))
         except:
             location_name = "Todo lugar"
+        if c == -1:
+            context['ad_search'] = False
+            context['user_search'] = True
+            context['store_search'] = False
+        elif c == -2:
+            context['ad_search'] = False
+            context['user_search'] = False
+            context['store_search'] = True
+        else:
+            context['ad_search'] = True
+            context['user_search'] = False
+            context['store_search'] = False
         context['q'] = q
         context['min'] = min_price
         context['max'] = max_price
@@ -52,6 +68,7 @@ class SearchView(ListView):
         context['l'] = l
         context['category_name'] = category_name
         context['location_name'] = location_name
+        context['default_image'] = Image.objects.get(pk=1)
         return context
 
     def get_queryset(self):
@@ -74,36 +91,56 @@ class SearchView(ListView):
             l = int(self.request.GET.get("l"))
         except:
             l = 0
-        #Validacion de minimo y maximo
-        #Si solo se selecciono precio minimo, el precio maximo viene con valor 0
-        #Si solo se selecciono precio maximo, el precio minimo viene con valor 0
-        #Si no se selecciono minimo ni maximo, ambos vienen con valor 0
-        if  (min_price > max_price and max_price != 0):
-            temp = max_price
-            max_price = min_price
-            min_price = temp
-        #Filtro de precios
-        queryset = Ad.objects.filter(price__gte=(min_price))
-        if (max_price != 0):
-            #Se selecciono un precio maximo
-            queryset = queryset.filter(price__lte=(max_price))
-        #Validacion de categorias
-        try:
-            category = Category.objects.get(pk=c)
-        except:
-            category = None
-        #Filtro de categorias
-        if category is not None:
-            queryset = queryset.filter(id_category__pk=c)
-        #Validacion de lugar
-        try:
-            location = Location.objects.get(pk=l)
-        except:
-            location = None
-        #Filtro de lugar
-        if location is not None:
-            queryset = queryset.filter(id_location__pk=l) | queryset.filter(id_location__correlative_direction__pk=l)
-        #Filtro de nombre o descripcion
-        queryset = queryset.filter(ad_name__contains=q) | queryset.filter(ad_description__contains=q)
-        queryset = queryset.filter(active=True).order_by('-date_created')
-        return queryset
+        if c == -1:
+            #Busqueda de usuarios
+            queryset = Account.objects.annotate(full_name=Concat('first_name', Value(' '), 'last_name'))
+            queryset = queryset.filter(full_name__icontains=q) | queryset.filter(email__icontains=q)
+            return queryset
+        elif c == -2:
+            #Busqueda de tiendas
+            queryset = Store.objects.filter(active=True)
+            queryset = queryset.filter(store_name__icontains=q) | queryset.filter(store_description__icontains=q)
+            try:
+                location = Location.objects.get(pk=l)
+            except:
+                location = None
+            #Filtro de lugar
+            if location is not None:
+                queryset = queryset.filter(id_location__pk=l) | queryset.filter(id_location__correlative_direction__pk=l)
+            #queryset = queryset.order_by('-date_created')
+            return queryset
+        else:
+            #Busqueda de anuncios
+            #Validacion de minimo y maximo
+            #Si solo se selecciono precio minimo, el precio maximo viene con valor 0
+            #Si solo se selecciono precio maximo, el precio minimo viene con valor 0
+            #Si no se selecciono minimo ni maximo, ambos vienen con valor 0
+            if  (min_price > max_price and max_price != 0):
+                temp = max_price
+                max_price = min_price
+                min_price = temp
+            #Filtro de precios
+            queryset = Ad.objects.filter(price__gte=(min_price))
+            if (max_price != 0):
+                #Se selecciono un precio maximo
+                queryset = queryset.filter(price__lte=(max_price))
+            #Validacion de categorias
+            try:
+                category = Category.objects.get(pk=c)
+            except:
+                category = None
+            #Filtro de categorias
+            if category is not None:
+                queryset = queryset.filter(id_category__pk=c)
+            #Validacion de lugar
+            try:
+                location = Location.objects.get(pk=l)
+            except:
+                location = None
+            #Filtro de lugar
+            if location is not None:
+                queryset = queryset.filter(id_location__pk=l) | queryset.filter(id_location__correlative_direction__pk=l)
+            #Filtro de nombre o descripcion
+            queryset = queryset.filter(ad_name__icontains=q) | queryset.filter(ad_description__icontains=q)
+            queryset = queryset.filter(active=True).order_by('-date_created')
+            return queryset

@@ -74,18 +74,6 @@ class PriceRange(models.Model):
         verbose_name= "Rango de Precio"
         verbose_name_plural= "Rangos de Precio"
 
-"""Clase Conversion de moneda"""
-class CurrencyConversion(models.Model):
-    currency_one = models.ForeignKey(Currency,related_name="currency_one", on_delete= models.CASCADE)
-    currency_two = models.ForeignKey(Currency,related_name="currency_two", on_delete= models.CASCADE)
-    one_equals = models.FloatField(blank=False,null=False)
-
-    def __str__(self):
-        return self.currency_one.currency_sign+'1='+self.currency_two.currency_sign+str(self.one_equals)
-
-    class Meta():
-        verbose_name= "Conversión de Moneda"
-        verbose_name_plural= "Conversiones de Moneda"
 
 """Clase Anuncio:
 Atributos: [ID Usuario, ID Tienda, ID ubicacion, ID tipo anuncio, ID Categoria, ID Unidad, 

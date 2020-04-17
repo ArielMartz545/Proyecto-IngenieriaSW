@@ -1,5 +1,4 @@
 from django.db import models
-from account.models import Account
 import uuid
 
 def images_directory_path(instance, filename):
