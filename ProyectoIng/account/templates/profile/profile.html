@@ -17,21 +17,20 @@
 {% block navbar %}
 {% endblock %}
 {% block content %}
-    <div class="row">
+    <div class="row my-3">
+        <div class="col-md-12">
+            <div class="profile-block">
+                <div class="profile-block-thumb cover-container" style="background-image: url('{{object.cover_img.img_route.url}}');"></div>
+                <div class="profile-img">
+                        <img src="{{object.user_img.img_route.url}}" alt="Imagen de perfil">  
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row px-0">
         <div class="col-12 mt-2">
-            <div class="card border-left-primary border-bottom-primary shadow mb-4 mx-5">
+            <div class="card border-left-primary border-bottom-primary shadow mb-4">
                 <div class="card-header py-3">
-                    <div class="row mb-3">
-                        <div class="col-md-12">
-                            <div class="profile-block">
-                                <div class="profile-block-thumb cover-container" style="background-image: linear-gradient(rgba(255,255,255,0.3), rgba(255,255,255,0.3)), url('{{object.cover_img.img_route.url}}');"></div>
-                                <div class="profile-img">
-                                        <img src="{{object.user_img.img_route.url}}" alt="" title="">  
-                                           
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                     {% if 'update' in request.GET %}
                     <div class="row">
                         <div class="col-12">
@@ -62,17 +61,18 @@
                             </h2>
                         </div>
                         {% else %}
+                        <div class="col-md-8">
                             <h2 class="m-0 font-weight-bold text-primary">
-                                Perfil &nbsp; 
-                            </h2> 
-                            <form action="{% url 'ad_favorite' %}" method="POST">
+                                Perfil
+                            </h2>
+                        </div>
+                        <div class="col-md-4">
+                            <form class="ml-auto" action="{% url 'ad_favorite' %}" method="POST">
                                 {% csrf_token %}
                                 <input type="hidden" value={{object.pk}} id="fav_user" name="fav_user">
-                                <button class= "btn btn-danger m-0 p-1" ><i class="fas fa-heart fa-2x"></i></button>
-                                &nbsp;
-                                <small class=" pt-3 mt-0">Agregar a favoritos</small>
+                                <button class= "btn btn-block btn-danger float-md-right" >{% if favorite %}<i class="fas fa-heart fa-lg"></i> Siguiendo{% else %}<i class="far fa-heart fa-lg"></i> Seguir{% endif %}</button>
                             </form>
-                            
+                        </div>   
                         {% endif %}
                     </div>
                 </div>
@@ -85,47 +85,41 @@
                                     <h5><strong>Nombre: </strong> {{ object.get_full_name }} </h5>
                                 </div>
                             </div>
-                            
                             <div class="col-md-6">
                                 <div class="form-group my-0 py-1">
                                 <h5><strong>Correo electrónico: </strong> {{ object.email }} </h5>
                                 </div>
                             </div>
-                            
-
                             <div class="col-md-6">
                               <div class="form-group my-0 py-1">
                                 <h5><strong>Fecha de nacimiento: </strong> {{ object.birth_date | date:'d-m-Y' }} </h5>
                               </div>  
                             </div>
-                            
-
                             <div class="col-md-6">
                                <div class="form-group my-0 py-1">
                                 <h5><strong>Número de teléfono: </strong> {{ object.phone_number }} </h5>
                               </div> 
                             </div>
-                            
-
                             <div class="col-md-6">
                                <div class="form-group my-0 py-1">
                                 <h5><strong>Dirección: </strong> {{ object.address }} </h5>
                                </div> 
                             </div>
-                            
-
+                            <div class="col-md-6">
+                               <div class="form-group my-0 py-1">
+                                <h5><strong>Ubicación: </strong> {{ object.location }} </h5>
+                               </div> 
+                            </div>
                             <div class="col-md-6">
                                <div class="form-group my-0 py-1">
                                 <h5><strong>En Pa'Ya desde: </strong> {{ object.date_joined | date:'d-m-Y' }} </h5>
                               </div> 
                             </div>
-                            
-
                             <div class="col-md-6">
                                 <div class="form-group mb-2">
                                 <p class="my-0 py-0">
                                     <strong>Comparte este perfil: </strong>
-                                    <span id="profile_url">{{ request.scheme  }}://{#{ request.META['HTTP_HOST'] }#}{% url 'profile' object.pk %}</span>
+                                    <span id="profile_url">{{ request.scheme  }}://127.0.0.1:8000{#{ request.META['HTTP_HOST'] }#}{% url 'profile' object.pk %}</span>
                                     <a tabindex="0" onclick="copyLink('profile_url');" id="profile_url_copy" data-toggle="popover" title="Enlace copiado al portapapeles" data-content="Comparte el perfil en una publicación o mensaje." class="badge badge-secondary">
                                         <i class="far fa-copy"></i>
                                     </a>
@@ -143,7 +137,8 @@
                             {% endif %}
                         </div>
                     </div>
-                    <hr class="my-4">
+                </div>
+                <div class="card-footer">
                     <div class="row">
                         {% if request.user.email == object.email %}
                             <div class="col-md-4 my-3">
@@ -256,8 +251,18 @@
                                 <input placeholder="{{ request.user.phone_number }}" value="{{ request.user.phone_number }}" max="99999999" min="10000000" type="number" name="phone_number" maxlength="8" minlength="8" required class="form-control" id="id_phone_number">
                             </div>
                             <div class="form-group my-0 py-1">
+                                <label for="id_location">Ubicación</label>
+                                <select class="form-control" name="location" id="id_location" required>
+                                    <option value="" disabled selected>Lugar</option>
+                                    {% for location in all_locations %}
+                                    <option value="{{location.pk}}" {% if location.pk == request.user.location.pk %} selected {% endif %}>{{location}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group my-0 py-1">
                                 <label for="id_address" class="text-muted">Dirección</label>
                                 <textarea class= 'form-control' name="address" rows="2" required id="id_address" placeholder="{{ request.user.address }}">{{ request.user.address }}</textarea>
+                                <small>Ten en cuenta que esta dirección es pública.</small>
                             </div>
                             <div class="form-group my-0 py-1">
                                 <div class="custom-file">
@@ -323,4 +328,5 @@
     <script src="{% static 'core/js/file-label-change.js' %}"></script>
     <script src="{% static 'core/js/max-date-today.js' %}"></script>
     <script src="{% static 'core/js/profile.js' %}"></script>
+    <script src="{% static 'core/js/collapse-sidebar.js' %}"></script>
 {% endblock %}

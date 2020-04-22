@@ -15,6 +15,6 @@ class UpdateUserForm(UserChangeForm):
     class Meta(forms.ModelForm):
         model= Account
         fields= ("first_name","last_name","birth_date",
-                "phone_number","address")
+                "phone_number","location","address")
                 
         

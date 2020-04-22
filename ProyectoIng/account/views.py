@@ -21,6 +21,7 @@ from django.utils.html import strip_tags
 from ad.models import Category, PriceRange, Currency
 from location.models import Location
 from images.models import Image
+from favorites.models import Favorites
 
 # Create your views here.
 class CreateUser(CreateView): #Pass,Correo,Nombre,Apellido,Telefono,Direccion,FechaN
@@ -111,11 +112,25 @@ class DetailUser(DetailView):
         context['categories'] = Category.objects.order_by('category_name')
         context['price_ranges'] = PriceRange.objects.all()
         context['locations'] = Location.objects.order_by('direction').filter(correlative_direction__isnull=True)
+        context['all_locations'] = Location.objects.all().order_by('direction')
         context['currencies'] = Currency.objects.all()
+        if  self.request.user.pk != self.kwargs['pk']:
+            try:
+                favorite = Favorites.objects.get(id_user__pk = self.request.user.pk, id_favorite_user__pk = self.kwargs['pk'])
+            except:
+                favorite = None
+            if favorite is not None:
+                context['favorite'] = True
+            else:
+                context['favorite'] = False
+        else:
+            context['favorite'] = False
         return context
 
     def get_success_url(self):
-        return reverse_lazy('profile-view', kwargs={'pk': self.request.user.id})+'?detail'
+        return reverse_lazy('profile-view', kwargs={'pk': self.request.user.id})
+
+        
 
 class TemplateLogin(TemplateView):#Visualizar Login
     template_name = 'account/login.html'
