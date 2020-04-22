@@ -14,6 +14,9 @@ class Image(models.Model):
         verbose_name= "Imagen"
         verbose_name_plural= "Imagenes"
 
+    def __str__(self):
+        return self.img_route
+
 
 
 

@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 
 import os
 
+
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -40,7 +42,8 @@ EMAIL_PORT = 587
 # Application definition
 
 INSTALLED_APPS = [
-    'account',
+    'account.apps.AccountConfig',
+    'admin_pack.apps.SuitConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -51,14 +54,14 @@ INSTALLED_APPS = [
     'django_crontab',
     'request',
     'core',
-    'store',
-    'ad',
-    'images',
-    'location',
+    'store.apps.StoreConfig',
+    'ad.apps.AdConfig',
+    'images.apps.ImagesConfig',
+    'location.apps.LocationConfig',
     'search',
-    'scrape',
-    'favorites',
-    'rating',
+    'scrape.apps.ScrapeConfig',
+    'favorites.apps.FavoritesConfig',
+    'rating.apps.RatingConfig',
     
 ]
 
@@ -127,7 +130,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'es'
 
 TIME_ZONE = 'UTC'
 
@@ -155,3 +158,33 @@ CRONJOBS = [
    ('* * */1 * *', 'scrape.cron.scrapcoin'),
    ('*/1 * * * *', 'ad.cron.delete_old_ads'),
 ]
+
+# Django Suit configuration example
+SUIT_CONFIG = {
+    # header
+    # 'ADMIN_NAME': 'Django Suit',
+    # 'HEADER_DATE_FORMAT': 'l, j. F Y',
+    # 'HEADER_TIME_FORMAT': 'H:i',
+
+    # forms
+    # 'SHOW_REQUIRED_ASTERISK': True,  # Default True
+    # 'CONFIRM_UNSAVED_CHANGES': True, # Default True
+
+    # menu
+    # 'SEARCH_URL': '/admin/auth/user/',
+    # 'MENU_ICONS': {
+    #    'sites': 'icon-leaf',
+    #    'auth': 'icon-lock',
+    # },
+    # 'MENU_OPEN_FIRST_CHILD': True, # Default True
+    # 'MENU_EXCLUDE': ('auth.group',),
+    # 'MENU': (
+    #     'sites',
+    #     {'app': 'auth', 'icon':'icon-lock', 'models': ('user', 'group')},
+    #     {'label': 'Settings', 'icon':'icon-cog', 'models': ('auth.user', 'auth.group')},
+    #     {'label': 'Support', 'icon':'icon-question-sign', 'url': '/support/'},
+    # ),
+
+    # misc
+    # 'LIST_PER_PAGE': 15
+}

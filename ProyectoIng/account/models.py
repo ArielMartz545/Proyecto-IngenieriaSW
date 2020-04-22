@@ -114,6 +114,10 @@ class Account(AbstractBaseUser):
         null=True
     )
 
+    class Meta():
+        verbose_name= "Cuenta"
+        verbose_name_plural= "Cuentas"
+
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name','last_name','phone_number','birth_date']
 

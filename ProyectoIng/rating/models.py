@@ -7,11 +7,11 @@ from store.models import Store
 #modelo para crear la evaluacion de usuarios
 
 class Rating(models.Model):
-    evaluated_user = models.ForeignKey(Account, related_name="evaluated_user", null=True, on_delete=models.CASCADE)
-    evaluator_user = models.ForeignKey(Account, related_name="evaluator_user", on_delete=models.CASCADE)
-    evaluated_store = models.ForeignKey(Store, null=True, on_delete=models.CASCADE)
-    points = models.IntegerField()
-    comment = models.TextField( null=True)
+    evaluated_user = models.ForeignKey(Account, related_name="evaluated_user", null=True, on_delete=models.CASCADE, verbose_name='Evaluado')
+    evaluator_user = models.ForeignKey(Account, related_name="evaluator_user", on_delete=models.CASCADE, verbose_name='Evaluador')
+    evaluated_store = models.ForeignKey(Store, null=True, on_delete=models.CASCADE, verbose_name='Tienda Evaluada')
+    points = models.IntegerField( verbose_name='Puntos')
+    comment = models.TextField( null=True, verbose_name='Comentario')
 
 
     def __str__(self):

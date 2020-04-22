@@ -7,14 +7,14 @@ from images.models import Image
 Atributos: [Nombre, descripcion, ubicacion de tienda]"""
 
 class Store(models.Model):
-    store_name= models.CharField(max_length=100,null=False,blank=False)
-    store_description= models.TextField(null=False,blank=False)
-    store_location = models.ForeignKey(Location, on_delete=models.CASCADE)
+    store_name= models.CharField(max_length=100,null=False,blank=False, verbose_name='Nombre')
+    store_description= models.TextField(null=False,blank=False, verbose_name='Descripcion')
+    store_location = models.ForeignKey(Location, on_delete=models.CASCADE, verbose_name='Ubicacion')
     store_profile_img= models.ForeignKey(Image, on_delete=models.CASCADE,related_name="store_profile_img", default="1", null=True)
     store_cover_img= models.ForeignKey(Image, on_delete=models.CASCADE,related_name="store_cover_img",default="1", null=True)
-    date_created =models.DateTimeField(auto_now_add=True)
+    date_created =models.DateTimeField(auto_now_add=True, verbose_name='Fecha de Creacion')
     #Booleano para saber si la tienda esta activa o no (Borrada o no)
-    active= models.BooleanField(default=True)
+    active= models.BooleanField(default=True, verbose_name='Actividad de Usuario')
 
     def __str__(self):
         return self.store_name
