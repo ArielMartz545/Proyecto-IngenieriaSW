@@ -125,7 +125,7 @@
                                     <p class="my-0 py-0">
                                         <strong>Comparte este perfil: </strong>
                                         <span
-                                            id="profile_url">{{ request.scheme  }}://127.0.0.1:8000{#{ request.META['HTTP_HOST'] }#}{% url 'profile' object.pk %}</span>
+                                            id="profile_url">{{ request.scheme  }}://127.0.0.1:8000{#{ request.META['HTTP_HOST'] }#}{% url 'store_detail' object.pk %}</span>
                                         <a tabindex="0" onclick="copyLink('profile_url');" id="profile_url_copy"
                                             data-toggle="popover" title="Enlace copiado al portapapeles"
                                             data-content="Comparte el perfil en una publicación o mensaje."

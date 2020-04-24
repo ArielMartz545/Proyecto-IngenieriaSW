@@ -12,7 +12,7 @@ Tiendas de {{user_name}}
 {% endblock %}
 {% block content %}
 {% if 'deleted' in request.GET %}
-<!-- Mensaje por la eliminacion  de una tienda -->
+{# INICIO Mensaje por la eliminacion  de una tienda#}
 <div class="row">
     {% if 'success' == request.GET.deleted %}
     <div class="alert w-100 alert-success alert-dismissible fade show" role="alert">
@@ -32,7 +32,8 @@ Tiendas de {{user_name}}
     {% endif %}
 </div>
 {% endif %}
-
+{# FIN MENSAJE DE RETROALIMENTACION POR ELIMINAR TIENDA#}
+{# INICIO MENSAJE DE RETROALIMENTACION POR AGREGAR UNA TIENDA #}
 {% if 'added' in request.GET %}
 <!-- Mensaje por la eliminacion  de una tienda -->
 <div class="row">
@@ -54,7 +55,8 @@ Tiendas de {{user_name}}
     {% endif %}
 </div>
 {% endif %}
-
+{# FIN MENSAJE DE RETROALIMENTACION POR AGREGAR UNA TIENDA #}
+{# INCIO PANEL PARA CREAR TIENDA #}
 <div class="row">
     <div class="col-12">
         <div class="card border-left-primary border-bottom-primary shadow mb-4">
@@ -67,6 +69,7 @@ Tiendas de {{user_name}}
                         </h2>
                     </div>
                     {% else %}
+                    {# SI EL USUARIO EN SESION ES VALIDO PERMITE CREAR TIENDA#}
                     {% if request.user.pk == user_pk %}
                     <div class="col-sm-8">
                         <h2 class="m-0 font-weight-bold text-primary">
@@ -127,6 +130,8 @@ Tiendas de {{user_name}}
         </div>
     </div>
 </div>
+{# FIN PANEL PARA CREAR TIENDA #}
+{# INICIO DE LAS CARDS DE CADA TIENDA ACTIVA#}
 <div class="row">
     {% for data in object_list %}
     <div class="col-12 col-sm-6 col-md-5 col-lg-3 mb-3">
@@ -159,20 +164,10 @@ Tiendas de {{user_name}}
             <div class="card-body">
                 <h5 class="card-title"><a href="{% url 'store_detail' data.pk %}">{{data.store.store_name}}</a> </h5>
                 <h6>{% if data.id_store != None %} {{data.id_store}} {% endif %}</h6>
-                <div class="price-{{ data.id_currency.pk }}">
-                    <p class="my-0">Precio: {{ data.id_currency.currency_sign }} {{data.price|floatformat:"2"}}</p>
-                </div>
-                <div class="price-{{ data.exchange_currency.pk }}">
-                    <p class="my-0">Precio: {{data.exchange_currency.currency_sign}} {{data.exchange|floatformat:"2"}}
-                    </p>
-                    <p class="my-0 font-italic"><small>Precio original en {{ data.id_currency }}. Cambio al día de hoy
-                            según <a href="https://www.bch.hn/index.php" target="_blank">BCH</a>.</small></p>
-                </div>
-                <p class="my-0">Categoría: <a
-                        href="{% url 'search' %}?c={{ data.id_category.pk }}">{{ data.id_category }}</a></p>
+                <p class="lead">{{data.store.store_description}}</p>
                 <p class="my-0">Lugar: <a
-                        href="{% url 'search' %}?l={{ data.id_location.pk }}">{{ data.id_location }}</a></p>
-                <p class="mt-0">Publicado: {{data.date_created|date:'d-m-Y g:ia'}}</p>
+                        href="{% url 'search' %}?l={{ data.id_location.pk }}">{{ data.store.store_location }}</a></p>
+                <p class="mt-0">En Pa'Ya desde: {{data.store.date_created|date:'d-m-Y'}}</p>
                 <a href="{% url 'store_detail' data.pk %}"
                     class="btn btn-block btn-outline-{% cycle 'info' 'success' 'secondary' 'danger' 'warning' 'primary' %}">Ver
                     más</a>
@@ -192,6 +187,8 @@ Tiendas de {{user_name}}
     </div>
     {% endfor %}
 </div>
+{# FINAL DE LAS CARDS DE CADA TIENDA ACTIVA #}
+{# INICIO PAGINACION #}
 {% if object_list.count != 0 %}
 <div class="row">
     <div class="col-12">
@@ -222,7 +219,7 @@ Tiendas de {{user_name}}
     </div>
 </div>
 {% endif %}
-
+{# FIN PAGINACION #}
 {#Modal formulario crear tienda, solo se muestra cuando el usuario ya tiene tiendas creadas para no sobrecargar la interface#}
 <div class="modal fade" id="modalCrearTienda" tabindex="-1" role="dialog" aria-labelledby="modalCrearTienda"
     aria-hidden="true">

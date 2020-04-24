@@ -16,12 +16,15 @@ from django.http import  HttpResponseRedirect
 from django.views import View
 # Create your views here.
 
+#Clase para crear una tienda
 class CreateStore(CreateView): #Pass,Correo,Nombre,Apellido,Telefono,Direccion,FechaN
     model = Store
     form_class=StoreForm
-
+    #Se sobrecarga el metodo post para poder agregar mas de un usuario a la tienda, asi como el usuario que la crea
     def post(self, request, *args, **kwargs):
+        #Obteniendo la instancia del formulario
         form = StoreForm(request.POST)
+        #Si el formulario es valido se hace la creacion de la tienda, sino se hace un redireccionamiento por el error
         if form.is_valid():
             store = form.save()
             store.save()
@@ -36,10 +39,11 @@ class CreateStore(CreateView): #Pass,Correo,Nombre,Apellido,Telefono,Direccion,F
     def get(self, request, *args, **kwargs):
         return HttpResponseRedirect(reverse_lazy('user_stores',kwargs={'uid': request.user.id}))
 
-
+#Esta clase sirve para desplegar las tiendas asociadas a un usuarios
 class UserStores(ListView):
     model= UsersXStore
     template_name="store/stores_list.html"
+    #Numero de elementos por paginacion
     paginate_by = 5
 
     def get_context_data(self, *args, **kwargs):
@@ -71,6 +75,7 @@ class UserStores(ListView):
         """
         return UsersXStore.objects.prefetch_related('store').filter(user=self.request.user).order_by('-store__store_name')
 
+#Esta clase sirve para ver la informacion detallada de una tienda
 class StoreDetailView(DetailView):
     model = Store 
     template_name = 'store/stores.html'
@@ -101,7 +106,7 @@ class StoreUpdate(UpdateView):
     def get_success_url(self):
         return reverse_lazy('store_detail',kwargs={'pk': self.object.id})+'?updated=success'
 
-
+#Metodo hecho para poder actualizar los datos de una tienda desde el mismo template de detalle de tienda, hecho con un MODAL
 def update_store(request, *args, **kwargs):
     #Obteniendo el id de la tienda
     id_store = request.POST.get('id_store')
