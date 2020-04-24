@@ -1,6 +1,6 @@
 {% extends 'core/sidebar.html' %}
 {% load static %}
-{% block title %}Editar Mi Perfil{% endblock %}
+{% block title %}{{object}}{% endblock %}
 {% block meta %}
 <meta property="og:title" content="{{object.get_full_name}} en Pa'Ya">
 <meta property="og:description" content="Revisa mi perfil de Pa'Ya, productos y servicios disponibles.">
@@ -12,66 +12,352 @@
 <meta name="twitter:card" content="summary_large_image">
 {% endblock %}
 {% block css %}
-
 <link href="{% static 'core/css/cover.css' %}" rel="stylesheet">
 <link href="{% static 'store/css/style.css' %}" rel="stylesheet">
 {% endblock %}
 {% block navbar %}
 {% endblock %}
 {% block content %}
-<!-- Jumbotron Header -->
-{% if 'updated' in request.GET %}
-<div class="row">
-    {% if 'success' == request.GET.updated %}
-    <div class="alert w-100 alert-success alert-dismissible fade show" role="alert">
-        <strong>¡Éxito!</strong> Se han actualizado los datos correctamente.
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-    {% endif %}
-    {% if 'error' == request.GET.updated %}
-    <div class="alert w-100 alert-fluid alert-danger alert-dismissible fade show" role="alert">
-        <strong>¡Uuuups!</strong> Ha sucedido un error al actualizar los datos, intenta nuevamente.
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-    {% endif %}
-</div>
-{% endif %}
-<header class="jumbotron my-2">
-    <div class="row">
-        <div class="col-md-3">
-            {% for img in object.store_images.all %}
-            <img class="rounded-circle float-left img-fluid" src="{{img.img_route.url}}" alt="Responsive image" width="250" height="250">
-            {% endfor %}
-        </div>
-        <div class="col-md-9">
-            <h1 class="display-4">{{ object.store_name }}</h1>
-            <p class="lead">{{ object.store_description }}</p>
-            <p class="lead">{{ object.store_location }}</p>
-            <a href="{% url 'update_store' object.pk %}" class="btn btn-primary btn-lg">Editar Tienda!</a>
-            <a href="{% url 'store_ad_create' object.pk %}" class="btn btn-primary btn-lg">Crear Anuncio</a>
-            <a href="{% url 'delete_store' object.pk%}" class="btn btn-danger btn-lg">Eliminar</a>
-        </div>
-    </div>
-</header>
-
-<div class="row mb-3">
+{# Inicio Portada y foto de perfil #}
+<div class="row my-3">
     <div class="col-md-12">
         <div class="profile-block">
-            <div class="profile-block-thumb cover-container" style="background-image: url('{{object.store_cover_img.img_route.url}}');"></div>
+            <div class="profile-block-thumb cover-container"
+                style="background-image: url('{{object.store_cover_img.img_route.url}}');"></div>
             <div class="profile-img">
-                    <img src="{{object.store_profile_img.img_route.url}}" alt="" title="">        
+                <img src="{{object.store_profile_img.img_route.url}}" alt="Imagen de perfil">
             </div>
         </div>
     </div>
 </div>
+{# Fin Portada y foto de perfil #}
+{# INICIO TARJETA PERFIL (DATOS) TIENDA #}
+<div class="row px-0">
+    <div class="col-12 mt-2">
+        <div class="card border-left-primary border-bottom-primary shadow mb-4">
+            <div class="card-header py-3">
+                {# INICIO MENSAJES DE RETROALIMENTACION POR ACTUALIZAR PERFIL #}
+                {% if 'updated' in request.GET %}
+                <div class="row">
+                    <div class="col-12">
+                        {% if 'success' == request.GET.updated %}
+                        <div class="alert w-100 alert-success alert-dismissible fade show" role="alert">
+                            <strong>¡Éxito!</strong> Se han actualizado tus datos correctamente.
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        {% endif %}
+                        {% if 'error' == request.GET.updated %}
+                        <div class="alert w-100 alert-fluid alert-danger alert-dismissible fade show" role="alert">
+                            <strong>¡Uuuups!</strong> Ha sucedido un error al actualizar los datos, intenta nuevamente.
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+                {# FIN MENSAJES DE RETROALIMENTACION POR ACTUALIZAR TIENDA #}
+                <div class="row">
+                    {# COMPROBANDO SI EL USUARIO ES ADMINISTRADOR DE LA TIENDA, SINO NO PODRA GESTIONAR LA TIENDA, NADA MAS VER DATOS GENERALES #}
+                    {# CORROBORAMOS QUE EL USUARIO SE ENCUENTRE EN LA LISTA ENVIADA DESDE LA VISTA, QUE CONTIENE EL ID DE LOS OWNERS DE LA TIENDA #}
+                    {% if request.user.pk not in owners %}
+                    <div class="col-9">
+                        <h2 class="m-0 font-weight-bold text-primary">{{ object.store_name }}</h2>
+                        <h5>{{ object.store_description }}</h5>
+                    </div>
+                    <div class="col-md-3">
+                        <form class="ml-auto" action="{% url 'ad_favorite' %}" method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" value={{object.pk}} id="fav_user" name="fav_user">
+                            <button class="btn btn-block btn-danger float-md-right">{% if favorite %}<i
+                                    class="fas fa-heart fa-lg"></i> Siguiendo{% else %}<i
+                                    class="far fa-heart fa-lg"></i> Seguir{% endif %}</button>
+                        </form>
+                    </div>
+                    {% else %}
+                    <div class="col-md-9">
+                        <h2 class="m-0 font-weight-bold text-primary">{{ object.store_name }}</h2>
+                        <h5>{{ object.store_description }}</h5>
+                        <a href="#" data-toggle="modal" data-target="#modalCambiarDatos" class="text-muted"><i
+                                class="fas fa-edit"></i> Editar Tienda</a>
+                        <a href="#" data-toggle="modal" data-target="#modalAgregarAnuncio" class="text-muted"><i
+                                class="fas fa-edit"></i>Crear Anuncio</a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {# TARJETA DE INFORMACION #}
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12 mb-2">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group my-0 py-1">
+                                    <h5><strong>Número de teléfono: </strong> {{ object.phone_number }} </h5>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group my-0 py-1">
+                                    <h5><strong>Correo electrónico: </strong> {{ object.email }} </h5>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group my-0 py-1">
+                                    <h5><strong>Sitio web: </strong> {{ object.email }} </h5>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group my-0 py-1">
+                                    <h5><strong>Ubicación: </strong> {{ object.store_location }} </h5>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group my-0 py-1">
+                                    <h5><strong>En Pa'Ya desde: </strong> {{ object.date_created | date:'d-m-Y' }} </h5>
+                                </div>
+                            </div>
 
+                            <div class="col-md-6">
+                                <div class="form-group my-0 py-1">
+                                    <p class="my-0 py-0">
+                                        <strong>Comparte este perfil: </strong>
+                                        <span
+                                            id="profile_url">{{ request.scheme  }}://127.0.0.1:8000{#{ request.META['HTTP_HOST'] }#}{% url 'profile' object.pk %}</span>
+                                        <a tabindex="0" onclick="copyLink('profile_url');" id="profile_url_copy"
+                                            data-toggle="popover" title="Enlace copiado al portapapeles"
+                                            data-content="Comparte el perfil en una publicación o mensaje."
+                                            class="badge badge-secondary">
+                                            <i class="far fa-copy"></i>
+                                        </a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class="row">
+                    {% if request.user.pk in owners %}
+                    <div class="col-md-4 my-3">
+                        <a href="{% url 'products_user' request.user.pk %}" class="btn btn-block btn-primary btn-lg">Mis
+                            anuncios</a>
+                    </div>
+                    <div class="col-md-4 my-3">
+                        <a href="{% url 'user_stores' request.user.pk %}" class="btn btn-block btn-danger btn-lg">Mis
+                            tiendas</a>
+                    </div>
+                    <div class="col-md-4 my-3">
+                        <a href="#" class="btn btn-block btn-success btn-lg">Mis estadísticas</a>
+                    </div>
+                    {% else %}
+                    <div class="col-md-4 my-3">
+                        <a href="{% url 'products_user' object.pk %}"
+                            class="btn btn-block btn-primary btn-lg">Anuncios</a>
+                    </div>
+                    <div class="col-md-4 my-3">
+                        <a href="#" class="btn btn-block btn-danger btn-lg">Estadísticas</a>
+                    </div>
+                    <div class="col-md-4 my-3">
+                        <a href="#" data-toggle="modal" data-target="#modalEvaluar"
+                            class="btn btn-block btn-success btn-lg">Evaluar</a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{# FIN TARJETA PERIFL (DATOS) TIENDA #}
+{# CARD QUE SE MUESTRA CUANDO AUN NO HAY ANUNCIOS REALIZADOS POR LA TIENDA #}
+{% if ads.count == 0 %}
+<div class="row">
+    <div class="col-12">
+        <div class="card border-left-primary border-bottom-primary shadow mb-4">
+            <div class="card-body">
+                {% if request.user.pk in owners %}
+                <h3>Aun no tienes anuncios publicados.</h3>
+                {% else %}
+                <h3>{{object.store_name}} aun no tiene anuncios publicados.</h3>
+                {% endif %}
+                <p>Si deseas vender un articulo o prestar un servicios, deberías crear un anuncio.</p>
+                <p>Periodicamente se remueven anuncios para mostrar sólo los más recientes..</p>
+                <a href="{% url 'ad_create' %}" class="btn btn-primary btn-block">Crear un anuncio</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{# FIN CARD QUE SE MUESTRA CUANDO AUN NO HAY ANUNCIOS #}
+{# INICIO CARDS ANUNCIOS#}
+<div class="row">
+    {% for data in ads %}
+    <div class="col-12 col-sm-6 col-md-5 col-lg-3 mb-3">
+        {# Card anuncio #}
+        <div
+            class="card border-left-{% cycle 'info' 'success' 'secondary' 'danger' 'warning' 'primary' %} shadow h-100 pb-2">
+            {% if data.ad_images.count == 1 %}
+            <a href="{% url 'ad_detail' data.pk %}"><img class="card-img-top no-border-top-left"
+                    src="{{data.ad_images.first.img_route.url}}" alt="Responsive image"></a>
+            {% else %}
+            <div id="carouselAd{{ data.pk }}" class="carousel slide" data-ride="carousel">
+                <div class="carousel-inner">
+                    {% for img in data.ad_images.all %}
+                    <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                        <a href="{% url 'ad_detail' data.pk %}"><img class=" card-img-top no-border-top-left"
+                                src="{{img.img_route.url}}" class="img-fluid" alt="Responsive image"></a>
+                    </div>
+                    {% endfor %}
+                </div>
+                <a class="carousel-control-prev" href="#carouselAd{{ data.pk }}" role="button" data-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                </a>
+                <a class="carousel-control-next" href="#carouselAd{{ data.pk }}" role="button" data-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                </a>
+            </div>
+            {% endif %}
+            <div class="card-body">
+                <h5 class="card-title"><a href="{% url 'ad_detail' data.pk %}">{{data.ad_name}}</a> </h5>
+                <h6>{% if data.id_store != None %} {{data.id_store}} {% endif %}</h6>
+                <div class="price-{{ data.id_currency.pk }}">
+                    <p class="my-0">Precio: {{ data.id_currency.currency_sign }} {{data.price|floatformat:"2"}}</p>
+                </div>
+                <div class="price-{{ data.exchange_currency.pk }}">
+                    <p class="my-0">Precio: {{data.exchange_currency.currency_sign}} {{data.exchange|floatformat:"2"}}
+                    </p>
+                    <p class="my-0 font-italic"><small>Precio original en {{ data.id_currency }}. Cambio al día de hoy
+                            según <a href="https://www.bch.hn/index.php" target="_blank">BCH</a>.</small></p>
+                </div>
+                <p class="my-0">Categoría: <a
+                        href="{% url 'search' %}?c={{ data.id_category.pk }}">{{ data.id_category }}</a>
+                </p>
+                <p class="my-0">Lugar: <a
+                        href="{% url 'search' %}?l={{ data.id_location.pk }}">{{ data.id_location }}</a></p>
+                <p class="mt-0">Publicado: {{data.date_created|date:'d-m-Y g:ia'}}</p>
+                <a href="{% url 'ad_detail' data.pk %}"
+                    class="btn btn-block btn-outline-{% cycle 'info' 'success' 'secondary' 'danger' 'warning' 'primary' %}">Ver
+                    más</a>
+                {% if data.id_user == request.user  %}
+                <div class="row">
+                    <div class="col-sm-6 mt-3">
+                        <a href="{% url 'ad_update' data.pk%}" class="btn btn-info btn-block">Editar</a>
+                    </div>
+                    <div class="col-sm-6 mt-3">
+                        <a href="{% url 'ad_delete' data.pk%}" class="btn btn-danger btn-block">Eliminar</a>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{# FIN Card anuncio #}
+{# INICIO PAGINACION #}
+{% if ads.count != 0 %}
+<div class="row">
+    <div class="col-12">
+        {% if page_obj.has_other_pages %}
+        <ul class="pagination">
+            {% if page_obj.has_previous %}
+            <li class="page-item"><a class="page-link"
+                    href="{% url 'products_user' user_pk %}?page={{ page_obj.previous_page_number }}">Anterior</a></li>
+            {% endif %}
+            {% if page_obj.number != 1 %}
+            <li class="page-item"><a class="page-link" href="{% url 'products_user' user_pk %}?page=1">Primera</a></li>
+            {% endif %}
+            <li class="page-item active"><a class="page-link" href="#">{{ page_obj.number }} de
+                    {{ page_obj.paginator.num_pages }}</a></li>
+            {% if page_obj.number != page_obj.paginator.num_pages %}
+            <li class="page-item"><a class="page-link"
+                    href="{% url 'products_user' user_pk %}?page={{ page_obj.paginator.num_pages }}">Última</a></li>
+            {% endif %}
+            {% if page_obj.has_next %}
+            <li class="page-item"><a class="page-link"
+                    href="{% url 'products_user' user_pk %}?page={{ page_obj.next_page_number }}">Siguiente</a></li>
+            {% endif %}
+        </ul>
+        {% else %}
+        <p>Página 1 de 1 </p>
+        {% endif %}
+        <p>{{ page_obj.paginator.per_page }} anuncios por página </p>
+    </div>
+</div>
+{% endif %}
+{# FIN PAGINACION #}
+{# MODAL ACTUALIZAR DATOS #}
+<div class="modal fade" id="modalCambiarDatos" tabindex="-1" role="dialog" aria-labelledby="modalCambiarDatosLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Edita los datos de tu tienda</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="{% url 'up_store' %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group my-0 py-1">
+                                <input type="hidden" id="id_store" name="id_store" value="{{ object.pk }}">
+                                <label for="id_first_name" class="text-muted">Nombre</label>
+                                <input placeholder="{{ object.store_name }}" value="{{ object.store_name }}" type="text"
+                                    name="store_name" maxlength="50" required class="form-control" id="id_store_name">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group my-0 py-1">
+                        <label for="id_address" class="text-muted">Descripción</label>
+                        <textarea class='form-control' name="store_description" rows="2" required id="id_address"
+                            placeholder="{{ object.store_description }}">{{ object.store_description }}</textarea>
+                    </div>
+                    <div class="form-group my-0 py-1">
+                        <label for="id_location">Ubicación</label>
+                        <select class="form-control" name="store_location" id="id_location" required>
+                            <option value="" disabled selected>Lugar</option>
+                            {% for location in locations %}
+                            <option value="{{location.pk}}" {% if location.pk == object.store_location.pk %} selected
+                                {% endif %}>{{location}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group my-0 py-1">
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="id_store_profile_img"
+                                name="store_profile_img" accept="image/*">
+                            <label class="custom-file-label" for="id_profile_img">Foto de perfil</label>
+                        </div>
+                    </div>
+                    <div class="form-group my-0 py-1">
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="id_store_profile_img"
+                                name="store_cover_img" accept="image/*">
+                            <label class="custom-file-label" for="id_profile_img">Foto de portada</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{# FIN MODAL ACTUALIZAR DATOS #}
 {% endblock %}
 {% block js %}
 <script src="{% static 'core/js/file-label-change.js' %}"></script>
 <script src="{% static 'core/js/max-date-today.js' %}"></script>
 <script src="{% static 'core/js/collapse-sidebar.js' %}"></script>
+<script src="{% static 'core/js/profile.js' %}"></script>
 {% endblock %}

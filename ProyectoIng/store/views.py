@@ -29,24 +29,6 @@ class CreateStore(CreateView): #Pass,Correo,Nombre,Apellido,Telefono,Direccion,F
             user_store.user = request.user
             user_store.store = store
             user_store.save()
-            store_profile_img_route = request.FILES.get("store_profile_img", False)
-            store_cover_img_route = request.FILES.get("store_cover_img", False)
-            if  store_profile_img_route:
-                if  store.store_profile_img.pk == 1:
-                    store_profile_img = Image(img_route = store_profile_img_route)
-                    store.store_profile_image = store_profile_img
-                    store.store_profile_img.save()
-                else:
-                    store.store_profile_img.img_route = store_profile_img_route
-                    store.store_profile_img.save()
-            if  store_cover_img_route:
-                if  store.store_cover_img.pk == 1:
-                    store_cover_img = Image(img_route = store_cover_img_route)
-                    store.store_cover_img = store_cover_img
-                    store.store_cover_img.save()
-                else:
-                    store.store_cover_img.img_route = store_cover_img_route
-                    store.store_cover_img.save()
             store.save(False)
             return HttpResponseRedirect(reverse_lazy('user_stores',kwargs={'uid': request.user.id})+'?added=success')
         return HttpResponseRedirect(reverse_lazy('user_stores',kwargs={'uid': request.user.id})+'?added=error')
@@ -95,8 +77,20 @@ class StoreDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        #Obteniendo la tienda
         context['stores'] = Store.objects.all()
+        #Obtniendo las locaciones
         context['locations'] = Location.objects.order_by('direction').filter(correlative_direction__isnull=True)
+        #El siguiente diccionario contiene todos los usuarios que son administradores de la tienda
+        users_dic = UsersXStore.objects.values('user').filter(store = kwargs['object'].pk)
+        owners = [] #La lista nos servira para almacenar los ID que estan en el diccionario anterior
+        for i in users_dic: owners.append(i['user'])
+        #Se envia una lista que contiene el ID de los administradores de la tienda que servira para verificaciones en el template
+        context['owners'] = owners
+        #Consulta para obtener los anuncios realizados con la tienda
+        queryset = Ad.objects.filter(id_store__id=kwargs['object'].pk)
+        queryset = queryset.filter(active=True).order_by('-date_created')
+        context['ads'] = queryset
         return context
 
 class StoreUpdate(UpdateView):
@@ -107,6 +101,50 @@ class StoreUpdate(UpdateView):
     def get_success_url(self):
         return reverse_lazy('store_detail',kwargs={'pk': self.object.id})+'?updated=success'
 
+
+def update_store(request, *args, **kwargs):
+    #Obteniendo el id de la tienda
+    id_store = request.POST.get('id_store')
+    """ Se verifica que la tienda exista, 
+        Si la tienda no existe store = None y se hace y redireccionamiento dado que la tienda no fue encontrada"""
+    try:
+        store = Store.objects.get(pk = id_store)
+    except:
+        return HttpResponseRedirect(reverse_lazy('user_stores',kwargs={'uid': request.user.id})+'?error=storeNotFound')
+    """ Verificando que el usuario que hizo la peticion es el administardor de la pagina, si no es asi hace redireccionamiento """
+    if not store.user_is_owner(request.user):
+        if request.user is None:
+            return HttpResponseRedirect(reverse_lazy('login'))
+        return HttpResponseRedirect(reverse_lazy('user_stores',kwargs={'uid': request.user.id})+'?error=storeNotFound')
+    #Solo solicitudes por metodo POST
+    if request.method == "POST":
+        form = StoreUpdateForm(request.POST, request.FILES or None, instance= store)
+        if form.is_valid():
+            store = form.save()
+            #Obtener la imagen de perfil si subio una, sino asigna valor de False a user_img_route
+            store_profile_img_route = request.FILES.get("store_profile_img", False)
+            #Obtener la imagen de portada si subio una, sino asigna valor de False a cover_img_route
+            store_cover_img_route = request.FILES.get("store_cover_img", False)
+            #Solo si se subio imagen de perfil
+            if  store_profile_img_route:
+                if  store.store_profile_img.pk == 1:
+                    store_profile_img = Image(img_route = store_profile_img_route)
+                    store.store_profile_image = store_profile_img
+                    store.store_profile_img.save()
+                else:
+                    store.store_profile_img.img_route = store_profile_img_route
+                    store.store_profile_img.save()
+            if  store_cover_img_route:
+                if  store.store_cover_img.pk == 1:
+                    store_cover_img = Image(img_route = store_cover_img_route)
+                    store.store_cover_img = store_cover_img
+                    store.store_cover_img.save()
+                else:
+                    store.store_cover_img.img_route = store_cover_img_route
+                    store.store_cover_img.save()
+            store.save(False)
+            return HttpResponseRedirect(reverse_lazy('store_detail',kwargs={'pk': store.pk})+'?updated=success')
+    return HttpResponseRedirect(reverse_lazy('store_detail',kwargs={'pk': store.pk})+'?updated=error')
 
 class StoreDelete(UpdateView):
     model = Store
