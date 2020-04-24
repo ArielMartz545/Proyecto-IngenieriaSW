@@ -88,8 +88,6 @@ class StoreDetailView(DetailView):
         context['currencies'] = Currency.objects.all()
         #Obteniendo tipo de anuncios
         context['ad_kinds'] = AdKind.objects.all()
-        #Obteniendo Unidades
-        context['units'] = Unit.objects.all()
         #obteniendo Categoria de los anuncios
         context['categories'] = Category.objects.order_by('category_name')
         #Obtniendo las locaciones

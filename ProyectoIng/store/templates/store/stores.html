@@ -139,35 +139,6 @@
                     </div>
                 </div>
             </div>
-            <div class="card-footer">
-                <div class="row">
-                    {% if request.user.pk in owners %}
-                    <div class="col-md-4 my-3">
-                        <a href="{% url 'products_user' request.user.pk %}" class="btn btn-block btn-primary btn-lg">Mis
-                            anuncios</a>
-                    </div>
-                    <div class="col-md-4 my-3">
-                        <a href="{% url 'user_stores' request.user.pk %}" class="btn btn-block btn-danger btn-lg">Mis
-                            tiendas</a>
-                    </div>
-                    <div class="col-md-4 my-3">
-                        <a href="#" class="btn btn-block btn-success btn-lg">Mis estadísticas</a>
-                    </div>
-                    {% else %}
-                    <div class="col-md-4 my-3">
-                        <a href="{% url 'products_user' object.pk %}"
-                            class="btn btn-block btn-primary btn-lg">Anuncios</a>
-                    </div>
-                    <div class="col-md-4 my-3">
-                        <a href="#" class="btn btn-block btn-danger btn-lg">Estadísticas</a>
-                    </div>
-                    <div class="col-md-4 my-3">
-                        <a href="#" data-toggle="modal" data-target="#modalEvaluar"
-                            class="btn btn-block btn-success btn-lg">Evaluar</a>
-                    </div>
-                    {% endif %}
-                </div>
-            </div>
         </div>
     </div>
 </div>
@@ -194,6 +165,28 @@
 {# FIN CARD QUE SE MUESTRA CUANDO AUN NO HAY ANUNCIOS #}
 {# INICIO CARDS ANUNCIOS#}
 <div class="row">
+    {# INICIO MENSAJES DE RETROALIMENTACION POR CREAR UN ANUNCIO #}
+    {% if 'created' in request.GET %}
+    <div class="col-12">
+        {% if 'success' == request.GET.created %}
+        <div class="alert w-100 alert-success alert-dismissible fade show" role="alert">
+            <strong>¡Éxito!</strong> Se han creado tu anuncio correctamente.
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        {% endif %}
+        {% if 'error' == request.GET.created %}
+        <div class="alert w-100 alert-fluid alert-danger alert-dismissible fade show" role="alert">
+            <strong>¡Uuuups!</strong> Ha sucedido un error al crear tu anuncio, intenta nuevamente.
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+    {# FIN MENSAJES DE RETROALIMENTACION POR CREAR UN ANUNCIO #}
     {% for data in ads %}
     <div class="col-12 col-sm-6 col-md-5 col-lg-3 mb-3">
         {# Card anuncio #}
@@ -439,13 +432,6 @@
                                 </select>
                             </div>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <select class="form-control" name="id_unit" id="id_id_unit">
-                            {% for unit in units %}
-                            <option value="{{unit.pk}}">{{unit}}</option>
-                            {% endfor %}
-                        </select>
                     </div>
                     <div class="row">
                         <div class="col-12">
