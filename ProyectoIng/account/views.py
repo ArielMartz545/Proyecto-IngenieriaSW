@@ -18,7 +18,7 @@ from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from django.conf import settings
 from django.utils.html import strip_tags
-from ad.models import Category, PriceRange, Currency
+from ad.models import Category, PriceRange, Currency, Ad
 from location.models import Location
 from images.models import Image
 from favorites.models import Favorites
@@ -114,6 +114,8 @@ class DetailUser(DetailView):
         context['locations'] = Location.objects.order_by('direction').filter(correlative_direction__isnull=True)
         context['all_locations'] = Location.objects.all().order_by('direction')
         context['currencies'] = Currency.objects.all()
+        last_three_ads = Ad.objects.filter(id_user = self.kwargs['pk'], active = True).order_by('-date_created')[:4]
+        context['last_three_ads'] = last_three_ads
         if  self.request.user.pk != self.kwargs['pk']:
             try:
                 favorite = Favorites.objects.get(id_user__pk = self.request.user.pk, id_favorite_user__pk = self.kwargs['pk'])

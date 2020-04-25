@@ -133,7 +133,7 @@ class CreateAd(CreateView):
             for fav in favs:
                 emails.append(fav.id_user.email)
             send_mail('Anuncio nuevo', 'Anuncio de tus favoritos', settings.EMAIL_HOST_USER,emails,fail_silently=False)
-            return HttpResponseRedirect(reverse_lazy('products_user',kwargs={'uid':self.request.user})+'?created')
+            return HttpResponseRedirect(reverse_lazy('products_user',kwargs={'uid':self.request.user.pk})+'?created')
         return HttpResponseRedirect(reverse_lazy('ad_create')+'?error')
 
 @method_decorator(login_required, name='dispatch')

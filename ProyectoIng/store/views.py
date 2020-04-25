@@ -140,7 +140,7 @@ def update_store(request, *args, **kwargs):
             if  store_profile_img_route:
                 if  store.store_profile_img.pk == 1:
                     store_profile_img = Image(img_route = store_profile_img_route)
-                    store.store_profile_image = store_profile_img
+                    store.store_profile_img = store_profile_img
                     store.store_profile_img.save()
                 else:
                     store.store_profile_img.img_route = store_profile_img_route

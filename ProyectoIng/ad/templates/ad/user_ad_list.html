@@ -83,7 +83,7 @@
                 </a>
               </div>
               {% endif %}
-              <div class="card-body">
+              <div class="card-body pb-3">
                 <h5 class="card-title"><a href="{% url 'ad_detail' data.pk %}">{{data.ad_name}}</a> </h5>
                 <h6>{% if data.id_store != None %} {{data.id_store}} {% endif %}</h6>
                 <div class="price-{{ data.id_currency.pk }}">
@@ -95,18 +95,20 @@
                 </div>
                 <p class="my-0">Categoría: <a href="{% url 'search' %}?c={{ data.id_category.pk }}">{{ data.id_category }}</a></p>
                 <p class="my-0">Lugar: <a href="{% url 'search' %}?l={{ data.id_location.pk }}">{{ data.id_location }}</a></p>
-                <p class="mt-0">Publicado: {{data.date_created|date:'d-m-Y g:ia'}}</p>
-                <a href="{% url 'ad_detail' data.pk %}" class="btn btn-block btn-outline-{% cycle 'info' 'success' 'secondary' 'danger' 'warning' 'primary' %}">Ver más</a>
+                <p class="my-0">Publicado: {{data.date_created|date:'d-m-Y g:ia'}}</p>
+              </div>
+              <div class="card-footer mt-0">
                 {% if data.id_user == request.user  %}
                 <div class="row">
-                  <div class="col-sm-6 mt-3">
+                  <div class="col-sm-6 mb-2">
                     <a href="{% url 'ad_update' data.pk%}" class="btn btn-info btn-block">Editar</a>
                   </div>
-                  <div class="col-sm-6 mt-3">
+                  <div class="col-sm-6 mb-2">
                     <a href="{% url 'ad_delete' data.pk%}" class="btn btn-danger btn-block">Eliminar</a>
                   </div>
                 </div>
                 {% endif %}
+                <a href="{% url 'ad_detail' data.pk %}" class="btn btn-block btn-outline-{% cycle 'info' 'success' 'secondary' 'danger' 'warning' 'primary' %}">Ver más</a>
               </div>
             </div>
             {# FIN Card anuncio #}
