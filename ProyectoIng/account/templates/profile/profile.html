@@ -91,11 +91,14 @@
                                 <h5><strong>Correo electrónico: </strong> {{ object.email }} </h5>
                                 </div>
                             </div>
+                            {# NADA MAS EL MISMO USUARIO PODRA VER SU FECHA DE NACIMIENTO #}
+                            {% if object.email == request.user %}
                             <div class="col-md-6">
                               <div class="form-group my-0 py-1">
                                 <h5><strong>Fecha de nacimiento: </strong> {{ object.birth_date | date:'d-m-Y' }} </h5>
                               </div>  
                             </div>
+                            {% endif %}
                             <div class="col-md-6">
                                <div class="form-group my-0 py-1">
                                 <h5><strong>Número de teléfono: </strong> {{ object.phone_number }} </h5>
@@ -106,11 +109,14 @@
                                 <h5><strong>Ubicación: </strong> {{ object.location }} </h5>
                                </div> 
                             </div>
+                            {# NADA MAS EL USUARIO DUENO DEL PERFIL PODRA VER LA DIRECCION#}
+                            {% if object.email == request.user %}
                             <div class="col-md-6">
                                <div class="form-group my-0 py-1">
                                 <h5><strong>Dirección: </strong> {{ object.address }} </h5>
                                </div> 
                             </div>
+                            {% endif %}
                             <div class="col-md-6">
                                <div class="form-group my-0 py-1">
                                 <h5><strong>En Pa'Ya desde: </strong> {{ object.date_joined | date:'d-m-Y' }} </h5>
