@@ -135,8 +135,8 @@ class CreateAd(CreateView):
                 emails.append(fav.id_user.email)
             html_message='<h1><a href=http://127.0.0.1:8000/ads/'+str(num)+'>Click</a></h1>'
             send_mail('Anuncio nuevo', 'Anuncio de tus favoritos', settings.EMAIL_HOST_USER,emails,html_message=html_message,fail_silently=False)
-            return HttpResponseRedirect(reverse_lazy('products_user',kwargs={'uid':self.request.user.pk})+'?created')
-        return HttpResponseRedirect(reverse_lazy('ad_create')+'?error')
+            return HttpResponseRedirect(reverse_lazy('products_user',kwargs={'uid':self.request.user.pk})+'?createdAd=success')
+        return HttpResponseRedirect(reverse_lazy('ad_create')+'?createdAd=error')
 
 
 @method_decorator(login_required, name='dispatch')
