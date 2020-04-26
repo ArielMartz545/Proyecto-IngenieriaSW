@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.conf import settings
 from django.contrib import admin
-from django.urls import path,include
+from django.urls import path,include, re_path
 from core.views import main_page
 
 urlpatterns = [
@@ -29,6 +29,7 @@ urlpatterns = [
     #Auth Paths
     path('accounts/',include('account.urls')),
     path('accounts/',include('django.contrib.auth.urls')),
+    re_path(r'session_security/', include('session_security.urls')),
     
 ]
 #Manejo de Imagenes en modo DEBUG

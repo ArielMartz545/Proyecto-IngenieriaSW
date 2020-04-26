@@ -74,9 +74,12 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django_globals.middleware.Global',
+    'session_security.middleware.SessionSecurityMiddleware'
 ]
 
 ROOT_URLCONF = 'ProyectoIng.urls'
+SESSION_SECURITY_EXPIRE_AFTER = 600
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 TEMPLATES = [
     {
