@@ -126,12 +126,12 @@
                         <div class="row my-3">
                             <div class="col-12 col-md-4">
                                 <h5 class="m-0 ml-2 font-weight-bold text-secondary">
-                                    Usuario
+                                    Vendedor
                                 </h5>
                             </div>
                             <div class="col-12 col-md-8">
                                 <h5 class="m-0 ml-4 text-secondary">
-                                    <a href="{% url 'profile' object.id_user.pk %}">{{object.id_user.get_full_name}}</a>
+                                    <a href="{% if not object.id_store %} {% url 'profile' object.id_user.pk %} {% else %} {% url 'store_detail' object.id_store.pk %} {% endif %}">{% if not object.id_store %}{{object.id_user.get_full_name}}{% else %} {{object.id_store.store_name}} {% endif %}</a>
                                 </h5>
                             </div>
                         </div>

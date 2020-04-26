@@ -62,14 +62,14 @@
                 {% endif %}
                 {# FIN MENSAJES DE RETROALIMENTACION POR ACTUALIZAR TIENDA #}
                 <div class="row">
-                    {# COMPROBANDO SI EL USUARIO ES ADMINISTRADOR DE LA TIENDA, SINO NO PODRA GESTIONAR LA TIENDA, NADA MAS VER DATOS GENERALES #}
-                    {# CORROBORAMOS QUE EL USUARIO SE ENCUENTRE EN LA LISTA ENVIADA DESDE LA VISTA, QUE CONTIENE EL ID DE LOS OWNERS DE LA TIENDA #}
-                    {% if request.user.pk not in owners and  request.user.is_authenticated %}
-                    <div class="col-9">
+                    <div class="col-10">
                         <h2 class="m-0 font-weight-bold text-primary">{{ object.store_name }}</h2>
                         <h5>{{ object.store_description }}</h5>
                     </div>
-                    <div class="col-md-3">
+                    {# COMPROBANDO SI EL USUARIO ES ADMINISTRADOR DE LA TIENDA, SINO NO PODRA GESTIONAR LA TIENDA, NADA MAS VER DATOS GENERALES #}
+                    {# CORROBORAMOS QUE EL USUARIO SE ENCUENTRE EN LA LISTA ENVIADA DESDE LA VISTA, QUE CONTIENE EL ID DE LOS OWNERS DE LA TIENDA #}
+                    {% if request.user.pk not in owners and  request.user.is_authenticated %}
+                    <div class="col-md-2">
                         <form class="ml-auto" action="{% url 'ad_favorite' %}" method="POST">
                             {% csrf_token %}
                             <input type="hidden" value={{object.pk}} id="fav_user" name="fav_user">
@@ -78,19 +78,45 @@
                                     class="far fa-heart fa-lg"></i> Seguir{% endif %}</button>
                         </form>
                     </div>
-                    {% else %}
-                    <div class="col-md-9">
-                        <h2 class="m-0 font-weight-bold text-primary">{{ object.store_name }}</h2>
-                        <h5>{{ object.store_description }}</h5>
-                        <a href="#" data-toggle="modal" data-target="#modalCambiarDatos" class="text-muted"><i
-                                class="fas fa-edit"></i> Editar Tienda</a>
-                        <a href="#" data-toggle="modal" data-target="#modalAgregarAnuncio" class="text-muted"><i
-                                class="fas fa-edit"></i>Crear Anuncio</a>
+                    {% elif request.user.is_authenticated %}
+                    <div class="col-md-2">
+                        <a href="#" data-toggle="modal" data-target="#modalCambiarDatos">
+                            <p><i class="fas fa-edit"></i> Editar Tienda</p>
+                        </a>
+                    </div>
+                    <div class="col-md-2">
+                        <a href="#" data-toggle="modal" data-target="#modalAgregarAnuncio" style="color: #1cc88a;"><i
+                                class="fas fa-plus"></i><strong> Crear Anuncio</strong></a>
+                    </div>
+                    {% elif not request.user.is_authenticated %}
+                    <div class="card-body">
+                        <div class="row my-3">
+                            <h5 class="m-0 ml-2 text-secondary">
+                                Para poder ver la información de contacto de la tienda y aprovechar Pa'Ya al máximo
+                                necesitas
+                                haber ingresado con una cuenta.
+                            </h5>
+                        </div>
+                        <div class="row my-3">
+                            <div class="col-2">
+                                <a class="btn btn-block btn-outline-primary"
+                                    href="{% url 'signup' %}?next={% url 'store_detail' object.id %}">
+                                    Regístrate
+                                </a>
+                            </div>
+                            <div class="col-2">
+                                <a class="btn btn-block btn-primary"
+                                    href="{% url 'login' %}?next={% url 'store_detail' object.id %}">
+                                    Ingresar
+                                </a>
+                            </div>
+                        </div>
                     </div>
                     {% endif %}
                 </div>
             </div>
             {# TARJETA DE INFORMACION #}
+            {% if request.user.is_authenticated %}
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-12 mb-2">
@@ -140,6 +166,7 @@
                     </div>
                 </div>
             </div>
+            {% endif %}
         </div>
     </div>
 </div>
@@ -148,22 +175,35 @@
 {% if ads.count == 0 %}
 <div class="row">
     <div class="col-12">
-        <div class="card border-left-primary border-bottom-primary shadow mb-4">
+        <div class="card shadow mb-4">
             <div class="card-body">
                 {% if request.user.pk in owners %}
-                <h3>Aun no tienes anuncios publicados.</h3>
-                {% else %}
-                <h3>{{object.store_name}} aun no tiene anuncios publicados.</h3>
-                {% endif %}
+                <h3>Aún no tienes anuncios publicados.</h3>
                 <p>Si deseas vender un articulo o prestar un servicios, deberías crear un anuncio.</p>
                 <p>Periodicamente se remueven anuncios para mostrar sólo los más recientes..</p>
-                <a href="{% url 'ad_create' %}" class="btn btn-primary btn-block">Crear un anuncio</a>
+                <a href="#" data-toggle="modal" data-target="#modalAgregarAnuncio"
+                    class="btn btn-primary btn-block">Crear un anuncio</a>
+                {% else %}
+                <h3>{{object.store_name}} Aún no tiene anuncios publicados.</h3>
+                {% endif %}
             </div>
         </div>
     </div>
 </div>
 {% endif %}
 {# FIN CARD QUE SE MUESTRA CUANDO AUN NO HAY ANUNCIOS #}
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow mb-4">
+            <div class="card-body">
+                {% if request.user.pk in owners %}
+                <a href="#" data-toggle="modal" data-target="#modalAgregarAnuncio"
+                    class="btn btn-success btn-block">Crear un anuncio</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
 {# INICIO CARDS ANUNCIOS#}
 <div class="row">
     {# INICIO MENSAJES DE RETROALIMENTACION POR CREAR UN ANUNCIO #}
@@ -188,6 +228,28 @@
     </div>
     {% endif %}
     {# FIN MENSAJES DE RETROALIMENTACION POR CREAR UN ANUNCIO #}
+    {# INICIO MENSAJES DE RETROALIMENTACION POR EDITAR UN ANUNCIO #}
+    {% if 'updatedAd' in request.GET %}
+    <div class="col-12">
+        {% if 'success' == request.GET.updatedAd %}
+        <div class="alert w-100 alert-success alert-dismissible fade show" role="alert">
+            <strong>¡Éxito!</strong> Se han editado tu anuncio correctamente.
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        {% endif %}
+        {% if 'error' == request.GET.updatedAd %}
+        <div class="alert w-100 alert-fluid alert-danger alert-dismissible fade show" role="alert">
+            <strong>¡Uuuups!</strong> Ha sucedido un error al editar tu anuncio, intenta nuevamente.
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+    {# FIN MENSAJES DE RETROALIMENTACION POR EDITAR UN ANUNCIO #}
     {% for data in ads %}
     <div class="col-12 col-sm-6 col-md-5 col-lg-3 mb-3">
         {# Card anuncio #}
