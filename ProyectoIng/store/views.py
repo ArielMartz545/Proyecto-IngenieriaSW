@@ -179,59 +179,10 @@ class StoreDelete(UpdateView):
         return HttpResponseRedirect(reverse_lazy('user_stores', kwargs={'uid': self.request.user})+'?deleted=success')
 
 """ Vista para crear anuncios desde una tienda"""
-class CreateAdStore(CreateView):
-    model = Ad
-    form_class=AdCreateForm
-    template_name= 'store/store_ad_create.html' #Template al que envia el formulario
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        # Sidebar Context
-        context['categories'] = Category.objects.order_by('category_name')
-        context['price_ranges'] = PriceRange.objects.all()
-        context['locations'] = Location.objects.order_by('direction').filter(correlative_direction__isnull=True)
-        # Fin Sidebar Context
-        context['all_locations'] = Location.objects.all().order_by('direction')
-        context['ad_kinds'] = AdKind.objects.all()
-        context['units'] = Unit.objects.all()
-        context['currencies'] = Currency.objects.all()
-        return context
-
-    #sobrecarga del metodo post
-    def post(self, request, *args, **kwargs):
-        #Obteniendo el id de la tienda
-        id_store = self.kwargs['pk']
-        """ Se verifica que la tienda exista, 
-            Si la tienda no existe store = None y se hace y redireccionamiento dado que la tienda no fue encontrada"""
-        try:
-            store = Store.objects.get(pk = id_store)
-        except:
-            return reverse_lazy('user_stores',kwargs={'pk': self.request.user.id})+'?error=storeNotFound'
-        """ Verificando que el usuario que hizo la peticion es el administardor de la pagina, si no es asi hace redireccionamiento """
-        if not store.user_is_owner(request.user):
-            return reverse_lazy('user_stores',kwargs={'pk': self.request.user.id})+'?error=storeNotOwned'
-        form = AdCreateForm(request.POST)
-        if form.is_valid():
-            ad= form.save(False)
-            ad.id_user = request.user
-            ad= form.save()
-            ad.id_store = store 
-            ad.save()
-            for file in request.FILES.getlist('images'):
-                instance = Image(img_route=file)
-                instance.save()
-                ad.ad_images.add( instance )
-            if len(request.FILES.getlist('images'))==0:
-                instance = Image.objects.get(pk=1)
-                ad.ad_images.add( instance )
-            ad.save(False)
-            return HttpResponseRedirect(reverse_lazy('store_detail',kwargs={'pk': store.pk})+'?created=success')
-        return HttpResponseRedirect(reverse_lazy('user_stores')+'?created=error')
-
 #Metodo creado para crear anuncios desde una tienda
 #def create_ad_store(request, *args, *args, **kwargs):
 #Clase para crear un Anuncio asociado a una tienda
-class CreateAdStore2(CreateView):
+class CreateAdStore(CreateView):
     model = Ad
     form_class = AdCreateForm
     #Sobrecarga del metodo POST
