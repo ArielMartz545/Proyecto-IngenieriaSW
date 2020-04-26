@@ -14,6 +14,7 @@
     <link href="{% static 'core/css/profile.css' %}" rel="stylesheet">
     <link href="{% static 'core/css/cover.css' %}" rel="stylesheet">
     <link href="{% static 'core/css/card-img-top.css' %}" rel="stylesheet">
+    <link href="{% static 'core/css/star.css' %}" rel="stylesheet" >
 {% endblock %}
 {% block navbar %}
 {% endblock %}
@@ -370,7 +371,8 @@
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Evaluar usuario</h5>
+                        <a href="{% url 'home' %}" class="text-decoration-none"><h1 class="font-weight-bold font-italic display-4"><span class="text-primary">Pa</span><span class="text-success">’Ya</span></h1></a>
+                        <h5 class="modal-title" id="exampleModalLabel">Ratings</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                         </button>
@@ -379,18 +381,18 @@
                         {% csrf_token %}
                         <input type="number" value="{{ object.pk }}" hidden name="id_evaluated_user">
                         <div class="modal-body">
-                            <div class="form-group my-0 py-1">
-                                <label for="id_points">Puntos :)</label>
-                                <select class="form-control" name="id_points">
-                                <option value='1'>1</option>
-                                <option value='2'>2</option>
-                                <option value='3'>3</option>
-                                <option value='4'>4</option>
-                                <option value='5'>5</option>
-                                </select>
+                            <div class="row justify-content-md-center py-4" >
+                                <a href="#" class="px-3 py-1 star star-1"><i class="far fa-star text-warning"></i></a>
+                                <a href="#" class="px-3 py-1 star star-2"><i class="far fa-star text-warning"></i></a>
+                                <a href="#" class="px-3 py-1 star star-3"><i class="far fa-star text-warning"></i></a>
+                                <a href="#" class="px-3 py-1 star star-4"><i class="far fa-star text-warning"></i></a>
+                                <a href="#" class="px-3 py-1 star star-5"><i class="far fa-star text-warning"></i></a>
                             </div>
+                              <div class="row px-1 py-1" >
+                                <input type="number" name="id_points" id="stars" hidden="True" readonly="true" value=0>
+                              </div>
                             <div class="form-group my-0 py-1">
-                                <label for="id_comment" class="text-muted">Comentario</label>
+                                <label for="id_comment" class="text-muted"></label>
                                 <textarea class= 'form-control' rows="2" required name="id_comment" placeholder="Comentario"></textarea>
                             </div>
                         </div>
@@ -409,4 +411,5 @@
     <script src="{% static 'core/js/max-date-today.js' %}"></script>
     <script src="{% static 'core/js/profile.js' %}"></script>
     <script src="{% static 'core/js/collapse-sidebar.js' %}"></script>
+    <script src="{% static 'core/js/rate-star.js' %}"></script>
 {% endblock %}
