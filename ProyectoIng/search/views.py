@@ -106,7 +106,7 @@ class SearchView(ListView):
                 location = None
             #Filtro de lugar
             if location is not None:
-                queryset = queryset.filter(id_location__pk=l) | queryset.filter(id_location__correlative_direction__pk=l)
+                queryset = queryset.filter(store_location__pk=l) | queryset.filter(store_location__correlative_direction__pk=l)
             #queryset = queryset.order_by('-date_created')
             return queryset
         else:

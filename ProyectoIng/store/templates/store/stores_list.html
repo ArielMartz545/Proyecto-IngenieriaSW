@@ -138,39 +138,18 @@ Tiendas de {{user_name}}
         {# Card anuncio #}
         <div
             class="card border-left-{% cycle 'info' 'success' 'secondary' 'danger' 'warning' 'primary' %} shadow h-100 pb-2">
-            {% if data.store_images.count == 1 %}
-            <a href="{% url 'store_detail' data.pk %}"><img class="card-img-top no-border-top-left"
-                    src="{{data.store_images.first.img_route.url}}" alt="Responsive image"></a>
-            {% else %}
-            <div id="carouselAd{{ data.pk }}" class="carousel slide" data-ride="carousel">
-                <div class="carousel-inner">
-                    {% for img in data.store_images.all %}
-                    <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                        <a href="{% url 'store_detail' data.pk %}"><img class=" card-img-top no-border-top-left"
-                                src="{{img.img_route.url}}" class="img-fluid" alt="Responsive image"></a>
-                    </div>
-                    {% endfor %}
-                </div>
-                <a class="carousel-control-prev" href="#carouselAd{{ data.pk }}" role="button" data-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="sr-only">Previous</span>
-                </a>
-                <a class="carousel-control-next" href="#carouselAd{{ data.pk }}" role="button" data-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="sr-only">Next</span>
-                </a>
-            </div>
-            {% endif %}
+            <a href="{% url 'store_detail' data.pk %}"><img class="card-img-top no-border-top-left" src="{{ data.store.store_profile_img.img_route.url }}" alt="Responsive image"></a>
             <div class="card-body">
                 <h5 class="card-title"><a href="{% url 'store_detail' data.pk %}">{{data.store.store_name}}</a> </h5>
                 <h6>{% if data.id_store != None %} {{data.id_store}} {% endif %}</h6>
-                <p class="lead">{{data.store.store_description}}</p>
                 <p class="my-0">Lugar: <a
                         href="{% url 'search' %}?l={{ data.id_location.pk }}">{{ data.store.store_location }}</a></p>
                 <p class="mt-0">En Pa'Ya desde: {{data.store.date_created|date:'d-m-Y'}}</p>
+            </div>
+            <div class="card-footer mt-0">
                 <a href="{% url 'store_detail' data.pk %}"
-                    class="btn btn-block btn-outline-{% cycle 'info' 'success' 'secondary' 'danger' 'warning' 'primary' %}">Ver
-                    más</a>
+                class="btn btn-block btn-outline-{% cycle 'info' 'success' 'secondary' 'danger' 'warning' 'primary' %}">Ver
+                más</a>
                 {% if data.id_user == request.user  %}
                 <div class="row">
                     <div class="col-sm-6 mt-3">

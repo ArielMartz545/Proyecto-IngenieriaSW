@@ -211,6 +211,8 @@
               <div class="input-group-prepend">
                 <select class="btn btn-primary resize-select" name="c" id="id_c">
                   <option value="0">Todo</option>
+                  <option value="-1">Usuarios</option>
+                  <option value="-2">Tiendas</option>
                   {% for category in categories %}
                     <option value="{{category.id}}" {% if category.pk == c %}selected{% endif %}>{{category.category_name}}</option>
                   {% endfor %}
@@ -242,6 +244,8 @@
                     <div class="input-group-prepend">
                       <select class="btn btn-primary resize-select" name="c" id="id_c">
                         <option value="0">Todo</option>
+                        <option value="-1">Usuarios</option>
+                        <option value="-2">Tiendas</option>
                         {% for category in categories %}
                           <option value="{{category.id}}" {% if category.id == c %}selected{% endif %}>{{category.category_name}}</option>
                         {% endfor %}

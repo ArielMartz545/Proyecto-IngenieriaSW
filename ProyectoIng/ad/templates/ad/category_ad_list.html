@@ -105,6 +105,8 @@ Anuncios de {{ category_name }}
                 href="https://www.bch.hn/index.php" target="_blank">BCH</a>.</small></p>
         </div>
         <p class="my-0">Lugar: <a href="{% url 'search' %}?l={{ data.id_location.pk }}">{{ data.id_location }}</a></p>
+      </div>
+      <div class="card-footer mt-0">
         <a href="{% url 'ad_detail' data.pk %}"
           class="btn btn-block btn-outline-{% cycle 'info' 'success' 'secondary' 'danger' 'warning' 'primary' %}">Ver
           más</a>

@@ -11,7 +11,7 @@ from ad.models import Ad, AdKind, Unit, Currency
 from images.models import Image
 from .models import Store, UsersXStore
 from .forms import StoreForm, StoreUpdateForm, StoreDeleteForm
-from ad.forms import AdCreateForm
+from ad.forms import AdCreateForm, AdDeleteForm
 from django.http import  HttpResponseRedirect
 from django.views import View
 # Create your views here.
@@ -216,3 +216,44 @@ class CreateAdStore(CreateView):
             ad.save(False)
             return HttpResponseRedirect(reverse_lazy('store_detail',kwargs={'pk': store.pk})+'?created=success')
         return HttpResponseRedirect(reverse_lazy('user_stores',kwargs={'uid': request.user.pk})+'?created=error')
+
+def deleteAd(request, *args, **kwargs):
+    #Obteniendo el ID del anuncio
+    print(request.POST.get('id_ad'))
+    """ Verificando que el anuncio exista """
+    try:
+        ad = Ad.objects.get(pk = id_ad) 
+    except:
+        return HttpResponseRedirect(reverse_lazy('user_stores',kwargs={'uid': request.user.id})+'?error=AdNotFound')
+    #Obteniendo el id de la tienda
+    id_store = request.POST.get('id_store')
+    """ Se verifica que la tienda exista, 
+        Si la tienda no existe store = None y se hace y redireccionamiento dado que la tienda no fue encontrada"""
+    try:
+        store = Store.objects.get(pk = id_store)
+    except:
+        return HttpResponseRedirect(reverse_lazy('user_stores',kwargs={'uid': request.user.id})+'?error=storeNotFound')
+    """ Verificando que el usuario que hizo la peticion es el administardor de la pagina, si no es asi hace redireccionamiento """
+    if not store.user_is_owner(request.user):
+        if request.user is None:
+            return HttpResponseRedirect(reverse_lazy('login'))
+        return HttpResponseRedirect(reverse_lazy('user_stores',kwargs={'uid': request.user.id})+'?error=storeNotFound')
+    #Verificando que el anuncio pertenezca a esa tienda, sino redirecciona
+    if ad.id_store.pk != int(id_store):
+        return HttpResponseRedirect(reverse_lazy('user_stores',kwargs={'uid': request.user.id})+'?error=AdNotBelongStore')
+    #Solo solicitudes por metodo POST
+    if request.method == "POST":
+        form = AdDeleteForm(request.POST, instance= ad)
+        if form.is_valid():
+            ad = form.save()
+            #Obteniendo el valor del option button seleccionado en el modal.
+            value = request.POST.get('delete')
+            if (value == '0'):
+                print('Lo vendi')
+                ad.active = False
+            else:
+                print('Yo quiero')
+                ad.active = False
+            ad.save(False)
+            return HttpResponseRedirect(reverse_lazy('store_detail',kwargs={'pk': store.pk})+'?updated=success')
+    return HttpResponseRedirect(reverse_lazy('store_detail',kwargs={'pk': store.pk})+'?updated=error')

@@ -15,6 +15,7 @@
 <link href="{% static 'core/css/cover.css' %}" rel="stylesheet">
 <link href="{% static 'store/css/style.css' %}" rel="stylesheet">
 <link href="{% static 'core/css/card-img-top.css' %}" rel="stylesheet">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script> 
 {% endblock %}
 {% block navbar %}
 {% endblock %}
@@ -79,11 +80,6 @@
                         </form>
                     </div>
                     {% elif request.user.is_authenticated %}
-                    <div class="col-md-2">
-                        <a href="#" data-toggle="modal" data-target="#modalCambiarDatos">
-                            <p><i class="fas fa-edit"></i> Editar Tienda</p>
-                        </a>
-                    </div>
                     <div class="col-md-2">
                         <a href="#" data-toggle="modal" data-target="#modalAgregarAnuncio" style="color: #1cc88a;"><i
                                 class="fas fa-plus"></i><strong> Crear Anuncio</strong></a>
@@ -162,6 +158,11 @@
                                     </p>
                                 </div>
                             </div>
+                            <div class="col-md-4">
+                                <a href="#" data-toggle="modal" data-target="#modalCambiarDatos">
+                                    <p><i class="fas fa-edit"></i> Editar Tienda</p>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -192,18 +193,6 @@
 </div>
 {% endif %}
 {# FIN CARD QUE SE MUESTRA CUANDO AUN NO HAY ANUNCIOS #}
-<div class="row">
-    <div class="col-12">
-        <div class="card shadow mb-4">
-            <div class="card-body">
-                {% if request.user.pk in owners %}
-                <a href="#" data-toggle="modal" data-target="#modalAgregarAnuncio"
-                    class="btn btn-success btn-block">Crear un anuncio</a>
-                {% endif %}
-            </div>
-        </div>
-    </div>
-</div>
 {# INICIO CARDS ANUNCIOS#}
 <div class="row">
     {# INICIO MENSAJES DE RETROALIMENTACION POR CREAR UN ANUNCIO #}
@@ -290,6 +279,8 @@
                             según <a href="https://www.bch.hn/index.php" target="_blank">BCH</a>.</small></p>
                 </div>
                 <p class="mt-0">Publicado: {{data.date_created|date:'d-m-Y'}}</p>
+            </div>
+            <div class="card-footer mt-0">
                 <a href="{% url 'ad_detail' data.pk %}"
                     class="btn btn-block btn-outline-{% cycle 'info' 'success' 'secondary' 'danger' 'warning' 'primary' %}">Ver
                     más</a>
@@ -299,7 +290,7 @@
                         <a href="{% url 'ad_update' data.pk%}" class="btn btn-info btn-block">Editar</a>
                     </div>
                     <div class="col-sm-6 mt-3">
-                        <a href="{% url 'ad_delete' data.pk%}" class="btn btn-danger btn-block">Eliminar</a>
+                        <button type="button" class="btn btn-danger btn-block" data-toggle="modal" data-target="#modalEliminarAnuncio" id="{{ data.pk }}" value="{{ data.pk }}">Eliminar</button>
                     </div>
                 </div>
                 {% endif %}
@@ -511,6 +502,50 @@
     </div>
 </div>
 {# FIN MODAL CREAR ANUNCIO #}
+{% if request.user.pk in owners %}
+<div class="modal fade" id="modalEliminarAnuncio" tabindex="-1" role="dialog" aria-labelledby="modalEliminarAnuncio"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">¿Estás seguro de eliminar tu anuncio?</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="{% url 'ad_delete' %}" method="post">
+                {% csrf_token %}
+                <div class="modal-body">
+                    {# OBTENIENDO ID TIENDA #}
+                    <input type="hidden" id="id_ad_de" name="id_ad" value="-1">
+                    <input type="hidden" id="id_store" name="id_store" value="{{object.pk}}">
+                    <p>Selecciona porque lo quieres eliminar.</p>
+                    <div class="form-group my-0 py-1 custom-control custom-radio custom-control-inline">
+                        <input type="radio" id="customRadioInline1" name="delete" class="custom-control-input" value="0"
+                            required>
+                        <label class="custom-control-label" for="customRadioInline1">Lo he vendido.</label>
+                    </div>
+                    <div class="form-group my-0 py-1 custom-control custom-radio custom-control-inline">
+                        <input type="radio" id="customRadioInline2" name="delete" class="custom-control-input" value="1"
+                            required>
+                        <label class="custom-control-label" for="customRadioInline2">Ya no quiero mostrarlo.</label>
+                    </div>
+                </div>
+                <div class="card-footer mt-0">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-danger" >Eliminar anuncio</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endif %}
+<script type="text/javascript">
+    $("button").click(function() {
+        var fired_button = $(this).val();
+        document.getElementById("id_ad_de").value = fired_button;
+    });
+    </script>
 {% endblock %}
 {% block js %}
 <script src="{% static 'core/js/file-label-change.js' %}"></script>

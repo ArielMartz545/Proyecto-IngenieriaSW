@@ -197,7 +197,6 @@ class AdUpdate(UpdateView):
             anuncios de ese usuario comun."""
         try: 
             #Obtenemos el request que se manda desde products_category, ejemplo: '/ads/category/1'
-            request.GET['next']
             temp = re.findall(r'\d+', request.GET['next']) 
             #con REGEX obtenemos el ID que se envia en el request
             res = list(map(int, temp)) 
