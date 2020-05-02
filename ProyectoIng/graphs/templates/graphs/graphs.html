@@ -1,0 +1,137 @@
+{% extends 'core/sidebar.html' %}
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+       <div id="new_users" class="col-md-12"></div>
+       <div id="users_actives_vs_inactives" class="col-md-6"></div> 
+       <div id="ads_actives_vs_inactives" class="col-md-6"></div>
+    </div>
+</div>
+    
+{% endblock %}
+
+{% block js %}
+<script src="https://cdn.zingchart.com/zingchart.min.js"></script>
+
+<script>
+  zingchart.render({
+    id: 'users_actives_vs_inactives',
+    data: {
+        type: "ring3d",
+        title: {
+        text: "Usuarios<br>Activos Vs Inactivos"
+         },
+        scale: {
+        'size-factor':0.8
+        },
+        legend: {
+            header: {
+            text: "Usuarios",
+            'font-family': "Georgia",
+            'font-size':12,
+            'font-color': "black",
+            'font-weight': "normal"
+            },
+            layout: "2x1", 
+            x: "80%",
+            y: "75%",
+        },
+    plot: {
+        tooltip: {
+        text: "%t<br>%v"
+        }
+    },
+    series: [
+        { values: [87], text:"Activos",'background-color': "#4C71DE"},
+        { values: [13], text:"Inactivos",'background-color': "#E74A3B"},
+      
+      ]
+      },
+      height: '370px',
+      width: '500px'
+});
+</script>
+
+<script>
+    zingchart.render({
+      id: 'ads_actives_vs_inactives',
+      data: {
+          type: "ring3d",
+          title: {
+          text: "Anuncios<br>Activos Vs Inactivos"
+           },
+          scale: {
+          'size-factor':0.8
+          },
+          legend: {
+              header: {
+              text: "Anuncios",
+              'font-family': "Georgia",
+              'font-size':12,
+              'font-color': "black",
+              'font-weight': "normal"
+              },
+              layout: "2x1", 
+              x: "80%",
+              y: "75%",
+          },
+      plot: {
+          tooltip: {
+          text: "%t<br>%v"
+          }
+      },
+      series: [
+        { values: [87], text:"Activos",'background-color': "#17A673"},
+        { values: [13], text:"Inactivos",'background-color': "#E74A3B"},
+      
+      ]
+      },
+      height: '370px',
+      width: '500px'
+  });
+  </script>
+  <script>
+    zingchart.render({
+      id: 'new_users',
+      data: {
+          type: "bar3d",
+          '3d-aspect': {
+         true3d: false
+        },
+          title: {
+          text: "Nuevos Usuarios"
+           },
+          scale: {
+          'size-factor':0.8
+          },
+          legend: {
+              layout: "1x12", 
+              x: "0%",
+              y: "90%",
+          },
+      plot: {
+          tooltip: {
+          text: "%t<br>%v"
+          }
+      },
+      series: [
+        { values: [87], text:"Enero",'background-color': "#4C71DE"},
+        { values: [15], text:"Febrero",'background-color': "#E74A3B"},
+        { values: [100], text:"Marzo",'background-color': "#F4B619"},
+        { values: [50], text:"Abril",'background-color': "#17A673"},
+        { values: [35], text:"Mayo",'background-color': "#a5179e"},
+        { values: [26], text:"Junio",'background-color': "#1697a3"},
+        { values: [17], text:"Julio",'background-color': "#1697a3"},
+        { values: [18], text:"Agosto",'background-color': "#9e5716"},
+        { values: [98], text:"Septiembre",'background-color': "#7e4fd6"},
+        { values: [20], text:"Octubre",'background-color': "#4ed3b0"},
+        { values: [14], text:"Noviembre",'background-color': "#a74cce"},
+        { values: [200], text:"Diciembre",'background-color': "#ccb84b"},
+      
+      ]
+      },
+      height: '370px',
+      width: '100%'
+  });
+  </script>
+{% endblock %}

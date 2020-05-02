@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     'scrape.apps.ScrapeConfig',
     'favorites.apps.FavoritesConfig',
     'rating.apps.RatingConfig',
+    'graphs',
     
 ]
 
