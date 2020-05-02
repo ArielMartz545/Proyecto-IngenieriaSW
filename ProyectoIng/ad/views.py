@@ -8,6 +8,7 @@ from .models import Ad, Category, PriceRange, AdKind, Unit, Currency
 from location.models import Location
 from account.models import Account
 from images.models import Image
+from store.models import Store
 from ad.forms import AdCreateForm, AdUpdateForm, AdDeleteForm
 from django.urls import reverse_lazy, reverse
 from django.forms import modelformset_factory
@@ -17,6 +18,35 @@ from django.conf import settings
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 import re #Libreria para expresiones regulares
+
+class StoreAds(ListView):
+    model= Ad
+    template_name="ad/store_ad_list.html"
+    paginate_by = 20
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        # Sidebar Context
+        context['categories'] = Category.objects.order_by('category_name')
+        context['price_ranges'] = PriceRange.objects.all()
+        context['locations'] = Location.objects.order_by('direction').filter(correlative_direction__isnull=True)
+        context['currencies'] = Currency.objects.all()
+        # Fin Sidebar Context
+        sid = self.kwargs['sid']
+        try:
+            store = Store.objects.get(pk=sid)
+            context['valid_store'] = True
+        except:
+            context['valid_store'] = False
+        if context['valid_store']:
+            context['store_name'] = store.store_name
+            context['store_pk'] = store.pk
+        return context
+    def get_queryset(self):
+        sid = self.kwargs['sid']
+        queryset = Ad.objects.filter(id_store__id=sid)
+        queryset = queryset.filter(active=True).order_by('-date_created')
+        return queryset
 
 class UserAds(ListView):
     model= Ad

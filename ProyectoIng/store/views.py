@@ -99,9 +99,8 @@ class StoreDetailView(DetailView):
         #Se envia una lista que contiene el ID de los administradores de la tienda que servira para verificaciones en el template
         context['owners'] = owners
         #Consulta para obtener los anuncios realizados con la tienda
-        queryset = Ad.objects.filter(id_store__id=kwargs['object'].pk)
-        queryset = queryset.filter(active=True).order_by('-date_created')
-        context['ads'] = queryset
+        last_ads = Ad.objects.filter(id_store__id = kwargs['object'].pk, active = True).order_by('-date_created')[:4]
+        context['last_ads'] = last_ads
         return context
 
 class StoreUpdate(UpdateView):

@@ -1,86 +1,42 @@
 {% extends 'core/sidebar.html' %}
 {% load static %}
 {% block title %}
-{% if request.user.pk == user_pk %}
-Mis anuncios
-{% else %}
-Anuncios de {{user_name}}
-{% endif %}
+  {% if valid_store %}
+    Anuncios de {{store_name}}
+  {% else %}
+    Tienda
+  {% endif %}
 {% endblock %}
 {% block css %}
 <link href="{% static 'core/css/card-img-top.css' %}" rel="stylesheet">
 {% endblock %}
 {% block content %}
+{% if valid_store %}{# ID de tienda VALIDO #}
 <div class="row">
   <div class="col-12">
     <div class="card border-left-primary border-bottom-primary shadow my-3">
       <div class="card-header py-3">
         <div class="row">
-          {% if request.user.pk == user_pk and object_list.count == 0 %}
-          <div class="col-12">
-            <h2 class="m-0 font-weight-bold text-primary">
-              Mis anuncios
-            </h2>
-          </div>
-          {% else %}
-          {% if request.user.pk == user_pk %}
           <div class="col-sm-8">
             <h2 class="m-0 font-weight-bold text-primary">
-              Mis anuncios
+              Anuncios de {{store_name}}
             </h2>
           </div>
           <div class="col-sm-4">
-            <a href="{% url 'ad_create' %}" class="btn btn-primary btn-block">Crear un anuncio</a>
+            <a href="{% url 'store_detail' store_pk %}" class="btn btn-primary btn-block">Volver a la tienda</a>
           </div>
-          {% else %}
-          <div class="col-12">
-            <h2 class="m-0 font-weight-bold text-primary">
-              Anuncios de {{user_name}}
-            </h2>
-          </div>
-          {% endif %}
-          {% endif %}
         </div>
       </div>
       {% if object_list.count == 0 %}
       <div class="card-body">
-        {% if request.user.pk == user_pk %}
-        <h3>Aun no tienes anuncios publicados.</h3>
-        {% else %}
-        <h3>{{user_name}} aun no tiene anuncios publicados.</h3>
-        {% endif %}
+        <h3>{{store_name}} aun no tiene anuncios publicados.</h3>
         <p>Si deseas vender un articulo o prestar un servicios, deberías crear un anuncio.</p>
         <p>Periodicamente se remueven anuncios para mostrar sólo los más recientes..</p>
-        <a href="{% url 'ad_create' %}" class="btn btn-primary btn-block">Crear un anuncio</a>
       </div>
       {% endif %}
     </div>
   </div>
 </div>
-{# INICIO MENSAJES DE RETROALIMENTACION POR CREAR UN ANUNCIO #}
-{% if 'createdAd' in request.GET %}
-<div class="row">
-  <div class="col-12">
-    {% if 'success' == request.GET.createdAd %}
-    <div class="alert w-100 alert-success alert-dismissible fade show" role="alert">
-      <strong>¡Éxito!</strong> Se ha creado tu anuncio correctamente.
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </div>
-    {% endif %}
-    {% if 'error' == request.GET.createdAd %}
-    <div class="alert w-100 alert-fluid alert-danger alert-dismissible fade show" role="alert">
-      <strong>¡Uuuups!</strong> Ha sucedido un error al crear el anuncio, intenta nuevamente.
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </div>
-    {% endif %}
-  </div>
-</div>
-{% endif %}
-{# FIN MENSAJES DE RETROALIMENTACION POR CREAR UN ANUNCIO #}
 {# INICIO MENSAJES DE RETROALIMENTACION POR ACTUALIZAR UN ANUNCIO #}
 {% if 'updatedAd' in request.GET %}
 <div class="row">
@@ -189,20 +145,20 @@ Anuncios de {{user_name}}
     <ul class="pagination">
       {% if page_obj.has_previous %}
       <li class="page-item"><a class="page-link"
-          href="{% url 'products_user' user_pk %}?page={{ page_obj.previous_page_number }}">Anterior</a></li>
+          href="{% url 'products_store' user_pk %}?page={{ page_obj.previous_page_number }}">Anterior</a></li>
       {% endif %}
       {% if page_obj.number != 1 %}
-      <li class="page-item"><a class="page-link" href="{% url 'products_user' user_pk %}?page=1">Primera</a></li>
+      <li class="page-item"><a class="page-link" href="{% url 'products_store' user_pk %}?page=1">Primera</a></li>
       {% endif %}
       <li class="page-item active"><a class="page-link" href="#">{{ page_obj.number }} de
           {{ page_obj.paginator.num_pages }}</a></li>
       {% if page_obj.number != page_obj.paginator.num_pages %}
       <li class="page-item"><a class="page-link"
-          href="{% url 'products_user' user_pk %}?page={{ page_obj.paginator.num_pages }}">Última</a></li>
+          href="{% url 'products_store' user_pk %}?page={{ page_obj.paginator.num_pages }}">Última</a></li>
       {% endif %}
       {% if page_obj.has_next %}
       <li class="page-item"><a class="page-link"
-          href="{% url 'products_user' user_pk %}?page={{ page_obj.next_page_number }}">Siguiente</a></li>
+          href="{% url 'products_store' user_pk %}?page={{ page_obj.next_page_number }}">Siguiente</a></li>
       {% endif %}
     </ul>
     {% else %}
@@ -211,5 +167,23 @@ Anuncios de {{user_name}}
     <p>{{ page_obj.paginator.per_page }} anuncios por página </p>
   </div>
 </div>
+{% else %}{# ID de tienda INVALIDO #}
+<div class="row">
+  <div class="col-12">
+    <div class="card border-left-primary border-bottom-primary shadow my-3">
+      <div class="card-header py-3">
+        <div class="row">
+          <div class="col-12">
+            <h2 class="m-0 font-weight-bold text-primary">
+              <strong>¡Uuuups!</strong> Ha sucedido un error, prueba volviendo a la pagina anterior.
+              
+            </h2>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
 {% endif %}
 {% endblock %}

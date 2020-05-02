@@ -9,7 +9,7 @@ Anuncios de {{ category_name }}
 {% block content %}
 <div class="row">
   <div class="col-12">
-    <div class="card border-left-primary border-bottom-primary shadow mb-3">
+    <div class="card border-left-primary border-bottom-primary shadow my-3">
       <div class="card-header py-2">
         <div class="row">
           {% if object_list.count == 0 %}
@@ -67,10 +67,9 @@ Anuncios de {{ category_name }}
 {# FIN MENSAJES DE RETROALIMENTACION POR ACTUALIZAR UN ANUNCIO #}
 <div class="row">
   {% for data in object_list %}
-  <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3">
+  <div class="col-12 col-sm-6 col-md-4 col-lg-3 my-2">
     {# Card anuncio #}
-    <div
-      class="card border-left-{% cycle 'info' 'success' 'secondary' 'danger' 'warning' 'primary' %} shadow h-100 pb-2">
+    <div class="card border-left-{% cycle 'success' 'secondary' 'danger' 'warning' 'primary' 'info'  %} shadow h-100 pb-2">
       {% if data.ad_images.count == 1 %}
       <a href="{% url 'ad_detail' data.pk %}"><img class="card-img-top no-border-top-left"
           src="{{data.ad_images.first.img_route.url}}" alt="Responsive image"></a>
@@ -107,20 +106,41 @@ Anuncios de {{ category_name }}
         <p class="my-0">Lugar: <a href="{% url 'search' %}?l={{ data.id_location.pk }}">{{ data.id_location }}</a></p>
       </div>
       <div class="card-footer mt-0">
-        <a href="{% url 'ad_detail' data.pk %}"
-          class="btn btn-block btn-outline-{% cycle 'info' 'success' 'secondary' 'danger' 'warning' 'primary' %}">Ver
-          más</a>
-        {% if data.id_user == request.user  %}
-        <div class="row">
-          <div class="col-sm-6 mt-3">
-            <a href="{% url 'ad_update' data.pk%}?next={% url 'products_category' c %}"
-              class="btn btn-info btn-block">Editar</a>
+          <div class="row justify-content-end">
+              <div class="btn-toolbar" role="toolbar" aria-label="Ad buttons group">
+                  <div class="btn-group mr-2" role="group" aria-label="Detail group">
+                      <a href="{% url 'ad_detail' data.pk %}" class="btn btn-{% cycle 'success' 'secondary' 'danger' 'warning' 'primary' 'info'  %}">
+                          <i class="fas fa-plus"></i> {% if data.id_user != request.user  %}Ver más{% endif %}
+                      </a>
+                  {% if data.id_user == request.user  %}
+                      <a href="{% url 'ad_update' data.pk%}" class="btn btn-primary">
+                          <i class="fas fa-edit"></i> 
+                      </a>
+                      <a href="{% url 'ad_delete' data.pk%}" class="btn btn-danger">
+                          <i class="fas fa-trash"></i>
+                      </a>
+                  </div>
+                  <div class="btn-group mr-2" role="group" aria-label="All group">
+                      <div class="dropdown no-arrow">
+                          <button class="btn btn-secondary dropdown-toggle no-arrow float-right" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          <i class="fas fa-bars"></i>
+                          </button>
+                          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                              <a href="{% url 'ad_detail' data.pk %}" class="dropdown-item">
+                                  <i class="fas fa-plus"></i> Ver más
+                              </a>
+                              <a href="{% url 'ad_delete' data.pk%}" class="dropdown-item">
+                                  <i class="fas fa-edit"></i> Editar
+                              </a>
+                              <a href="{% url 'ad_delete' data.pk%}" class="dropdown-item">
+                                  <i class="fas fa-trash"></i> ELiminar
+                              </a>
+                          </div>
+                      </div>
+                  {% endif %}
+                  </div>
+              </div>
           </div>
-          <div class="col-sm-6 mt-3">
-            <a href="{% url 'ad_delete' data.pk%}" class="btn btn-danger btn-block">Eliminar</a>
-          </div>
-        </div>
-        {% endif %}
       </div>
     </div>
     {# FIN Card anuncio #}

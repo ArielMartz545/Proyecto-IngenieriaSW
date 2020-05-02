@@ -1,8 +1,9 @@
 from django.urls import path
-from .views import UserAds, CategoryAds, AdDetailView, CreateAd, AdUpdate, AdDelete
+from .views import StoreAds, UserAds, CategoryAds, AdDetailView, CreateAd, AdUpdate, AdDelete
 
 urlpatterns = [
-    path('user/<uid>', UserAds.as_view(), name='products_user'),
+    path('user/<int:uid>', UserAds.as_view(), name='products_user'),
+    path('store/<int:sid>', StoreAds.as_view(), name='products_store'),
     path('category/<cid>', CategoryAds.as_view(), name='products_category'),
     path('<int:pk>', AdDetailView.as_view(), name="ad_detail"),
     path('create/', CreateAd.as_view(), name="ad_create"),

@@ -27,7 +27,7 @@
     width: 160px;
     object-fit: cover;
     background: rgba(0, 0, 0, 0.3) none repeat scroll 0 0;
-    z-index:9;
+    z-index:0;
 }
 .profile-img img {
     background-color: #fff;

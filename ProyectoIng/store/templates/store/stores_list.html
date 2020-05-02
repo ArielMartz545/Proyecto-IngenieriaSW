@@ -59,7 +59,7 @@ Tiendas de {{user_name}}
 {# INCIO PANEL PARA CREAR TIENDA #}
 <div class="row">
     <div class="col-12">
-        <div class="card border-left-primary border-bottom-primary shadow mb-4">
+        <div class="card border-left-primary border-bottom-primary shadow my-3">
             <div class="card-header py-3">
                 <div class="row">
                     {% if request.user.pk == user_pk and object_list.count == 0 %}
@@ -135,34 +135,25 @@ Tiendas de {{user_name}}
 <div class="row">
     {% for data in object_list %}
     <div class="col-12 col-sm-6 col-md-5 col-lg-3 mb-3">
-        {# Card anuncio #}
-        <div
-            class="card border-left-{% cycle 'info' 'success' 'secondary' 'danger' 'warning' 'primary' %} shadow h-100 pb-2">
-            <a href="{% url 'store_detail' data.pk %}"><img class="card-img-top no-border-top-left" src="{{ data.store.store_profile_img.img_route.url }}" alt="Responsive image"></a>
-            <div class="card-body">
-                <h5 class="card-title"><a href="{% url 'store_detail' data.pk %}">{{data.store.store_name}}</a> </h5>
-                <h6>{% if data.id_store != None %} {{data.id_store}} {% endif %}</h6>
-                <p class="my-0">Lugar: <a
-                        href="{% url 'search' %}?l={{ data.id_location.pk }}">{{ data.store.store_location }}</a></p>
-                <p class="mt-0">En Pa'Ya desde: {{data.store.date_created|date:'d-m-Y'}}</p>
+        {# Card Tienda #}
+        <div class="card border-left-{% cycle 'primary'  'info' 'success' 'secondary' 'danger' 'warning' %} shadow h-100 pb-2">
+            <a href="{% url 'store_detail' data.store.pk %}"><img class="card-img-top no-border-top-left" src="{{data.store.store_profile_img.img_route.url}}" alt="Responsive image"></a>
+            <div class="card-body mb-0 pb-0">
+              <h5 class="card-title"><a href="{% url 'store_detail' data.store.pk %}">{{data.store.store_name}}</a> </h5>
+              <p class="my-0">Lugar: <a href="{% url 'search' %}?l={{ data.store.store_location.pk }}&c={{c}}">{{ data.store.store_location }}</a></p>
+              <p class="mt-0">En Pa'Ya desde: {{data.store.date_created|date:'d-m-Y'}}</p>
             </div>
             <div class="card-footer mt-0">
-                <a href="{% url 'store_detail' data.pk %}"
-                class="btn btn-block btn-outline-{% cycle 'info' 'success' 'secondary' 'danger' 'warning' 'primary' %}">Ver
-                más</a>
-                {% if data.id_user == request.user  %}
-                <div class="row">
-                    <div class="col-sm-6 mt-3">
-                        <a href="{% url 'ad_update' data.pk%}" class="btn btn-info btn-block">Editar</a>
-                    </div>
-                    <div class="col-sm-6 mt-3">
-                        <a href="{% url 'ad_delete' data.pk%}" class="btn btn-danger btn-block">Eliminar</a>
+                <div class="row justify-content-end">
+                    <div class="btn-group mr-2" role="group" aria-label="Detail group">
+                        <a href="{% url 'store_detail' data.store.pk %}" class="btn btn-{% cycle 'primary' 'info' 'success' 'secondary' 'danger' 'warning' %}">
+                            <i class="fas fa-plus"></i> Ver tienda
+                        </a>
                     </div>
                 </div>
-                {% endif %}
             </div>
         </div>
-        {# FIN Card anuncio #}
+        {# FIN Card tienda #}
     </div>
     {% endfor %}
 </div>

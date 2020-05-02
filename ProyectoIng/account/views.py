@@ -114,8 +114,8 @@ class DetailUser(DetailView):
         context['locations'] = Location.objects.order_by('direction').filter(correlative_direction__isnull=True)
         context['all_locations'] = Location.objects.all().order_by('direction')
         context['currencies'] = Currency.objects.all()
-        last_three_ads = Ad.objects.filter(id_user = self.kwargs['pk'], active = True, id_store = None).order_by('-date_created')[:4]
-        context['last_three_ads'] = last_three_ads
+        last_ads = Ad.objects.filter(id_user = self.kwargs['pk'], active = True, id_store = None).order_by('-date_created')[:4]
+        context['last_ads'] = last_ads
         if  self.request.user.pk != self.kwargs['pk']:
             try:
                 favorite = Favorites.objects.get(id_user__pk = self.request.user.pk, id_favorite_user__pk = self.kwargs['pk'])
