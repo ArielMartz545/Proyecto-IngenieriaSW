@@ -230,7 +230,7 @@ class AdUpdate(UpdateView):
             temp = re.findall(r'\d+', request.GET['next']) 
             #con REGEX obtenemos el ID que se envia en el request
             res = list(map(int, temp)) 
-            return HttpResponseRedirect(reverse_lazy('products_category',kwargs={'cid': res[0]})+'?updatedAd=success')
+            return HttpResponseRedirect(request.GET['next'] +'?updatedAd=success')
         except:
             if ad_object_data.id_store:
                 return HttpResponseRedirect(reverse_lazy('store_detail',kwargs={'pk': ad_object_data.id_store.pk})+'?updatedAd=success')

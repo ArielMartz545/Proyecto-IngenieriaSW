@@ -306,7 +306,7 @@
                                     <a href="{% url 'ad_update' data.pk%}" class="btn btn-primary">
                                         <i class="fas fa-edit"></i> 
                                     </a>
-                                    <a href="{% url 'ad_delete' data.pk%}" class="btn btn-danger">
+                                    <a href="#" ad="{{data.pk}}" ad-name = "{{data.ad_name}}" data-toggle="modal" data-target="#modalEliminarAnuncio" class="btn btn-danger btn-delete">
                                         <i class="fas fa-trash"></i>
                                     </a>
                                 </div>
@@ -510,13 +510,14 @@
     </div>
 </div>
 {# FIN MODAL CREAR ANUNCIO #}
+{# INICIO MODAL ELIMINAR ANUNCIO #}
 {% if request.user.pk in owners %}
 <div class="modal fade" id="modalEliminarAnuncio" tabindex="-1" role="dialog" aria-labelledby="modalEliminarAnuncio"
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">¿Estás seguro de eliminar tu anuncio?</h5>
+                <h5 class="modal-title" id="exampleModalLabel">¿Estás seguro de eliminar <span id="span_ad_name"></span>?</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -525,7 +526,8 @@
                 {% csrf_token %}
                 <div class="modal-body">
                     {# OBTENIENDO ID TIENDA #}
-                    <input type="hidden" id="id_ad_de" name="id_ad" value="-1">
+                    <input type="hidden" id="next_url" name="next_url" value="{% url 'store_detail' object.pk  %}">
+                    <input type="hidden" id="id_ad_delete" name="id_ad" value="-1">
                     <input type="hidden" id="id_store" name="id_store" value="{{object.pk}}">
                     <p>Selecciona porque lo quieres eliminar.</p>
                     <div class="form-group my-0 py-1 custom-control custom-radio custom-control-inline">
@@ -548,12 +550,13 @@
     </div>
 </div>
 {% endif %}
+{# FIN MODAL ELIMINAR ANUNCIO #}
 <script type="text/javascript">
-    $("button").click(function() {
-        var fired_button = $(this).val();
-        document.getElementById("id_ad_de").value = fired_button;
+    $(".btn-delete").click(function(event) {
+        $("#id_ad_delete").val($(this).attr("ad"));
+        $("#span_ad_name").html($(this).attr("ad-name"));
     });
-    </script>
+</script>
 {% endblock %}
 {% block js %}
 <script src="{% static 'core/js/file-label-change.js' %}"></script>

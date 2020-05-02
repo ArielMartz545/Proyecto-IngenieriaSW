@@ -92,7 +92,7 @@ class Ad(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
     ad_images= models.ManyToManyField(Image, related_name="get_images_ad")
     active= models.BooleanField(default=True)
-
+    reason = models.CharField(max_length=20, null=True, blank=True) #Razones: [sold, user, automatic]
     def __str__(self):
         return self.ad_name
 
