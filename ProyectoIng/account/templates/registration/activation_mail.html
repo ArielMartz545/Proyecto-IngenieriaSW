@@ -1,6 +1,5 @@
-Bienvenido {{ user }}!
-Te has registrado en Pa'Ya, ahora solo resta activar tu cuenta para que puedas obtener el maximo de beneficio de nuestros servicios. Haz click en el siguiente enlace:
-{{ protocol }}://{{ domain }}{% url 'activate' uidb64=uid token=token %}?next={{ next_url }}
-Si el enlace anterior no funciona, necesitarás copiarlo manualmente.
-A tu servicio,
-El equipo de Pa'Ya
+{% extends 'core/email.html' %}
+{% load static %}
+{% block user %} {{ user }} {% endblock %}
+{% block content %}¡Te damos la bienvenida a Pa'Ya! Antes de empezar, debes confirmar tu dirección de correo electrónico.<br> Haz click en el siguiente enlace o copialo en una ventana de tu navegador:<br>{% endblock %}
+{% block link %}{{ domain }}{% url 'activate' uidb64=uid token=token %}?next={{ next_url }}{% endblock %}
