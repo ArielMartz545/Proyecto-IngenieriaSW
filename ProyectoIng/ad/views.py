@@ -248,14 +248,17 @@ class AdUpdate(UpdateView):
 def adDelete(request, *args, **kwargs):
     if not request.user.is_authenticated:
         return HttpResponseRedirect(reverse_lazy('login'))
+    #Obteniendo a donde seremos redireccionado para cada response
+    next_url = request.POST.get('next_url')
     #Obteniendo el ID del anuncio
     id_ad = request.POST.get('id_ad')
+    next_url = request.POST.get('next_url')
     """ Verificando que el anuncio exista """
     try:
         ad = Ad.objects.get(pk = id_ad) 
     except:
         #Redirecciona porque el anuncio no fue encontrado.
-        return HttpResponseRedirect(request.GET['next'] +'?AdError=AdNotFound')
+        return HttpResponseRedirect(next_url+'?AdError=AdNotFound')
     #Verificando que el anuncio no fue creado desde una tienda y quien hace la peticion no es el creador del anuncio
     if ad.id_store is None and ad.id_user != request.user:
         return HttpResponseRedirect(reverse_lazy('home'))
@@ -268,7 +271,6 @@ def adDelete(request, *args, **kwargs):
     #Dado que cumple las condiciones de seguridad, procedemos a eliminar el anuncio
     if request.method == "POST":
         #Next_url es la direccion a la que seremos reenviado (Es donde se hizo la peticion)
-        next_url = request.POST.get('next_url')
         form = AdDeleteForm(request.POST, instance= ad)
         if form.is_valid():
             ad = form.save()

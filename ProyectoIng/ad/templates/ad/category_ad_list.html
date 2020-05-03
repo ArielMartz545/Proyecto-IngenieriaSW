@@ -253,9 +253,9 @@ Anuncios de {{ category_name }}
                       <a href="{% url 'ad_update' data.pk%}" class="btn btn-primary">
                           <i class="fas fa-edit"></i> 
                       </a>
-                      <a href="{% url 'ad_delete' data.pk%}" class="btn btn-danger">
-                          <i class="fas fa-trash"></i>
-                      </a>
+                      <a href="#" ad="{{data.pk}}" ad-name = "{{data.ad_name}}" data-toggle="modal" data-target="#modalEliminarAnuncio" class="btn btn-danger btn-delete">
+                        <i class="fas fa-trash"></i>
+                    </a>
                   </div>
                   <div class="btn-group mr-2" role="group" aria-label="All group">
                       <div class="dropdown no-arrow">
@@ -269,8 +269,8 @@ Anuncios de {{ category_name }}
                               <a href="{% url 'ad_delete' data.pk%}" class="dropdown-item">
                                   <i class="fas fa-edit"></i> Editar
                               </a>
-                              <a href="{% url 'ad_delete' data.pk%}" class="dropdown-item">
-                                  <i class="fas fa-trash"></i> ELiminar
+                              <a href="#" ad="{{data.pk}}" ad-name = "{{data.ad_name}}" data-toggle="modal" data-target="#modalEliminarAnuncio" class="dropdown-item btn-delete">
+                                  <i class="fas fa-trash"></i> Eliminar
                               </a>
                           </div>
                       </div>
@@ -316,4 +316,48 @@ Anuncios de {{ category_name }}
   </div>
 </div>
 {% endif %}
+{# INICIO MODAL ELIMINAR ANUNCIO #}
+{% if request.user.is_authenticated%}
+<div class="modal fade" id="modalEliminarAnuncio" tabindex="-1" role="dialog" aria-labelledby="modalEliminarAnuncio"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">¿Estás seguro de eliminar <span id="span_ad_name"></span>?</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="{% url 'ad_delete' %}" method="post">
+                {% csrf_token %}
+                <div class="modal-body">
+                    {# OBTENIENDO LA DIRECCION DESDE DONDE SE HACE LA PETICION, PARA SER REENVIADO AQUI NUEVAMENTE #}
+                    <input type="hidden" id="next_url" name="next_url" value="{% url 'products_category' c  %}">
+                    {# OBTENIENDO EL ID DE ANUNCIO #}
+                    <input type="hidden" id="id_ad_delete" name="id_ad" value="-1">
+                    <p>Selecciona porque lo quieres eliminar.</p>
+                    <div class="form-group my-0 py-1 custom-control custom-radio custom-control-inline">
+                        <input type="radio" id="customRadioInline1" name="delete" class="custom-control-input" value="0"
+                            required>
+                        <label class="custom-control-label" for="customRadioInline1">Lo he vendido.</label>
+                    </div>
+                    <div class="form-group my-0 py-1 custom-control custom-radio custom-control-inline">
+                        <input type="radio" id="customRadioInline2" name="delete" class="custom-control-input" value="1"
+                            required>
+                        <label class="custom-control-label" for="customRadioInline2">Ya no quiero mostrarlo.</label>
+                    </div>
+                </div>
+                <div class="card-footer mt-0">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-danger" >Eliminar anuncio</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endif %}
+{# FIN MODAL ELIMINAR ANUNCIO #}
+{% endblock %}
+{% block js %}
+<script src="{% static 'core/js/custom.js' %}"></script>
 {% endblock %}
