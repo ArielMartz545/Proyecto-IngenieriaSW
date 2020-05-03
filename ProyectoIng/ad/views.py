@@ -151,7 +151,7 @@ class CreateAd(CreateView):
                     #Verificando que la tienda exista
                     store = Store.objects.get(pk = id_store)
                     """ Verificando que el usuario que hizo la peticion es el administardor de la pagina, si no es asi hace redireccionamiento """
-                    if not store.user_is_owner(request.user):
+                    if request.user.pk not in owners(id_store):
                         return HttpResponseRedirect(reverse_lazy('home'))
                     ad.id_store = store
                 except:
@@ -175,25 +175,6 @@ class CreateAd(CreateView):
             return HttpResponseRedirect(next_url+'?createdAd=success')
         return HttpResponseRedirect(next_url+'?createdAd=error')
 
-@method_decorator(login_required, name='dispatch')
-class AdDelete(UpdateView):
-    model = Ad
-    form_class= AdDeleteForm
-    template_name = 'ad/ad_delete.html'
-    context_object_name = 'Ad'
-    
-    def post(self, request,pk, *args, **kwargs):
-        form =AdDeleteForm(request.POST)
-        ad_object_data = self.object = self.get_object()
-        if form.is_valid():
-            ad= form.save(commit=False)
-            ad= ad_object_data
-            ad.active= False
-            ad.save(False)
-        ad.save()
-        return HttpResponseRedirect(reverse_lazy('products_user',kwargs={'uid':self.request.user})+'?deleted')
- 
-        
 
 @method_decorator(login_required, name='dispatch')
 class AdUpdate(UpdateView):
@@ -203,9 +184,9 @@ class AdUpdate(UpdateView):
     context_object_name = 'Ad'
 
     def post(self, request,pk, *args, **kwargs):
+        #Obteniendo la instancia del Formulario
         form =AdUpdateForm(request.POST)
         ad_object_data = self.object = self.get_object()
-
         if form.is_valid():
             ad= form.save(commit=False)
             ad.id_user = request.user
@@ -245,7 +226,7 @@ class AdUpdate(UpdateView):
  
 
 #FUNCION QUE ELIMINA LOS ANUNCIOS ATRAVES DE LA VENTANA MODAL
-def adDelete(request, *args, **kwargs):
+def AdDelete(request, *args, **kwargs):
     if not request.user.is_authenticated:
         return HttpResponseRedirect(reverse_lazy('login'))
     #Obteniendo a donde seremos redireccionado para cada response

@@ -101,7 +101,6 @@ class StoreDetailView(DetailView):
 
 #Funcion que envia a los administradores de la tienda
 def owners(idStore):
-    print(idStore)
     #El siguiente diccionario contiene todos los usuarios que son administradores de la tienda
     users_dic = UsersXStore.objects.values('user').filter(store = idStore)
     owners = [] #La lista nos servira para almacenar los ID que estan en el diccionario anterior
@@ -127,7 +126,7 @@ def update_store(request, *args, **kwargs):
     except:
         return HttpResponseRedirect(reverse_lazy('user_stores',kwargs={'uid': request.user.id})+'?error=storeNotFound')
     """ Verificando que el usuario que hizo la peticion es el administardor de la pagina, si no es asi hace redireccionamiento """
-    if not store.user_is_owner(request.user):
+    if request.user.pk not in owners(id_store):
         if request.user is None:
             return HttpResponseRedirect(reverse_lazy('login'))
         return HttpResponseRedirect(reverse_lazy('user_stores',kwargs={'uid': request.user.id})+'?error=storeNotFound')

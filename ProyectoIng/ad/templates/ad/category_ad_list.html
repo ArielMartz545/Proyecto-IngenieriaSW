@@ -97,6 +97,30 @@ Anuncios de {{ category_name }}
 </div>
 {% endif %}
 {# FIN MENSAJES DE RETROALIMENTACION POR ACTUALIZAR UN ANUNCIO #}
+{# INICIO MENSAJES DE RETROALIMENTACION POR ELIMINAR UN ANUNCIO #}
+{% if 'deletedAd' in request.GET %}
+<div class="row">
+  <div class="col-12">
+    {% if 'success' == request.GET.deletedAd %}
+    <div class="alert w-100 alert-success alert-dismissible fade show" role="alert">
+      <strong>¡Éxito!</strong> Se ha eliminado tu anuncio correctamente.
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    {% endif %}
+    {% if 'error' == request.GET.deletedAd %}
+    <div class="alert w-100 alert-fluid alert-danger alert-dismissible fade show" role="alert">
+      <strong>¡Uuuups!</strong> Ha sucedido un error al eliminar el anuncio, intenta nuevamente.
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endif %}
+{# FIN MENSAJES DE RETROALIMENTACION POR ELIMINAR UN ANUNCIO #}
 {# INICIO MODAL CREAR ANUNCIO #}
 <div class="modal fade" id="modalAgregarAnuncio" tabindex="-1" role="dialog" aria-labelledby="modalAgregarAnuncio"
     aria-hidden="true">
@@ -266,7 +290,7 @@ Anuncios de {{ category_name }}
                               <a href="{% url 'ad_detail' data.pk %}" class="dropdown-item">
                                   <i class="fas fa-plus"></i> Ver más
                               </a>
-                              <a href="{% url 'ad_delete' data.pk%}" class="dropdown-item">
+                              <a href="{% url 'ad_update' data.pk%}" class="dropdown-item">
                                   <i class="fas fa-edit"></i> Editar
                               </a>
                               <a href="#" ad="{{data.pk}}" ad-name = "{{data.ad_name}}" data-toggle="modal" data-target="#modalEliminarAnuncio" class="dropdown-item btn-delete">
