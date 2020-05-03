@@ -196,9 +196,9 @@
 {# INICIO CARDS ANUNCIOS#}
 <div class="row">
     {# INICIO MENSAJES DE RETROALIMENTACION POR CREAR UN ANUNCIO #}
-    {% if 'created' in request.GET %}
+    {% if 'createdAd' in request.GET %}
     <div class="col-12">
-        {% if 'success' == request.GET.created %}
+        {% if 'success' == request.GET.createdAd %}
         <div class="alert w-100 alert-success alert-dismissible fade show" role="alert">
             <strong>¡Éxito!</strong> Se han creado tu anuncio correctamente.
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -206,7 +206,7 @@
             </button>
         </div>
         {% endif %}
-        {% if 'error' == request.GET.created %}
+        {% if 'error' == request.GET.createdAd %}
         <div class="alert w-100 alert-fluid alert-danger alert-dismissible fade show" role="alert">
             <strong>¡Uuuups!</strong> Ha sucedido un error al crear tu anuncio, intenta nuevamente.
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -239,6 +239,42 @@
     </div>
     {% endif %}
     {# FIN MENSAJES DE RETROALIMENTACION POR EDITAR UN ANUNCIO #}
+    {# INICIO MENSAJES DE RETROALIMENTACION POR ELIMINAR UN ANUNCIO #}
+    {% if 'deletedAd' in request.GET %}
+    <div class="col-12">
+        {% if 'success' == request.GET.deletedAd %}
+        <div class="alert w-100 alert-success alert-dismissible fade show" role="alert">
+            <strong>¡Éxito!</strong> Se han eliminado tu anuncio correctamente.
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        {% endif %}
+        {% if 'error' == request.GET.deletedAd %}
+        <div class="alert w-100 alert-fluid alert-danger alert-dismissible fade show" role="alert">
+            <strong>¡Uuuups!</strong> Ha sucedido un error al eliminar tu anuncio, intenta nuevamente.
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+    {# FIN MENSAJES DE RETROALIMENTACION POR ELIMINAR UN ANUNCIO #}
+    {# INICIO MENSAJES DE RETROALIMENTACION POR QUE EL ANUNCIO NO EXISTE #}
+    {% if 'AdError' in request.GET %}
+    <div class="col-12">
+        {% if 'AdNotFound' == request.GET.AdError %}
+        <div class="alert w-100 alert-warning alert-dismissible fade show" role="alert">
+            <strong>¡Error!</strong> El anuncio no existe.
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+    {# FIN MENSAJES DE RETROALIMENTACION POR QUE EL ANUNCIO NO EXISTE #}
     <div class="col-12">
         {% if last_ads.count != 0%}
         <div class="row px-0">
@@ -300,9 +336,9 @@
                             <div class="btn-toolbar" role="toolbar" aria-label="Ad buttons group">
                                 <div class="btn-group mr-2" role="group" aria-label="Detail group">
                                     <a href="{% url 'ad_detail' data.pk %}" class="btn btn-{% cycle 'info' 'success' 'secondary' 'danger' 'warning' 'primary' %}">
-                                        <i class="fas fa-plus"></i> {% if data.id_user != request.user  %}Ver más{% endif %}
+                                        <i class="fas fa-plus"></i> {% if request.user.pk not in owners  %}Ver más{% endif %}
                                     </a>
-                                {% if data.id_user == request.user  %}
+                                {% if request.user.pk in owners  %}
                                     <a href="{% url 'ad_update' data.pk%}" class="btn btn-primary">
                                         <i class="fas fa-edit"></i> 
                                     </a>
@@ -322,8 +358,8 @@
                                             <a href="{% url 'ad_delete' data.pk%}" class="dropdown-item">
                                                 <i class="fas fa-edit"></i> Editar
                                             </a>
-                                            <a href="{% url 'ad_delete' data.pk%}" class="dropdown-item">
-                                                <i class="fas fa-trash"></i> ELiminar
+                                            <a ad="{{data.pk}}" ad-name = "{{data.ad_name}}" data-toggle="modal" data-target="#modalEliminarAnuncio" class="dropdown-item btn-delete">
+                                                <i class="fas fa-trash"></i> Eliminar
                                             </a>                                        
                                         </div>
                                     </div>
@@ -409,17 +445,19 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Crea un anuncio como {{ object.store_name }}</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Creando anuncio {{ object.store_name }}</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form action="{% url 'ad_create_store' %}" method="post" enctype="multipart/form-data">
+            <form action="{% url 'ad_create' %}" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group my-0 py-1">
+                                {# OBTENIENDO LA DIRECCION DESDE DONDE SE HACE LA PETICION, PARA SER REENVIADO AQUI NUEVAMENTE #}
+                                <input type="hidden" id="next_url" name="next_url" value="{% url 'store_detail' object.pk  %}">
                                 {# ID DE TIENDA DE TIPO HIDDEN #}
                                 <input type="hidden" id="id_store" name="id_store" value="{{ object.pk }}">
                                 <label for="id_ad_name" class="text-muted">Nombre</label>
@@ -525,10 +563,10 @@
             <form action="{% url 'ad_delete' %}" method="post">
                 {% csrf_token %}
                 <div class="modal-body">
-                    {# OBTENIENDO ID TIENDA #}
+                    {# OBTENIENDO LA DIRECCION DESDE DONDE SE HACE LA PETICION, PARA SER REENVIADO AQUI NUEVAMENTE #}
                     <input type="hidden" id="next_url" name="next_url" value="{% url 'store_detail' object.pk  %}">
+                    {# OBTENIENDO EL ID DE ANUNCIO #}
                     <input type="hidden" id="id_ad_delete" name="id_ad" value="-1">
-                    <input type="hidden" id="id_store" name="id_store" value="{{object.pk}}">
                     <p>Selecciona porque lo quieres eliminar.</p>
                     <div class="form-group my-0 py-1 custom-control custom-radio custom-control-inline">
                         <input type="radio" id="customRadioInline1" name="delete" class="custom-control-input" value="0"
@@ -551,16 +589,11 @@
 </div>
 {% endif %}
 {# FIN MODAL ELIMINAR ANUNCIO #}
-<script type="text/javascript">
-    $(".btn-delete").click(function(event) {
-        $("#id_ad_delete").val($(this).attr("ad"));
-        $("#span_ad_name").html($(this).attr("ad-name"));
-    });
-</script>
 {% endblock %}
 {% block js %}
 <script src="{% static 'core/js/file-label-change.js' %}"></script>
 <script src="{% static 'core/js/max-date-today.js' %}"></script>
 <script src="{% static 'core/js/collapse-sidebar.js' %}"></script>
 <script src="{% static 'core/js/profile.js' %}"></script>
+<script src="{% static 'core/js/custom.js' %}"></script>
 {% endblock %}

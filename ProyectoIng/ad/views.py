@@ -8,7 +8,8 @@ from .models import Ad, Category, PriceRange, AdKind, Unit, Currency
 from location.models import Location
 from account.models import Account
 from images.models import Image
-from store.models import Store
+from store.models import Store, UsersXStore
+from store.views import owners
 from ad.forms import AdCreateForm, AdUpdateForm, AdDeleteForm
 from django.urls import reverse_lazy, reverse
 from django.forms import modelformset_factory
@@ -31,6 +32,7 @@ class StoreAds(ListView):
         context['price_ranges'] = PriceRange.objects.all()
         context['locations'] = Location.objects.order_by('direction').filter(correlative_direction__isnull=True)
         context['currencies'] = Currency.objects.all()
+        context['owners'] = owners(self.kwargs['sid'])
         # Fin Sidebar Context
         sid = self.kwargs['sid']
         try:
@@ -60,6 +62,7 @@ class UserAds(ListView):
         context['price_ranges'] = PriceRange.objects.all()
         context['locations'] = Location.objects.order_by('direction').filter(correlative_direction__isnull=True)
         context['currencies'] = Currency.objects.all()
+        context['ad_kinds'] = AdKind.objects.all()
         # Fin Sidebar Context
         uid = self.kwargs['uid']
         try:
@@ -91,6 +94,7 @@ class CategoryAds(ListView):
         context['price_ranges'] = PriceRange.objects.all()
         context['locations'] = Location.objects.order_by('direction').filter(correlative_direction__isnull=True)
         context['currencies'] = Currency.objects.all()
+        context['ad_kinds'] = AdKind.objects.all()
         # Fin Sidebar Context
         c = self.kwargs['cid']
         try:
@@ -125,31 +129,34 @@ class AdDetailView(DetailView):
         # Fin Sidebar Context
         return context
 
+#Clase para crear un Anuncio 
 @method_decorator(login_required, name='dispatch')
 class CreateAd(CreateView):
     model = Ad
-    form_class=AdCreateForm
-    template_name= 'ad/ad_create.html' #Template al que envia el formulario
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        # Sidebar Context
-        context['categories'] = Category.objects.order_by('category_name')
-        context['price_ranges'] = PriceRange.objects.all()
-        context['locations'] = Location.objects.order_by('direction').filter(correlative_direction__isnull=True)
-        # Fin Sidebar Context
-        context['all_locations'] = Location.objects.all().order_by('direction')
-        context['ad_kinds'] = AdKind.objects.all()
-        context['units'] = Unit.objects.all()
-        context['currencies'] = Currency.objects.all()
-        return context
-
+    form_class = AdCreateForm
+    #Sobrecarga del metodo POST
     def post(self, request, *args, **kwargs):
+        #Obteniendo la instancia del Formulario
         form = AdCreateForm(request.POST)
+        #Si el formulario es valido se hace la creacion del anuncio, sino se hace un redireccionamiento por el error
         if form.is_valid():
-            ad= form.save(False)
+            next_url = request.POST.get('next_url')
+            ad = form.save(False)
             ad.id_user = request.user
-            ad= form.save()
+            ad = form.save()
+            #Verificando que el anuncio esta siendo creado desde una tienda, si es asi se agrega agrega el id de tienda al anuncio
+            if request.POST.get('id_store') is not None:
+                try:
+                    id_store = request.POST.get('id_store')
+                    #Verificando que la tienda exista
+                    store = Store.objects.get(pk = id_store)
+                    """ Verificando que el usuario que hizo la peticion es el administardor de la pagina, si no es asi hace redireccionamiento """
+                    if not store.user_is_owner(request.user):
+                        return HttpResponseRedirect(reverse_lazy('home'))
+                    ad.id_store = store
+                except:
+                    return HttpResponseRedirect(reverse_lazy('home')) 
+            ad.save()
             for file in request.FILES.getlist('images'):
                 instance = Image(img_route=file)
                 instance.save()
@@ -165,9 +172,8 @@ class CreateAd(CreateView):
                 emails.append(fav.id_user.email)
             html_message='<h1><a href=http://127.0.0.1:8000/ads/'+str(num)+'>Click</a></h1>'
             send_mail('Anuncio nuevo', 'Anuncio de tus favoritos', settings.EMAIL_HOST_USER,emails,html_message=html_message,fail_silently=False)
-            return HttpResponseRedirect(reverse_lazy('products_user',kwargs={'uid':self.request.user.pk})+'?createdAd=success')
-        return HttpResponseRedirect(reverse_lazy('ad_create')+'?createdAd=error')
-
+            return HttpResponseRedirect(next_url+'?createdAd=success')
+        return HttpResponseRedirect(next_url+'?createdAd=error')
 
 @method_decorator(login_required, name='dispatch')
 class AdDelete(UpdateView):
@@ -237,4 +243,44 @@ class AdUpdate(UpdateView):
             else:
                 return HttpResponseRedirect(reverse_lazy('products_user',kwargs={'uid':self.request.user.id})+'?updatedAd=success')
  
-        
+
+#FUNCION QUE ELIMINA LOS ANUNCIOS ATRAVES DE LA VENTANA MODAL
+def adDelete(request, *args, **kwargs):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse_lazy('login'))
+    #Obteniendo el ID del anuncio
+    id_ad = request.POST.get('id_ad')
+    """ Verificando que el anuncio exista """
+    try:
+        ad = Ad.objects.get(pk = id_ad) 
+    except:
+        #Redirecciona porque el anuncio no fue encontrado.
+        return HttpResponseRedirect(request.GET['next'] +'?AdError=AdNotFound')
+    #Verificando que el anuncio no fue creado desde una tienda y quien hace la peticion no es el creador del anuncio
+    if ad.id_store is None and ad.id_user != request.user:
+        return HttpResponseRedirect(reverse_lazy('home'))
+    #Verificando que el anuncio fue creado por una tienda
+    elif ad.id_store is not None:
+        store = Store.objects.get(pk = ad.id_store.pk)
+        #Verificando que quien hace la peticion es owner de la tienda, sino manda al home
+        if request.user.pk not in owners(ad.id_store.pk):
+            return HttpResponseRedirect(reverse_lazy('home'))
+    #Dado que cumple las condiciones de seguridad, procedemos a eliminar el anuncio
+    if request.method == "POST":
+        #Next_url es la direccion a la que seremos reenviado (Es donde se hizo la peticion)
+        next_url = request.POST.get('next_url')
+        form = AdDeleteForm(request.POST, instance= ad)
+        if form.is_valid():
+            ad = form.save()
+            ad.active = False
+            #Obteniendo el valor del option button seleccionado en el modal.
+            value = request.POST.get('delete')
+            if (value == '0'):
+                #El usuario selecciono que el anuncio fue vendido
+                ad.reason = "sold"
+            elif (value == '1'):
+                #El usuario selecciono que lo elimino por otra razon distinta a venderlo.
+                ad.reason = "user"
+            ad.save(False)
+            return HttpResponseRedirect(next_url+'?deletedAd=success')
+    return HttpResponseRedirect(next_url+'?deleteAd=error')

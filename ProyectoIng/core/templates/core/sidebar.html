@@ -47,12 +47,6 @@
           <i class="fas fa-home"></i>
           <span>Inicio</span></a>
       </li>
-      
-      <li class="nav-item">
-        <a class="nav-link" href="{% if request.user.is_authenticated %}{% url 'ad_create' %}{% else %}{% url 'login' %}?next={% url 'ad_create' %}{% endif %}">
-          <i class="fas fa-plus"></i>
-          <span>Crear anuncio</span></a>
-      </li>
       <li class="nav-item">
         <a class="nav-link" href="#">
           <i class="fas fa-store"></i>

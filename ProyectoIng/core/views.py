@@ -3,7 +3,7 @@ from django.views.generic.base import TemplateView
 from ad.models import Category, PriceRange, Currency
 from location.models import Location
 from django.views.generic.detail import DetailView
-from ad.models import Category,Ad
+from ad.models import Category,Ad,AdKind
 from scrape.models import Exchange
 from django_globals import globals
 from django.forms.models import model_to_dict
@@ -18,6 +18,7 @@ class main_page(TemplateView):
         context['price_ranges'] = PriceRange.objects.all()
         context['locations'] = Location.objects.order_by('direction').filter(correlative_direction__isnull=True)
         context['currencies'] = Currency.objects.all()
+        context['ad_kinds'] = AdKind.objects.all()
         #Global Var
         #globals.request.session['dolar_exchange']=  model_to_dict(Exchange.objects.get(pk=1))
         

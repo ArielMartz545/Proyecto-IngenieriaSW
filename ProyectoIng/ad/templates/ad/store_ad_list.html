@@ -61,6 +61,44 @@
 </div>
 {% endif %}
 {# FIN MENSAJES DE RETROALIMENTACION POR ACTUALIZAR UN ANUNCIO #}
+{# INICIO MENSAJES DE RETROALIMENTACION POR ELIMINAR UN ANUNCIO #}
+{% if 'deletedAd' in request.GET %}
+<div class="row">
+  <div class="col-12">
+    {% if 'success' == request.GET.deletedAd %}
+    <div class="alert w-100 alert-success alert-dismissible fade show" role="alert">
+      <strong>¡Éxito!</strong> Se ha eliminado tu anuncio correctamente.
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    {% endif %}
+    {% if 'error' == request.GET.deletedAd %}
+    <div class="alert w-100 alert-fluid alert-danger alert-dismissible fade show" role="alert">
+      <strong>¡Uuuups!</strong> Ha sucedido un error al eliminar el anuncio, intenta nuevamente.
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endif %}
+{# FIN MENSAJES DE RETROALIMENTACION POR ELIMINAR UN ANUNCIO #}
+{# INICIO MENSAJES DE RETROALIMENTACION POR QUE EL ANUNCIO NO EXISTE #}
+{% if 'AdError' in request.GET %}
+<div class="col-12">
+    {% if 'AdNotFound' == request.GET.AdError %}
+    <div class="alert w-100 alert-warning alert-dismissible fade show" role="alert">
+        <strong>¡Error!</strong> El anuncio no existe.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% endif %}
+</div>
+{% endif %}
+{# FIN MENSAJES DE RETROALIMENTACION POR QUE EL ANUNCIO NO EXISTE #}
 <div class="row">
   {% for data in object_list %}
   <div class="col-md-3 col-sm-4 my-2">
@@ -102,15 +140,15 @@
                   <div class="btn-toolbar" role="toolbar" aria-label="Ad buttons group">
                       <div class="btn-group mr-2" role="group" aria-label="Detail group">
                           <a href="{% url 'ad_detail' data.pk %}" class="btn btn-{% cycle 'primary' 'info' 'success' 'secondary' 'danger' 'warning' %}">
-                              <i class="fas fa-plus"></i> {% if data.id_user != request.user  %}Ver más{% endif %}
+                              <i class="fas fa-plus"></i> {% if request.user.pk not in owners  %}Ver más{% endif %}
                           </a>
-                      {% if data.id_user == request.user  %}
-                          <a href="{% url 'ad_update' data.pk%}" class="btn btn-primary">
-                              <i class="fas fa-edit"></i> 
-                          </a>
-                          <a href="{% url 'ad_delete' data.pk%}" class="btn btn-danger">
-                              <i class="fas fa-trash"></i>
-                          </a>
+                      {% if request.user.pk in owners  %}
+                      <a href="{% url 'ad_update' data.pk%}" class="btn btn-primary">
+                        <i class="fas fa-edit"></i> 
+                    </a>
+                    <a href="#" ad="{{data.pk}}" ad-name = "{{data.ad_name}}" data-toggle="modal" data-target="#modalEliminarAnuncio" class="btn btn-danger btn-delete">
+                        <i class="fas fa-trash"></i>
+                    </a>
                       </div>
                       <div class="btn-group mr-2" role="group" aria-label="All group">
                           <div class="dropdown no-arrow">
@@ -124,7 +162,7 @@
                                   <a href="{% url 'ad_delete' data.pk%}" class="dropdown-item">
                                       <i class="fas fa-edit"></i> Editar
                                   </a>
-                                  <a href="{% url 'ad_delete' data.pk%}" class="dropdown-item">
+                                  <a href="#" ad="{{data.pk}}" ad-name = "{{data.ad_name}}" data-toggle="modal" data-target="#modalEliminarAnuncio" class="dropdown-item btn-delete">
                                       <i class="fas fa-trash"></i> ELiminar
                                   </a>                                        
                               </div>
@@ -186,4 +224,48 @@
 </div>
 {% endif %}
 {% endif %}
+{# INICIO MODAL ELIMINAR ANUNCIO #}
+{% if request.user.is_authenticated and request.user.pk in owners %}
+<div class="modal fade" id="modalEliminarAnuncio" tabindex="-1" role="dialog" aria-labelledby="modalEliminarAnuncio"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">¿Estás seguro de eliminar <span id="span_ad_name"></span>?</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="{% url 'ad_delete' %}" method="post">
+                {% csrf_token %}
+                <div class="modal-body">
+                    {# OBTENIENDO LA DIRECCION DESDE DONDE SE HACE LA PETICION, PARA SER REENVIADO AQUI NUEVAMENTE #}
+                    <input type="hidden" id="next_url" name="next_url" value="{% url 'products_store' store_pk  %}">
+                    {# OBTENIENDO EL ID DE ANUNCIO #}
+                    <input type="hidden" id="id_ad_delete" name="id_ad" value="-1">
+                    <p>Selecciona porque lo quieres eliminar.</p>
+                    <div class="form-group my-0 py-1 custom-control custom-radio custom-control-inline">
+                        <input type="radio" id="customRadioInline1" name="delete" class="custom-control-input" value="0"
+                            required>
+                        <label class="custom-control-label" for="customRadioInline1">Lo he vendido.</label>
+                    </div>
+                    <div class="form-group my-0 py-1 custom-control custom-radio custom-control-inline">
+                        <input type="radio" id="customRadioInline2" name="delete" class="custom-control-input" value="1"
+                            required>
+                        <label class="custom-control-label" for="customRadioInline2">Ya no quiero mostrarlo.</label>
+                    </div>
+                </div>
+                <div class="card-footer mt-0">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-danger" >Eliminar anuncio</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endif %}
+{# FIN MODAL ELIMINAR ANUNCIO #}
+{% endblock %}
+{% block js %}
+<script src="{% static 'core/js/custom.js' %}"></script>
 {% endblock %}

@@ -24,9 +24,15 @@ Anuncios de {{ category_name }}
               Anuncios en Categoría de {{ category_name }}
             </h2>
           </div>
+          {% if not request.user.is_authenticated %}
+            <div class="col-sm-4">
+              <a href="{% url 'login' %}?next={% url 'products_category' c %}" class="btn btn-primary btn-block">Crear un anuncio</a>
+            </div>
+          {% else %}
           <div class="col-sm-4">
-            <a href="{% url 'ad_create' %}" class="btn btn-primary btn-block">Crear un anuncio</a>
+            <a href="#" data-toggle="modal" data-target="#modalAgregarAnuncio" class="btn btn-primary btn-block">Crear un anuncio</a>
           </div>
+          {% endif %}
           {% endif %}
         </div>
       </div>
@@ -35,12 +41,38 @@ Anuncios de {{ category_name }}
         <h3>La categoría de {{ category_name }} aun no contiene anuncios publicados.</h3>
         <p>Categorizamos nuestros anuncios para ayudarte a encontrar lo que buscas de manera más rápida.</p>
         <p>Periodicamente se remueven anuncios para mostrar sólo los más recientes..</p>
-        <a href="{% url 'ad_create' %}" class="btn btn-primary btn-block">Crear un anuncio</a>
+        {% if not request.user.is_authenticated %}
+          <a href="{% url 'login' %}?next={% url 'products_category' c %}" class="btn btn-primary btn-block">Crear un anuncio</a>
+        {% else %}
+          <a href="#" data-toggle="modal" data-target="#modalAgregarAnuncio" class="btn btn-primary btn-block">Crear un anuncio</a>
+        {% endif %}
       </div>
       {% endif %}
     </div>
   </div>
 </div>
+{# INICIO MENSAJES DE RETROALIMENTACION POR CREAR UN ANUNCIO #}
+{% if 'createdAd' in request.GET %}
+<div class="col-12">
+    {% if 'success' == request.GET.createdAd %}
+    <div class="alert w-100 alert-success alert-dismissible fade show" role="alert">
+        <strong>¡Éxito!</strong> Se han creado tu anuncio correctamente.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% endif %}
+    {% if 'error' == request.GET.createdAd %}
+    <div class="alert w-100 alert-fluid alert-danger alert-dismissible fade show" role="alert">
+        <strong>¡Uuuups!</strong> Ha sucedido un error al crear tu anuncio, intenta nuevamente.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% endif %}
+</div>
+{% endif %}
+{# FIN MENSAJES DE RETROALIMENTACION POR CREAR UN ANUNCIO #}
 {# INICIO MENSAJES DE RETROALIMENTACION POR ACTUALIZAR UN ANUNCIO #}
 {% if 'updatedAd' in request.GET %}
 <div class="row">
@@ -65,6 +97,111 @@ Anuncios de {{ category_name }}
 </div>
 {% endif %}
 {# FIN MENSAJES DE RETROALIMENTACION POR ACTUALIZAR UN ANUNCIO #}
+{# INICIO MODAL CREAR ANUNCIO #}
+<div class="modal fade" id="modalAgregarAnuncio" tabindex="-1" role="dialog" aria-labelledby="modalAgregarAnuncio"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Creando anuncio</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="{% url 'ad_create' %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group my-0 py-1">
+                              {# OBTENIENDO LA DIRECCION DESDE DONDE SE HACE LA PETICION, PARA SER REENVIADO AQUI NUEVAMENTE #}
+                              <input type="hidden" id="next_url" name="next_url" value="{% url 'products_category' c  %}">
+                                <label for="id_ad_name" class="text-muted">Nombre</label>
+                                <input required type="text" class="form-control" name="ad_name" id="id_ad_name"
+                                    placeholder="Nombre del anuncio" maxlength="100">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group my-0 py-1">
+                        <label for="id_ad_description" class="text-muted">Descripción</label>
+                        <textarea required aria-describedby="help_ad_description" class="form-control" rows="3"
+                            name="ad_description" id="id_ad_description"
+                            placeholder="Describe tu producto o servicio"></textarea>
+                        <small id="help_ad_description" class="form-text text-muted">Tu información de contacto se
+                            incluirá por defecto, si lo deseas, puedes incluir más detalles sobre tu anuncio
+                            aquí.</small>
+                    </div>
+                    <div class="form-group my-0 py-1">
+                        <label for="id_location">Ubicación</label>
+                        <select class="form-control" name="id_location" id="id_id_location" required>
+                            <option value="" disabled selected>Lugar</option>
+                            {% for location in locations %}
+                            <option value="{{location.pk}}" {% if location.pk == request.user.location.pk %} selected
+                                {% endif %}>{{location}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group my-0 py-1">
+                                <label for="id_price" class="text-muted">Precio</label>
+                                <input required type="number" class="form-control" name="price" id="id_price"
+                                    placeholder="Precio" step="any">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group my-0 py-1">
+                                <label for="id_currency" class="text-muted">Moneda</label>
+                                <select class="form-control" name="id_currency" id="id_id_currency">
+                                    {% for currency in currencies %}
+                                    <option value="{{currency.pk}}">{{currency.currency_sign}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="id_ad_kind" class="text-muted">Tipo de anuncio</label>
+                            <select class="form-control" name="id_ad_kind" id="id_id_ad_kind">
+                                <option value="" disabled selected>Tipo de anuncio</option>
+                                {% for kind in ad_kinds %}
+                                <option value="{{kind.pk}}">{{kind}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="id_id_category" class="text-muted">Categoria</label>
+                                <select required placeholder="Categoría" class="form-control" name="id_category"
+                                    id="id_id_category">
+                                    <option value="{{c}}">{{category_name}}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="custom-file">
+                                <input type="file" multiple class="custom-file-input" id="id_images" name="images"
+                                    accept="image/*" aria-describedby="help_images" required>
+                                <label class="custom-file-label" for="id_images">Fotos</label>
+                                <small id="help_images" class="form-text text-muted">Puedes seleccionar varias fotos, si
+                                    usas un ordenador puedes arrastrarlas aquí.</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{# FIN MODAL CREAR ANUNCIO #}
+{# INICIO CARDS ANUNCIOS #}
 <div class="row">
   {% for data in object_list %}
   <div class="col-12 col-sm-6 col-md-4 col-lg-3 my-2">
@@ -147,6 +284,7 @@ Anuncios de {{ category_name }}
   </div>
   {% endfor %}
 </div>
+{# FIN CARDS ANUNCIOS #}
 {% if object_list.count != 0 %}
 <div class="row">
   <div class="col-12">
