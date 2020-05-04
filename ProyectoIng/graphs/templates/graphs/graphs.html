@@ -1,5 +1,25 @@
 {% extends 'core/sidebar.html' %}
 {% block content %}
+<!--Hidden Values active users, active ads-->>
+<input type="text" hidden value="{{active_users}}" id="active_users">
+<input type="text" hidden value="{{inactive_users}}" id="inactive_users">
+<input type="text" hidden value="{{active_ads}}" id="active_ads">
+<input type="text" hidden value="{{inactive_ads}}" id="inactive_ads">
+
+<!--Hiden values dates-->
+<input type="text" hidden value="{{ene}}" id="ene">
+<input type="text" hidden value="{{feb}}" id="feb">
+<input type="text" hidden value="{{mar}}" id="mar">
+<input type="text" hidden value="{{abr}}" id="abr">
+<input type="text" hidden value="{{may}}" id="may">
+<input type="text" hidden value="{{jun}}" id="jun">
+<input type="text" hidden value="{{jul}}" id="jul">
+<input type="text" hidden value="{{ago}}" id="ago">
+<input type="text" hidden value="{{sep}}" id="sep">
+<input type="text" hidden value="{{oc}}" id="oc">
+<input type="text" hidden value="{{nov}}" id="nov">
+<input type="text" hidden value="{{dic}}" id="dic">
+{{dates}}
 <div class="container-fluid">
     <div class="row">
        <div id="new_users" class="col-md-12"></div>
@@ -14,6 +34,8 @@
 <script src="https://cdn.zingchart.com/zingchart.min.js"></script>
 
 <script>
+  let actives= Number($("#active_users").val());
+  let inactives= Number($("#inactive_users").val());
   zingchart.render({
     id: 'users_actives_vs_inactives',
     data: {
@@ -42,8 +64,8 @@
         }
     },
     series: [
-        { values: [87], text:"Activos",'background-color': "#4C71DE"},
-        { values: [13], text:"Inactivos",'background-color': "#E74A3B"},
+        { values: [actives], text:"Activos",'background-color': "#4C71DE"},
+        { values: [inactives], text:"Inactivos",'background-color': "#E74A3B"},
       
       ]
       },
@@ -53,6 +75,8 @@
 </script>
 
 <script>
+  let actives_ads= Number($("#active_ads").val());
+  let inactives_ads= Number($("#inactive_ads").val());
     zingchart.render({
       id: 'ads_actives_vs_inactives',
       data: {
@@ -81,8 +105,8 @@
           }
       },
       series: [
-        { values: [87], text:"Activos",'background-color': "#17A673"},
-        { values: [13], text:"Inactivos",'background-color': "#E74A3B"},
+        { values: [actives_ads], text:"Activos",'background-color': "#17A673"},
+        { values: [inactives_ads], text:"Inactivos",'background-color': "#E74A3B"},
       
       ]
       },
@@ -91,6 +115,18 @@
   });
   </script>
   <script>
+    let ene= Number($("#ene").val());
+    let feb= Number($("#feb").val());
+    let mar= Number($("#mar").val());
+    let abr= Number($("#abr").val());
+    let may= Number($("#may").val());
+    let jun= Number($("#jun").val());
+    let jul= Number($("#jul").val());
+    let ago= Number($("#ago").val());
+    let sep= Number($("#sep").val());
+    let oc= Number($("#oc").val());
+    let nov= Number($("#nov").val());
+    let dic= Number($("#dic").val());
     zingchart.render({
       id: 'new_users',
       data: {
@@ -105,9 +141,9 @@
           'size-factor':0.8
           },
           legend: {
-              layout: "1x12", 
-              x: "0%",
-              y: "90%",
+              layout: "12x1", 
+              x: "88%",
+              y: "10%",
           },
       plot: {
           tooltip: {
@@ -115,18 +151,18 @@
           }
       },
       series: [
-        { values: [87], text:"Enero",'background-color': "#4C71DE"},
-        { values: [15], text:"Febrero",'background-color': "#E74A3B"},
-        { values: [100], text:"Marzo",'background-color': "#F4B619"},
-        { values: [50], text:"Abril",'background-color': "#17A673"},
-        { values: [35], text:"Mayo",'background-color': "#a5179e"},
-        { values: [26], text:"Junio",'background-color': "#1697a3"},
-        { values: [17], text:"Julio",'background-color': "#1697a3"},
-        { values: [18], text:"Agosto",'background-color': "#9e5716"},
-        { values: [98], text:"Septiembre",'background-color': "#7e4fd6"},
-        { values: [20], text:"Octubre",'background-color': "#4ed3b0"},
-        { values: [14], text:"Noviembre",'background-color': "#a74cce"},
-        { values: [200], text:"Diciembre",'background-color': "#ccb84b"},
+        { values: [ene], text:"Enero",'background-color': "#4C71DE"},
+        { values: [feb], text:"Febrero",'background-color': "#E74A3B"},
+        { values: [mar], text:"Marzo",'background-color': "#F4B619"},
+        { values: [abr], text:"Abril",'background-color': "#17A673"},
+        { values: [may], text:"Mayo",'background-color': "#a5179e"},
+        { values: [jun], text:"Junio",'background-color': "#D04335"},
+        { values: [jul], text:"Julio",'background-color': "#1697a3"},
+        { values: [ago], text:"Agosto",'background-color': "#9e5716"},
+        { values: [sep], text:"Septiembre",'background-color': "#7e4fd6"},
+        { values: [oc], text:"Octubre",'background-color': "#4ed3b0"},
+        { values: [nov], text:"Noviembre",'background-color': "#a74cce"},
+        { values: [dic], text:"Diciembre",'background-color': "#ccb84b"},
       
       ]
       },
