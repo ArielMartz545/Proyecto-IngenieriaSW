@@ -18,6 +18,7 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin #Para permisos (Se usara en update view, hace al mismo tiempo el loginrequired)
 import re #Libreria para expresiones regulares
 
 class StoreAds(ListView):
@@ -176,12 +177,19 @@ class CreateAd(CreateView):
         return HttpResponseRedirect(next_url+'?createdAd=error')
 
 
-@method_decorator(login_required, name='dispatch')
-class AdUpdate(UpdateView):
+class AdUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Ad
     form_class= AdUpdateForm
     template_name = 'ad/ad_update.html'
     context_object_name = 'Ad'
+
+    #VERIFICAMOS SI EL USUARIO QUE HACE LA PETICION ES CREADOR DEL ANUNCIO, SINO NO PUEDE ACCEDER A LA VISTA
+    #REFERENCIA: https://learndjango.com/tutorials/django-best-practices-user-permissions
+    def test_func(self):
+        #se obtiene el objeto
+        obj = self.get_object()
+        #se retorna verdadero si quien hace la peticion es realmente quien creo el anuncio
+        return obj.id_user == self.request.user
 
     def post(self, request,pk, *args, **kwargs):
         #Obteniendo la instancia del Formulario
@@ -251,7 +259,6 @@ def AdDelete(request, *args, **kwargs):
             return HttpResponseRedirect(reverse_lazy('home'))
     #Dado que cumple las condiciones de seguridad, procedemos a eliminar el anuncio
     if request.method == "POST":
-        #Next_url es la direccion a la que seremos reenviado (Es donde se hizo la peticion)
         form = AdDeleteForm(request.POST, instance= ad)
         if form.is_valid():
             ad = form.save()

@@ -298,7 +298,7 @@
         <div class="row px-0">
             {% for data in last_ads %}
             <div class="col-md-3 col-sm-4 my-3">
-                <div class="card border-left-{% cycle 'info' 'success' 'secondary' 'danger' 'warning' 'primary' %} shadow h-100 pb-2">
+                <div class="card  shadow h-100 pb-2">
                     {% if data.ad_images.count == 1 %}
                         <a href="{% url 'ad_detail' data.pk %}"><img class="card-img-top no-border-top-left" src="{{data.ad_images.first.img_route.url}}" alt="Responsive image"></a>
                     {% else %}
@@ -331,34 +331,34 @@
                         <p class="my-0 font-italic"><small>Precio original en {{ data.id_currency }}. Cambio al día de hoy según <a href="https://www.bch.hn/index.php" target="_blank">BCH</a>.</small></p>
                         </div>
                     </div>
-                    <div class="card-footer mt-0">
+                    <div class="card-footer bg-white mt-0">
                         <div class="row justify-content-end">
                             <div class="btn-toolbar" role="toolbar" aria-label="Ad buttons group">
                                 <div class="btn-group mr-2" role="group" aria-label="Detail group">
-                                    <a href="{% url 'ad_detail' data.pk %}" class="btn btn-{% cycle 'info' 'success' 'secondary' 'danger' 'warning' 'primary' %}">
+                                    <a href="{% url 'ad_detail' data.pk %}" class="btn btn-light bg-white text-secondary border-0" data-toggle="tooltip" data-placement="bottom" title="Ver más">
                                         <i class="fas fa-plus"></i> {% if request.user.pk not in owners  %}Ver más{% endif %}
                                     </a>
                                 {% if request.user.pk in owners  %}
-                                    <a href="{% url 'ad_update' data.pk%}" class="btn btn-primary">
+                                    <a href="{% url 'ad_update' data.pk%}" class="btn btn-light bg-white text-secondary border-0" data-toggle="tooltip" data-placement="bottom" title="Editar">
                                         <i class="fas fa-edit"></i> 
                                     </a>
-                                    <a href="#" ad="{{data.pk}}" ad-name = "{{data.ad_name}}" data-toggle="modal" data-target="#modalEliminarAnuncio" class="btn btn-danger btn-delete">
+                                    <a href="#" ad="{{data.pk}}" ad-name = "{{data.ad_name}}" data-toggle="modal" data-target="#modalEliminarAnuncio" data-toggle="tooltip" data-placement="bottom" title="Eliminar" class="btn btn-light bg-white text-secondary border-0 btn-delete">
                                         <i class="fas fa-trash"></i>
                                     </a>
                                 </div>
                                 <div class="btn-group mr-2" role="group" aria-label="All group">
                                     <div class="dropdown no-arrow">
-                                        <button class="btn btn-secondary dropdown-toggle no-arrow float-right" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <button class="btn btn-light bg-white text-secondary border-0 dropdown-toggle no-arrow float-right" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         <i class="fas fa-bars"></i>
                                         </button>
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                            <a href="{% url 'ad_detail' data.pk %}" class="dropdown-item">
+                                            <a href="{% url 'ad_detail' data.pk %}" class="dropdown-item text-secondary">
                                                 <i class="fas fa-plus"></i> Ver más
                                             </a>
-                                            <a href="{% url 'ad_update' data.pk%}" class="dropdown-item">
+                                            <a href="{% url 'ad_update' data.pk%}" class="dropdown-item text-secondary">
                                                 <i class="fas fa-edit"></i> Editar
                                             </a>
-                                            <a href="#" ad="{{data.pk}}" ad-name = "{{data.ad_name}}" data-toggle="modal" data-target="#modalEliminarAnuncio" class="dropdown-item btn-delete">
+                                            <a href="#" ad="{{data.pk}}" ad-name = "{{data.ad_name}}" data-toggle="modal" data-target="#modalEliminarAnuncio" class="dropdown-item text-secondary btn-delete">
                                                 <i class="fas fa-trash"></i> Eliminar
                                             </a>                                         
                                         </div>

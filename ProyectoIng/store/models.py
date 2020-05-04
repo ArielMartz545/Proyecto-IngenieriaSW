@@ -14,7 +14,7 @@ class Store(models.Model):
     store_cover_img= models.ForeignKey(Image, on_delete=models.CASCADE,related_name="store_cover_img",default="1", null=True)
     date_created =models.DateTimeField(auto_now_add=True, verbose_name='Fecha de Creacion')
     #Booleano para saber si la tienda esta activa o no (Borrada o no)
-    active= models.BooleanField(default=True, verbose_name='Actividad de Usuario')
+    active= models.BooleanField(default=True, verbose_name='Activa')
 
     def __str__(self):
         return self.store_name

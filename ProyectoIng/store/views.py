@@ -73,7 +73,7 @@ class UserStores(ListView):
         except:
             user = self.request.user
         """
-        return UsersXStore.objects.prefetch_related('store').filter(user=self.request.user).order_by('-store__store_name')
+        return UsersXStore.objects.prefetch_related('store').filter(user=self.request.user, store__active=True).order_by('-store__store_name')
 
 #Esta clase sirve para ver la informacion detallada de una tienda
 class StoreDetailView(DetailView):
@@ -180,3 +180,29 @@ class StoreDelete(UpdateView):
             return HttpResponseRedirect(reverse_lazy('user_stores', kwargs={'uid': self.request.user})+'?deleted=error')
         store.save()
         return HttpResponseRedirect(reverse_lazy('user_stores', kwargs={'uid': self.request.user})+'?deleted=success')
+
+#FUNCION QUE ELIMINA UNA TIENDA
+def storeDelete(request, *args, **kwargs):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse_lazy('login'))
+    next_url = request.POST.get('next_url')
+    #Obteniendo el ID de la tienda
+    id_store = request.POST.get('id_store')
+    #Verificando que la tienda exista
+    try:
+        store = Store.objects.get(pk = id_store)
+    except:
+        #Redirecciona porque el anuncio no fue encontrado.
+        return HttpResponseRedirect(next_url+'?deleteStore=StoreNotFound')
+    if request.user.pk not in owners(store.pk):
+        return HttpResponseRedirect(reverse_lazy('home'))
+    #DADO QUE CUMPLE TODAS LAS CONDICIONES SE ENTRA A VER SI EL FORMULARIO ES VALIDO
+    if request.method == "POST":
+        form = StoreDeleteForm(request.POST, instance=store)
+        if form.is_valid():
+            store = form.save()
+            #Se pasa el campo por defecto de Activo = True, a False. 
+            store.active = False
+            store.save(False)
+            return HttpResponseRedirect(next_url+'?deleteStore=success')
+    return HttpResponseRedirect(next_url+'?deleteStore=error')

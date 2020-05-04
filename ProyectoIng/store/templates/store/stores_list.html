@@ -11,51 +11,6 @@ Tiendas de {{user_name}}
 <link href="{% static 'core/css/card-img-top.css' %}" rel="stylesheet">
 {% endblock %}
 {% block content %}
-{% if 'deleted' in request.GET %}
-{# INICIO Mensaje por la eliminacion  de una tienda#}
-<div class="row">
-    {% if 'success' == request.GET.deleted %}
-    <div class="alert w-100 alert-success alert-dismissible fade show" role="alert">
-        <strong>¡Éxito!</strong> La tienda ha sido eliminada correctamente.
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-    {% endif %}
-    {% if 'error' == request.GET.deleted %}
-    <div class="alert w-100 alert-fluid alert-danger alert-dismissible fade show" role="alert">
-        <strong>¡Uuuups!</strong> Ha sucedido un error al eliminar la tienda, intente de nuevo.
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-    {% endif %}
-</div>
-{% endif %}
-{# FIN MENSAJE DE RETROALIMENTACION POR ELIMINAR TIENDA#}
-{# INICIO MENSAJE DE RETROALIMENTACION POR AGREGAR UNA TIENDA #}
-{% if 'added' in request.GET %}
-<!-- Mensaje por la eliminacion  de una tienda -->
-<div class="row">
-    {% if 'success' == request.GET.added %}
-    <div class="alert w-100 alert-success alert-dismissible fade show" role="alert">
-        <strong>¡Éxito!</strong> La tienda ha sido creada correctamente.
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-    {% endif %}
-    {% if 'error' == request.GET.added %}
-    <div class="alert w-100 alert-fluid alert-danger alert-dismissible fade show" role="alert">
-        <strong>¡Uuuups!</strong> Ha sucedido un error al crear la tienda, intente de nuevo.
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-    {% endif %}
-</div>
-{% endif %}
-{# FIN MENSAJE DE RETROALIMENTACION POR AGREGAR UNA TIENDA #}
 {# INCIO PANEL PARA CREAR TIENDA #}
 <div class="row">
     <div class="col-12">
@@ -131,23 +86,70 @@ Tiendas de {{user_name}}
     </div>
 </div>
 {# FIN PANEL PARA CREAR TIENDA #}
+{# INICIO Mensaje por la eliminacion  de una tienda#}
+{% if 'deleteStore' in request.GET %}
+<div class="row">
+    {% if 'success' == request.GET.deleteStore %}
+    <div class="alert w-100 alert-success alert-dismissible fade show" role="alert">
+        <strong>¡Éxito!</strong> La tienda ha sido eliminada correctamente.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% endif %}
+    {% if 'error' == request.GET.deleteStore %}
+    <div class="alert w-100 alert-fluid alert-danger alert-dismissible fade show" role="alert">
+        <strong>¡Uuuups!</strong> Ha sucedido un error al eliminar la tienda, intente de nuevo.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% endif %}
+</div>
+{% endif %}
+{# FIN MENSAJE DE RETROALIMENTACION POR ELIMINAR TIENDA#}
+{# INICIO MENSAJE DE RETROALIMENTACION POR AGREGAR UNA TIENDA #}
+{% if 'added' in request.GET %}
+<div class="row">
+    {% if 'success' == request.GET.added %}
+    <div class="alert w-100 alert-success alert-dismissible fade show" role="alert">
+        <strong>¡Éxito!</strong> La tienda ha sido creada correctamente.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% endif %}
+    {% if 'error' == request.GET.added %}
+    <div class="alert w-100 alert-fluid alert-danger alert-dismissible fade show" role="alert">
+        <strong>¡Uuuups!</strong> Ha sucedido un error al crear la tienda, intente de nuevo.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% endif %}
+</div>
+{% endif %}
+{# FIN MENSAJE DE RETROALIMENTACION POR AGREGAR UNA TIENDA #}
 {# INICIO DE LAS CARDS DE CADA TIENDA ACTIVA#}
 <div class="row">
     {% for data in object_list %}
     <div class="col-12 col-sm-6 col-md-5 col-lg-3 mb-3">
         {# Card Tienda #}
-        <div class="card border-left-{% cycle 'primary'  'info' 'success' 'secondary' 'danger' 'warning' %} shadow h-100 pb-2">
+        <div class="card shadow h-100 pb-2">
             <a href="{% url 'store_detail' data.store.pk %}"><img class="card-img-top no-border-top-left" src="{{data.store.store_profile_img.img_route.url}}" alt="Responsive image"></a>
             <div class="card-body mb-0 pb-0">
               <h5 class="card-title"><a href="{% url 'store_detail' data.store.pk %}">{{data.store.store_name}}</a> </h5>
               <p class="my-0">Lugar: <a href="{% url 'search' %}?l={{ data.store.store_location.pk }}&c={{c}}">{{ data.store.store_location }}</a></p>
               <p class="mt-0">En Pa'Ya desde: {{data.store.date_created|date:'d-m-Y'}}</p>
             </div>
-            <div class="card-footer mt-0">
+            <div class="card-footer bg-white mt-0">
                 <div class="row justify-content-end">
                     <div class="btn-group mr-2" role="group" aria-label="Detail group">
-                        <a href="{% url 'store_detail' data.store.pk %}" class="btn btn-{% cycle 'primary' 'info' 'success' 'secondary' 'danger' 'warning' %}">
-                            <i class="fas fa-plus"></i> Ver tienda
+                        <a href="{% url 'store_detail' data.store.pk %}" class="btn btn-light bg-white text-secondary border-0" data-toggle="tooltip" data-placement="bottom" title="Ver Tienda">
+                            <i class="fas fa-plus"></i>
+                        </a>
+                        <a href="#" ad="{{data.pk}}" ad-name = "{{ data.store.store_name }}" data-toggle="modal" data-target="#modalEliminarTienda" data-toggle="tooltip" data-placement="bottom" title="Eliminar tienda" class="btn btn-light bg-white text-secondary  border-0 btn-delete">
+                            <i class="fas fa-trash"></i>
                         </a>
                     </div>
                 </div>
@@ -234,4 +236,36 @@ Tiendas de {{user_name}}
         </div>
     </div>
 </div>
+{# FIN MODAL CREAR TIENDA #}
+{# INICIO MODAL ELIMINAR TIENDA #}
+{% if request.user.is_authenticated%}
+<div class="modal fade" id="modalEliminarTienda" tabindex="-1" role="dialog" aria-labelledby="modalEliminarTienda"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">¿Estás seguro de eliminar a <span id="span_ad_name"></span>?</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="{% url 'delete_store' %}" method="post">
+                {% csrf_token %}
+                {# OBTENIENDO LA DIRECCION DESDE DONDE SE HACE LA PETICION, PARA SER REENVIADO AQUI NUEVAMENTE #}
+                <input type="hidden" id="next_url" name="next_url" value="{% url 'user_stores' request.user.pk  %}">
+                {# OBTENIENDO EL ID DE LA TIENDA #}
+                <input type="hidden" id="id_ad_delete" name="id_store" value="-1">
+                <div class="card-footer bg-white mt-0">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-danger" >Sí, Eliminar Tienda</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endif %}
+{# FIN MODAL ELIMINAR TIENDA #}
+{% block js %}
+<script src="{% static 'core/js/custom.js' %}"></script>
+{% endblock %}
 {% endblock %}
