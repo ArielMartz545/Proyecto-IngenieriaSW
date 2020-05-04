@@ -167,11 +167,9 @@ def StoreDelete(request, *args, **kwargs):
     next_url = request.POST.get('next_url')
     #Obteniendo el ID de la tienda
     id_store = request.POST.get('id_store')
-    print(id_store)
     #Verificando que la tienda exista
     try:
         store = Store.objects.get(pk = id_store)
-        print(type(store))
     except:
         #Redirecciona porque el anuncio no fue encontrado.
         return HttpResponseRedirect(next_url+'?deleteStore=StoreNotFound')
