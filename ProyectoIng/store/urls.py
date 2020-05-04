@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import CreateStore, UserStores, StoreDetailView, StoreUpdate, StoreDelete, update_store, storeDelete
+from .views import CreateStore, UserStores, StoreDetailView, StoreUpdate, update_store, StoreDelete
 from ad.views import  CreateAd
 urlpatterns = [
     path('create',CreateStore.as_view(), name='create_store'),
@@ -7,6 +7,6 @@ urlpatterns = [
     path('store/<int:pk>', StoreDetailView.as_view(), name="store_detail"),
     #path('<int:pk>/update', StoreUpdate.as_view(), name='update_store'),
     path('store/update', update_store, name="up_store"),
-    path('store/delete', storeDelete, name="delete_store"),
+    path('store/delete', StoreDelete, name="delete_store"),
 
 ]

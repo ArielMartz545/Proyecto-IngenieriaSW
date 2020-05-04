@@ -160,37 +160,18 @@ def update_store(request, *args, **kwargs):
             return HttpResponseRedirect(reverse_lazy('store_detail',kwargs={'pk': store.pk})+'?updated=success')
     return HttpResponseRedirect(reverse_lazy('store_detail',kwargs={'pk': store.pk})+'?updated=error')
 
-class StoreDelete(UpdateView):
-    model = Store
-    form_class = StoreDeleteForm
-    template_name = 'store/store_delete.html'
-    context_object_name = 'Store'
-
-    #Sobrecargando el metodo post
-    def post(self, request, pk, *args, **kwargs):
-        form = StoreDeleteForm(request.POST)
-        store_object_data = self.object = self.get_object()
-        if form.is_valid():
-            store = form.save(commit=False)
-            store = store_object_data
-            #Se pasa el campo por defecto de Activo = True, a False. 
-            store.active = False
-            store.save(False)
-        else:
-            return HttpResponseRedirect(reverse_lazy('user_stores', kwargs={'uid': self.request.user})+'?deleted=error')
-        store.save()
-        return HttpResponseRedirect(reverse_lazy('user_stores', kwargs={'uid': self.request.user})+'?deleted=success')
-
 #FUNCION QUE ELIMINA UNA TIENDA
-def storeDelete(request, *args, **kwargs):
+def StoreDelete(request, *args, **kwargs):
     if not request.user.is_authenticated:
         return HttpResponseRedirect(reverse_lazy('login'))
     next_url = request.POST.get('next_url')
     #Obteniendo el ID de la tienda
     id_store = request.POST.get('id_store')
+    print(id_store)
     #Verificando que la tienda exista
     try:
         store = Store.objects.get(pk = id_store)
+        print(type(store))
     except:
         #Redirecciona porque el anuncio no fue encontrado.
         return HttpResponseRedirect(next_url+'?deleteStore=StoreNotFound')
