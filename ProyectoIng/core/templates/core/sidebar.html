@@ -86,11 +86,11 @@
         <div id="collapsePrices" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Rango de precio</h6>
-            <a href="#" class="collapse-item price-range" min="0" max="0" currency="1">Todo</a>
+            <a href="#" class="collapse-item price-range" id="price-range-all" min="0.0" max="0.0" currency="1">Todo</a>
             {% for price_range in price_ranges %}
               <a href="#" class="collapse-item price-range" min="{{price_range.min_price}}" max="{{price_range.max_price}}" currency="{{price_range.currency.id}}">{{price_range}}</a>
             {% endfor %}
-            <a hidden href="#" id="custom-price-range-item" class="collapse-item price-range" min="" max="" currency="L"></a>
+            <a hidden href="#" id="custom-price-range-item" class="collapse-item price-range" min="" max="" currency="1"></a>
             <h6 class="collapse-header">Personalizar rango</h6>
             <div class="collapse-item">
               <div class="form-group col-12 pl-0">
@@ -207,25 +207,26 @@
             
             <div class="input-group">
               <div class="input-group-prepend">
-                <select class="btn btn-primary resize-select" name="c" id="id_c">
-                  <option value="0">Todo</option>
-                  <option value="-1">Usuarios</option>
-                  <option value="-2">Tiendas</option>
+                <select class="btn btn-primary resize-select" name="search_c" id="id_search_c">
+                  <option class="search-c-option" value="0">Todo</option>
+                  <option class="search-c-option" value="-1">Usuarios</option>
+                  <option class="search-c-option" value="-2">Tiendas</option>
                   {% for category in categories %}
-                    <option value="{{category.id}}" {% if category.pk == c %}selected{% endif %}>{{category.category_name}}</option>
+                    <option class="search-c-option" value="{{category.id}}">{{category}}</option>
                   {% endfor %}
                 </select>
               </div>
-              <input type="text" name="q" id="id_q" class="form-control bg-light border-0 small" value="{{ q }}" placeholder="Estoy buscando..." aria-label="Search" aria-describedby="basic-addon2">
+              <input type="text" name="search_q" id="id_search_q" class="form-control bg-light border-0 small" value="" placeholder="Estoy buscando..." aria-label="Search" aria-describedby="basic-addon2">
               <div class="input-group-append">
                 <button class="btn btn-primary" type="submit">
                   <i class="fas fa-search fa-sm"></i>
                 </button>
               </div>
             </div>
-            <input type="number" hidden name="min" id="id_min" value="0{{ min }}">
-            <input type="number" hidden name="max" id="id_max" value="0{{ max }}">
-            <input type="number" hidden name="l" id="id_l" value="0{{ l }}">
+            <input type="number" hidden name="search_min" id="id_min" value="0">
+            <input type="number" hidden name="search_max" id="id_max" value="0">
+            <input type="number" hidden name="search_currency" id="id_currency" value="1">
+            <input type="number" hidden name="search_l" id="id_l" value="0">
           </form>
 
           <!-- Topbar Navbar -->
@@ -240,25 +241,26 @@
                 <form method="get" action="{% url 'search' %}" class="form-inline mr-auto w-100 navbar-search">
                   <div class="input-group">
                     <div class="input-group-prepend">
-                      <select class="btn btn-primary resize-select" name="c" id="id_c">
-                        <option value="0">Todo</option>
-                        <option value="-1">Usuarios</option>
-                        <option value="-2">Tiendas</option>
+                      <select class="btn btn-primary resize-select" name="search_c" id="id_search_c">
+                        <option class="search-c-option" value="0">Todo</option>
+                        <option class="search-c-option" value="-1">Usuarios</option>
+                        <option class="search-c-option" value="-2">Tiendas</option>
                         {% for category in categories %}
-                          <option value="{{category.id}}" {% if category.id == c %}selected{% endif %}>{{category.category_name}}</option>
+                          <option class="search-c-option" value="{{category.id}}">{{category}}</option>
                         {% endfor %}
                       </select>
                     </div>
-                    <input type="text" name="q" id="id_q" class="form-control bg-light border-0 small" value="{{ q }}" placeholder="Estoy buscando..." aria-label="Search" aria-describedby="basic-addon2">
+                    <input type="text" name="search_q" id="id_search_q" class="form-control bg-light border-0 small" value="" placeholder="Estoy buscando..." aria-label="Search" aria-describedby="basic-addon2">
                     <div class="input-group-append">
                       <button class="btn btn-primary" type="submit">
                         <i class="fas fa-search fa-sm"></i>
                       </button>
                     </div>
                   </div>
-                  <input type="number" hidden name="min" id="id_min" value="0{{ min }}">
-                  <input type="number" hidden name="max" id="id_max" value="0{{ max }}">
-                  <input type="number" hidden name="l" id="id_l" value="0{{ l }}">
+                  <input type="number" hidden name="search_min" id="id_min" value="0">
+                  <input type="number" hidden name="search_max" id="id_max" value="0">
+                  <input type="number" hidden name="search_currency" id="id_currency" value="1">
+                  <input type="number" hidden name="search_l" id="id_l" value="0">
                 </form>
               </div>
             </li>
@@ -488,6 +490,22 @@
     </div>
   </div>
 
+  {#Search variables#}
+    {#Search query#}
+    <span hidden id="search_var_q">{{search_q}}</span>
+    {#Search category#}
+    <span hidden id="search_var_c">{{search_c}}</span>
+    {#Search location#}
+    <span hidden id="search_var_l">{{search_l}}</span>
+    {#Search min#}
+    <span hidden id="search_var_currency">{{search_currency}}</span>
+    {#Search min#}
+    <span hidden id="search_var_min">{{search_min}}</span>
+    {#Search max#}
+    <span hidden id="search_var_max">{{search_max}}</span>
+  {#FIN Search variables#}
+
+
 <!-- Bootstrap core JavaScript-->
 <script src="{% static 'core/vendor/jquery/jquery.js' %}"></script>
 <script src="{% static 'core/vendor/bootstrap/js/bootstrap.bundle.js' %}" ></script>
@@ -497,8 +515,8 @@
 <script src="{% static 'core/vendor/jquery-easing/jquery.easing.js' %}"></script>
 <!-- Custom scripts for all pages-->
 <script src="{% static 'core/js/sb-admin-2.js' %}"></script>
-<script src="{% static 'core/js/search.js' %}"></script>
 <script src="{% static 'core/js/currency-display.js' %}"></script>
+<script src="{% static 'core/js/search.js' %}"></script>
 {% block js %}
 {% endblock %}
 </body>

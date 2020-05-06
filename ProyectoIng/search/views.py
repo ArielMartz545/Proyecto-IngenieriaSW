@@ -22,23 +22,26 @@ class SearchView(ListView):
         context['locations'] = Location.objects.order_by('direction').filter(correlative_direction__isnull=True)
         context['currencies'] = Currency.objects.all()
         # Fin Sidebar Context
-        q = self.request.GET.get("q")
+        q = self.request.GET.get("search_q")
         if q is None:
             q=""
+        currency = self.request.GET.get("search_currency")
+        if currency is None:
+            currency=1
         try:
-            min_price = float(self.request.GET.get("min"))
+            min_price = float(self.request.GET.get("search_min"))
         except:
             min_price = 0
         try:
-            max_price = float(self.request.GET.get("max"))
+            max_price = float(self.request.GET.get("search_max"))
         except:
             max_price = 0
         try:
-            c = int(self.request.GET.get("c"))
+            c = int(self.request.GET.get("search_c"))
         except:
             c = 0
         try:
-            l = int(self.request.GET.get("l"))
+            l = int(self.request.GET.get("search_l"))
         except:
             l = 0
         try:
@@ -61,13 +64,14 @@ class SearchView(ListView):
             context['ad_search'] = True
             context['user_search'] = False
             context['store_search'] = False
-        context['q'] = q
-        context['min'] = min_price
-        context['max'] = max_price
-        context['c'] = c
-        context['l'] = l
-        context['category_name'] = category_name
-        context['location_name'] = location_name
+        context['search_q'] = q
+        context['search_currency'] = currency
+        context['search_min'] = min_price
+        context['search_max'] = max_price
+        context['search_c'] = c
+        context['search_l'] = l
+        context['search_category_name'] = category_name
+        context['search_location_name'] = location_name
         context['default_image'] = Image.objects.get(pk=1)
         return context
 
