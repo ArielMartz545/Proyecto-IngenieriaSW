@@ -1,0 +1,4 @@
+{% extends 'core/email.html' %}
+{% load static %}
+{% block content %}el usuario {{ user }} ha realizado un nuevo anuncio.<br> Haz click en el siguiente enlace para verlo o copia el enlace en tu navegador:<br>{% endblock %}
+{% block link %}http://127.0.0.1:8000/ads/{{num}}{% endblock %}

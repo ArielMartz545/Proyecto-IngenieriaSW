@@ -17,6 +17,8 @@ from favorites.models import Favorites
 from django.core.mail import send_mail
 from django.conf import settings
 from django.utils.decorators import method_decorator
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin #Para permisos (Se usara en update view, hace al mismo tiempo el loginrequired)
 import re #Libreria para expresiones regulares
@@ -171,10 +173,14 @@ class CreateAd(CreateView):
             num = ad.id
             for fav in favs:
                 emails.append(fav.id_user.email)
-            html_message='<h1><a href=http://127.0.0.1:8000/ads/'+str(num)+'>Click</a></h1>'
-            send_mail('Anuncio nuevo', 'Anuncio de tus favoritos', settings.EMAIL_HOST_USER,emails,html_message=html_message,fail_silently=False)
-            return HttpResponseRedirect(next_url+'?createdAd=success')
-        return HttpResponseRedirect(next_url+'?createdAd=error')
+            mail_subject = 'Nuevo Anuncio'
+            message_html = render_to_string('ad/ad_mail.html', {
+                'user': request.user.get_full_name(),
+                'num': num,
+            })
+            send_mail(mail_subject, strip_tags(message_html), settings.EMAIL_HOST_USER,emails,fail_silently=False,html_message=message_html)
+            return HttpResponseRedirect(reverse_lazy('products_user',kwargs={'uid':self.request.user.pk})+'?createdAd=success')
+        return HttpResponseRedirect(reverse_lazy('ad_create')+'?createdAd=error')
 
 
 class AdUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
