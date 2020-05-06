@@ -76,23 +76,23 @@ class SearchView(ListView):
         return context
 
     def get_queryset(self):
-        q = self.request.GET.get("q")
+        q = self.request.GET.get("search_q")
         if q is None:
             q=""
         try:
-            min_price = float(self.request.GET.get("min"))
+            min_price = float(self.request.GET.get("search_min"))
         except:
             min_price = 0
         try:
-            max_price = float(self.request.GET.get("max"))
+            max_price = float(self.request.GET.get("search_max"))
         except:
             max_price = 0
         try:
-            c = int(self.request.GET.get("c"))
+            c = int(self.request.GET.get("search_c"))
         except:
             c = 0
         try:
-            l = int(self.request.GET.get("l"))
+            l = int(self.request.GET.get("search_l"))
         except:
             l = 0
         if c == -1:
