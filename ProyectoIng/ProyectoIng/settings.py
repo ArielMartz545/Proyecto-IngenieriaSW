@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     'favorites.apps.FavoritesConfig',
     'rating.apps.RatingConfig',
     'graphs',
+    'complaints',
     
 ]
 

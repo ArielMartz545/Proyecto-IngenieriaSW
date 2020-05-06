@@ -54,6 +54,11 @@
           <span>Tiendas</span></a>
       </li>
       <li class="nav-item">
+        <a class="nav-link" href="#" data-toggle="modal" data-target="#modalDenuncia">  
+          <i class="fas fa-exclamation-triangle"></i>
+          <span>Denuncias</span></a>
+      </li>
+      <li class="nav-item">
         <a class="nav-link collapsed" href="#" id="currency-collapser" data-toggle="collapse" data-target="#collapseCurrency" aria-expanded="true" aria-controls="collapseUtilities">
           <i class="fas fa-coins"></i>
           <span>Moneda</span>
@@ -435,6 +440,73 @@
           </ul>
         </nav>
         <!-- End of Topbar -->
+        {# modal denuncias #}
+        {% if request.user.is_authenticated %}
+        <div class="modal fade" id="modalDenuncia" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <a class="text-decoration-none d-flex" href="{% url 'home' %}">
+                  <div class="sidebar-brand-icon rotate-n-15">
+                    <i class="fab fa-product-hunt"></i>
+                  </div>
+                  <div class="sidebar-brand-text mx-0 display-5 font-weight-bold ">Pa'Ya</div>
+                </a>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body" >
+                <form action="{% url 'complaint_user' %}" method="POST" id="Denuncia" enctype="multipart/form-data">
+                  {% csrf_token %}
+                  <div class="form-group">
+                    <div class="form-group">
+                      <label for="exampleFormControlSelect1">Que problema tienes?</label>
+                      <select class="form-control" id="id_election" name="id_election">
+                        <option value="">Elige una opción</option>
+                        <option>Usuario</option>
+                        <option>Producto</option>
+                        <option>Tienda</option>
+                        <option>Otro tipo</option>
+                      </select>
+                    </div>                   
+                  </div>
+                  <div class="form-group">
+                    <label for="id_comment" class="text-muted">Comentario</label>
+                    <textarea class="form-control" rows="2" required name="id_comment" placeholder="Espefica mas tu problema"></textarea>
+                  </div>
+                  <div class="modal-footer">
+                      <button type="button" name="ResetForm" class="btn btn-warning" id="ResetForm">Reset info</button>
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                      <button type="submit" class="btn btn-primary">Enviar Denuncia</button>
+                  </div>
+                </form>
+              </div>
+            </div>   
+          </div>
+        </div>
+        {% else %}
+        <div class="modal fade" id="modalDenuncia" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Que problema tienes</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <p>Registrate o Ingresa si quieres denunciar o reportar algo</p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <a class="btn btn-success" href="{% url 'signup' %}" >Regístrate</a>
+                <a href="{% url 'login' %}" class="btn btn-primary" >Ingresar</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endif %}
         
 
 
