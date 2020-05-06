@@ -14,6 +14,7 @@ from .forms import StoreForm, StoreUpdateForm, StoreDeleteForm
 from ad.forms import AdCreateForm, AdDeleteForm
 from django.http import  HttpResponseRedirect
 from django.views import View
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin #Para permisos
 # Create your views here.
 
 #Clase para crear una tienda
@@ -40,7 +41,7 @@ class CreateStore(CreateView): #Pass,Correo,Nombre,Apellido,Telefono,Direccion,F
         return HttpResponseRedirect(reverse_lazy('user_stores',kwargs={'uid': request.user.id}))
 
 #Esta clase sirve para desplegar las tiendas asociadas a un usuarios
-class UserStores(ListView):
+class UserStores(LoginRequiredMixin, ListView):
     model= UsersXStore
     template_name="store/stores_list.html"
     #Numero de elementos por paginacion
@@ -74,6 +75,31 @@ class UserStores(ListView):
             user = self.request.user
         """
         return UsersXStore.objects.prefetch_related('store').filter(user=self.request.user, store__active=True).order_by('-store__store_name')
+
+
+#Esta clase contiene el catalogo de todas las tiendas
+class StoreList(ListView):
+    model = Store
+    template_name="store/category_store_list.html"
+    paginate_by = 15
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        # Sidebar Context
+        context['categories'] = Category.objects.order_by('category_name')
+        context['price_ranges'] = PriceRange.objects.all()
+        context['locations'] = Location.objects.order_by('direction').filter(correlative_direction__isnull=True)
+        context['currencies'] = Currency.objects.all()
+        context['ad_kinds'] = AdKind.objects.all()
+        # Fin Sidebar Context
+        return context
+    
+    def get_queryset(self):
+        queryset = Store.objects.all()
+        queryset = queryset.filter(active=True)
+        return queryset
+
+
 
 #Esta clase sirve para ver la informacion detallada de una tienda
 class StoreDetailView(DetailView):
