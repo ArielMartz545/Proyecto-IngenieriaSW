@@ -8,6 +8,15 @@ from scrape.models import Exchange
 from django.forms.models import model_to_dict
 
 # Create your models here.
+class Disable_ads(models.Model):
+    time_to = models.IntegerField(verbose_name="Dias Para desabilitar Anuncios")
+
+    class Meta():
+        verbose_name = "Dias para desabilitar anuncios"
+    
+    def __str__(self):
+        return self.time_to
+
 """Clase Categoria
 Atributos: [Nombre, descripcion e icono de la categoria]"""
 class Category(models.Model):
@@ -113,4 +122,5 @@ class Ad(models.Model):
     class Meta():
         verbose_name= "Anuncio"
         verbose_name_plural= "Anuncios"
+
 
