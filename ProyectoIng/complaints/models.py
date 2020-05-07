@@ -7,6 +7,7 @@ from account.models import Account
 
 class Complaint(models.Model):
     user_complaint = models.ForeignKey(Account, related_name="User_complaint", on_delete=models.CASCADE, verbose_name='Denunciante')
+    indicated_user = models.ForeignKey(Account, related_name="indicated_user", null=True, on_delete=models.CASCADE, verbose_name='Denunciado')
     problem = models.CharField(max_length=20,null=False, blank=False, verbose_name='Problema')
     comment = models.TextField(null=True, verbose_name='Comentario')
     published = models.DateTimeField(verbose_name="Fecha de publicacion", default=now)

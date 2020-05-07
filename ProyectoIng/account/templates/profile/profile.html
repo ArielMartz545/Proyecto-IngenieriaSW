@@ -65,9 +65,9 @@
                         </h2>
                     </div>
                     {% else %}
-                    <div class="col-md-10">
+                    <div class="col-10">
                         <h2 class="m-0 font-weight-bold text-primary">
-                            Perfil
+                            Perfil 
                         </h2>
                     </div>
                     <div class="col-md-2">
@@ -78,7 +78,7 @@
                                     class="fas fa-heart fa-lg"></i> Siguiendo{% else %}<i
                                     class="far fa-heart fa-lg"></i> Seguir{% endif %}</button>
                         </form>
-                    </div>
+                    </div>    
                     {% endif %}
                 </div>
             </div>
@@ -141,6 +141,13 @@
                                             <i class="far fa-copy"></i>
                                         </a>
                                     </p>
+                                </div>
+                                <div class="form-group mb-2">
+                                    <button type="button" class="btn btn-xs btn-sm float-md-right">
+                                        <a class="nav-link" href="#" data-toggle="modal" data-target="#modalDenuncia">
+                                            <span>Reportar</span>
+                                            <i class="fas fa-exclamation-circle fa-lg"></i></a>
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -579,4 +586,6 @@
 {% endblock %}
 {% block js %}
 <script src="{% static 'core/js/custom.js' %}"></script>
+<script src="{% static 'core/js/reset_form.js' %}"></script>
+<script src="{% static 'core/js/rate-star.js' %}"></script>
 {% endblock %}

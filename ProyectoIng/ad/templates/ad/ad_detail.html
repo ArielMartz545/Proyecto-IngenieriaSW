@@ -43,6 +43,7 @@
                                     {{object.ad_name}}
                                 </h2>
                             </div>
+                            {% if request.user.email == object.email %}
                             <div class="col-md-5">
                                 <a href="{% url 'ad_update' object.pk%}" class="dropdown-item">
                                     <i class="fas fa-edit"></i> Editar
@@ -51,6 +52,7 @@
                                     <i class="fas fa-trash"></i> Eliminar
                                 </a>  
                             </div>
+                            {% endif %}
                         </div>
                         <div class="row">
                             <div class="col">
@@ -180,15 +182,16 @@
                         </div>
                         <div class="row">
                             <div class="col-12">
+                                <a href="mailto:{{object.id_user}} ?Subject=Me%20interesa%20tu%20anuncio"
+                                class="btn btn-info" target="_blank"> <i class="fas fa-envelope"></i> Correo</a>
                                 <a href="https://api.whatsapp.com/send?phone=504{{object.id_user.phone_number}}&text=Hola%21%20Estoy%20interesado%20en%20tu%20anuncio%20de%20Pa%27Ya."
                                     class="btn btn-success" target="_blank"><i class="fab fa-whatsapp"></i>
                                     Contactar</a>
                                 <div class="fb-share-button" data-href="https://paya.com" data-layout="button"
                                     data-size="large"><a target="_blank"
                                         href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fpaya.com%2F&amp;src=sdkpreparse"
-                                        class="fb-xfbml-parse-ignore">Compartir</a></div>
-                                <a href="mailto:{{object.id_user}} ?Subject=Me%20interesa%20tu%20anuncio"
-                                    class="btn" target="_blank"> <i class="fas fa-envelope"></i> Correo</a>
+                                        class="fb-xfbml-parse-ignore" class="btn btn-lg">Compartir</a>
+                                </div>
                             </div>
                         </div>
                         {% else %}

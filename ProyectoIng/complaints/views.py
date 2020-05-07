@@ -17,14 +17,21 @@ def complaint_user(request):
         comment = request.POST.get('id_comment')
 
         try:
-            complaint = Complaint.objects.get(user_complaint = request.user.pk)
+            indicated_user_id = int( request.POST.get('id_indicated')) 
+            indicated_user = Account.objects.get(pk=indicated_user_id) 
         except:
-            complaint = Complaint(user_complaint=request.user)
+            return HttpResponseRedirect(reverse_lazy('home'))
+
+        try:
+            complaint = Complaint.objects.get(user_complaint = request.user.pk, indicated_user__pk = request.user.pk)
+        except:
+            complaint = Complaint(user_complaint=request.user, indicated_user=indicated_user)
 
         complaint.problem = problem
         complaint.comment = comment
         complaint.save()
-        return HttpResponseRedirect(reverse_lazy('home'))
+
+        return HttpResponseRedirect(reverse_lazy('profile', kwargs={'pk': indicated_user_id}))
 
     else:
         return HttpResponseRedirect(reverse_lazy('home'))

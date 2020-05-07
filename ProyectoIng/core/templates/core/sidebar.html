@@ -54,11 +54,6 @@
           <span>Tiendas</span></a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#" data-toggle="modal" data-target="#modalDenuncia">  
-          <i class="fas fa-exclamation-triangle"></i>
-          <span>Denuncias</span></a>
-      </li>
-      <li class="nav-item">
         <a class="nav-link collapsed" href="#" id="currency-collapser" data-toggle="collapse" data-target="#collapseCurrency" aria-expanded="true" aria-controls="collapseUtilities">
           <i class="fas fa-coins"></i>
           <span>Moneda</span>
@@ -459,6 +454,7 @@
               <div class="modal-body" >
                 <form action="{% url 'complaint_user' %}" method="POST" id="Denuncia" enctype="multipart/form-data">
                   {% csrf_token %}
+                  <input type="number" value="{{ object.pk }}" hidden name="id_indicated">
                   <div class="form-group">
                     <div class="form-group">
                       <label for="exampleFormControlSelect1">Que problema tienes?</label>
@@ -476,7 +472,7 @@
                     <textarea class="form-control" rows="2" required name="id_comment" placeholder="Espefica mas tu problema"></textarea>
                   </div>
                   <div class="modal-footer">
-                      <button type="button" name="ResetForm" class="btn btn-warning" id="ResetForm">Reset info</button>
+                      <button type="button" name="ResetForm" class="btn btn-warning float-md-right" id="ResetForm">Reset info</button>
                       <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
                       <button type="submit" class="btn btn-primary">Enviar Denuncia</button>
                   </div>

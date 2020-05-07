@@ -4,7 +4,7 @@ from .models import Complaint
 
 class ComplaintsAdmin(admin.ModelAdmin):
     search_fields = ("problem","comment","user_complaint__first_name","user_complaint__email",)
-    list_display = ('problem', 'published')
+    list_display = ('indicated_user','problem', 'published')
 
 admin.site.register(Complaint, ComplaintsAdmin)
 
