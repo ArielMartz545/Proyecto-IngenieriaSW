@@ -11,10 +11,12 @@ class Complaint(models.Model):
     comment = models.TextField(null=True, verbose_name='Comentario')
     published = models.DateTimeField(verbose_name="Fecha de publicacion", default=now)
 
+    class Meta():
+        verbose_name = "Denunciante"
+        verbose_name_plural = "Denunciantes"
+
 
     def __str__(self): 
         return self.user_complaint.get_full_name()
 
-    class Meta():
-        verbose_name= "Denunciante"
-        verbose_name_plural= "Denuncias"
+    
