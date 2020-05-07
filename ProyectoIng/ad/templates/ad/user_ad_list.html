@@ -24,12 +24,12 @@ Anuncios de {{user_name}}
           </div>
           {% else %}
           {% if request.user.pk == user_pk %}
-          <div class="col-sm-8">
+          <div class="col-sm-9">
             <h2 class="m-0 font-weight-bold text-primary">
               Mis anuncios
             </h2>
           </div>
-          <div class="col-sm-4">
+          <div class="col-sm-3">
             <a href="#" data-toggle="modal" data-target="#modalAgregarAnuncio" class="btn btn-primary btn-block">Crear un anuncio</a>
           </div>
           {% else %}
@@ -191,7 +191,8 @@ Anuncios de {{user_name}}
                           <a href="{% url 'ad_update' data.pk%}" class="btn btn-light bg-white text-secondary border-0" data-toggle="tooltip" data-placement="bottom" title="Editar">
                               <i class="fas fa-edit"></i> 
                           </a>
-                          <a href="#" ad="{{data.pk}}" ad-name = "{{data.ad_name}}" data-toggle="modal" data-target="#modalEliminarAnuncio" data-toggle="tooltip" data-placement="bottom" title="Eliminar" class="btn btn-light bg-white text-secondary border-0 btn-delete">
+                          <a href="#" ad="{{data.pk}}" ad-name = "{{data.ad_name}}" data-toggle="modal" data-target="#modalEliminarAnuncio" data-toggle="tooltip" data-placement="bottom" title="Eliminar"
+                           class="btn btn-light bg-white text-secondary border-0 btn-delete">
                               <i class="fas fa-trash"></i>
                           </a>
                       </div>

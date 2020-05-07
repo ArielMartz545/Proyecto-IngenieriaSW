@@ -53,7 +53,7 @@ class StoreAds(ListView):
         queryset = queryset.filter(active=True).order_by('-date_created')
         return queryset
 
-class UserAds(ListView):
+class UserAds(LoginRequiredMixin, ListView):
     model= Ad
     template_name="ad/user_ad_list.html"
     paginate_by = 20

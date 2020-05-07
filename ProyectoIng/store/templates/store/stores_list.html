@@ -26,12 +26,12 @@ Tiendas de {{user_name}}
                     {% else %}
                     {# SI EL USUARIO EN SESION ES VALIDO PERMITE CREAR TIENDA#}
                     {% if request.user.pk == user_pk %}
-                    <div class="col-sm-8">
+                    <div class="col-sm-9">
                         <h2 class="m-0 font-weight-bold text-primary">
                             Mis tiendas
                         </h2>
                     </div>
-                    <div class="col-sm-4">
+                    <div class="col-sm-3">
                         <button type="button" class="btn btn-primary btn-block" href="#" data-toggle="modal"
                             data-target="#modalCrearTienda">Crear tienda</button>
                     </div>
@@ -221,6 +221,7 @@ Tiendas de {{user_name}}
                             placeholder="Describe tu tienda, si quieres brinda detalles de la dirección y formas de contacto."></textarea>
                     </div>
                     <div class="form-group">
+                        <label for="id_location">Ubicación</label>
                         <select class="form-control" name="store_location" id="id_store_location">
                             {% for location in all_locations %}
                             <option value="{{location.pk}}">{{location}}</option>

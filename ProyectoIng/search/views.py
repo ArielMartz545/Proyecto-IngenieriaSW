@@ -4,7 +4,7 @@ from django.shortcuts import render
 from django.views.generic.list import ListView
 from django.db.models import Value
 from django.db.models.functions import Concat
-from ad.models import Ad, Category, PriceRange, Currency
+from ad.models import Ad, Category, PriceRange, Currency, AdKind
 from location.models import Location
 from account.models import Account
 from store.models import Store
@@ -21,6 +21,7 @@ class SearchView(ListView):
         context['price_ranges'] = PriceRange.objects.all()
         context['locations'] = Location.objects.order_by('direction').filter(correlative_direction__isnull=True)
         context['currencies'] = Currency.objects.all()
+        context['ad_kinds'] = AdKind.objects.all()
         # Fin Sidebar Context
         q = self.request.GET.get("search_q")
         if q is None:
