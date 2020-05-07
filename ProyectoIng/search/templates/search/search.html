@@ -223,10 +223,16 @@
               Buscando Tiendas en {{location_name}}
             </h2>
           </div>
+          {% if not request.user.is_authenticated %}
+          <div class="col-sm-3">
+            <a href="{% url 'login' %}" class="btn btn-primary btn-block">Crear un anuncio</a>
+          </div>
+          {% else %}
           <div class="col-sm-3">
             <button type="button" class="btn btn-primary btn-block" href="#" data-toggle="modal"
             data-target="#modalCrearTienda">Crear una tienda</button>
           </div>
+          {% endif %}
           {% endif %}
         </div>
       </div>
