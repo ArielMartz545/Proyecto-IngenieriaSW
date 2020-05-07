@@ -142,16 +142,22 @@
                                         </a>
                                     </p>
                                 </div>
+                                
                                 <div class="form-group mb-2">
-                                    <button type="button" class="btn btn-xs btn-sm float-md-right">
                                         <a class="nav-link" href="#" data-toggle="modal" data-target="#modalDenuncia">
-                                            <span>Reportar</span>
-                                            <i class="fas fa-exclamation-circle fa-lg"></i></a>
-                                    </button>
+                                    {% if not request.user.email == object.email %}
+                                    <div class="form-group mb-2">
+                                        <button type="button" class="btn btn-xs btn-sm float-md-right" >
+                                            <a class="nav-link" href="#" data-toggle="modal" data-target="#modalDenuncia">
+                                                <span>Reportar</span>
+                                                <i class="fas fa-exclamation-circle fa-lg"></i></a>
+                                        </button>
+                                    </div>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
-                        {% if request.user.email == object.email %}
+                        {% if request.user.pk == object.pk %}
                         <div class="form-group">
                             <a href="#" data-toggle="modal" data-target="#modalCambiarDatos" class="text-muted"><i
                                     class="fas fa-edit"></i> Editar mi perfil</a>

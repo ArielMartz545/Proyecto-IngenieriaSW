@@ -43,14 +43,12 @@
                                     {{object.ad_name}}
                                 </h2>
                             </div>
-                            {% if request.user.email == object.email %}
+                            {% if data.id_user == request.user  %}
                             <div class="col-md-5">
                                 <a href="{% url 'ad_update' object.pk%}" class="dropdown-item">
-                                    <i class="fas fa-edit"></i> Editar
-                                </a>
+                                    <i class="fas fa-edit"></i> Editar</a>
                                 <a href="#" ad="{{object.pk}}" ad-name = "{{data.ad_name}}" data-toggle="modal" data-target="#modalEliminarAnuncio" class="dropdown-item btn-delete">
-                                    <i class="fas fa-trash"></i> Eliminar
-                                </a>  
+                                    <i class="fas fa-trash"></i> Eliminar</a>  
                             </div>
                             {% endif %}
                         </div>
