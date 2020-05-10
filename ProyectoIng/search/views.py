@@ -2,13 +2,16 @@ from django.shortcuts import render
 
 # Create your views here.
 from django.views.generic.list import ListView
-from django.db.models import Value
+from django.db import models
+from django.db.models import Value, Case, When, F
 from django.db.models.functions import Concat
+from scrape.models import Exchange
 from ad.models import Ad, Category, PriceRange, Currency, AdKind
 from location.models import Location
 from account.models import Account
 from store.models import Store
 from images.models import Image
+from .models import Search
 
 class SearchView(ListView):
     template_name="search/search.html"
@@ -77,9 +80,13 @@ class SearchView(ListView):
         return context
 
     def get_queryset(self):
+        search = Search()
+        if self.request.user.is_authenticated:
+            search.id_user = self.request.user
         q = self.request.GET.get("search_q")
         if q is None:
             q=""
+        search.query_search = q
         try:
             min_price = float(self.request.GET.get("search_min"))
         except:
@@ -96,13 +103,27 @@ class SearchView(ListView):
             l = int(self.request.GET.get("search_l"))
         except:
             l = 0
+        currency = self.request.GET.get("search_currency")
+        if currency is None:
+            currency=1
         if c == -1:
             #Busqueda de usuarios
+            search.user_search = True
             queryset = Account.objects.annotate(full_name=Concat('first_name', Value(' '), 'last_name'))
             queryset = queryset.filter(full_name__icontains=q) | queryset.filter(email__icontains=q)
+            try:
+                location = Location.objects.get(pk=l)
+            except:
+                location = None
+            #Filtro de lugar
+            if location is not None:
+                queryset = queryset.filter(location__pk=l) | queryset.filter(location__correlative_direction__pk=l)
+                search.id_location = location
+            search.save()
             return queryset
         elif c == -2:
             #Busqueda de tiendas
+            search.store_search = True
             queryset = Store.objects.filter(active=True)
             queryset = queryset.filter(store_name__icontains=q) | queryset.filter(store_description__icontains=q)
             try:
@@ -112,10 +133,14 @@ class SearchView(ListView):
             #Filtro de lugar
             if location is not None:
                 queryset = queryset.filter(store_location__pk=l) | queryset.filter(store_location__correlative_direction__pk=l)
+                search.id_location = location
             #queryset = queryset.order_by('-date_created')
+            search.save()
             return queryset
         else:
+            exchange = Exchange.objects.get(pk=1)
             #Busqueda de anuncios
+            search.ad_search = True
             #Validacion de minimo y maximo
             #Si solo se selecciono precio minimo, el precio maximo viene con valor 0
             #Si solo se selecciono precio maximo, el precio minimo viene con valor 0
@@ -125,10 +150,28 @@ class SearchView(ListView):
                 max_price = min_price
                 min_price = temp
             #Filtro de precios
-            queryset = Ad.objects.filter(price__gte=(min_price))
-            if (max_price != 0):
-                #Se selecciono un precio maximo
-                queryset = queryset.filter(price__lte=(max_price))
+            #Precio original en lempiras
+            search.set_id_price_range(min_price, max_price, None)
+            queryset = Ad.objects.annotate(
+                price_lempiras=Case(
+                    When(id_currency__pk = 1, then = F('price')),
+                    When(id_currency__pk = 2, then = F('price')*exchange.exchange),
+                    output_field=models.FloatField(),),
+                price_dollar=Case(
+                    When(id_currency__pk = 2, then = F('price')),
+                    When(id_currency__pk = 1, then = F('price')/exchange.exchange),
+                    output_field=models.FloatField(),),
+            )
+            if currency == 1:
+                queryset = queryset.filter(price_lempiras__gte=(min_price))
+                if (max_price != 0):
+                    #Se selecciono un precio maximo
+                    queryset = queryset.filter(price_lempiras__lte=(max_price))
+            else:
+                queryset = queryset.filter(price_dollar__gte=(min_price))
+                if (max_price != 0):
+                    #Se selecciono un precio maximo
+                    queryset = queryset.filter(price_dollar__lte=(max_price))
             #Validacion de categorias
             try:
                 category = Category.objects.get(pk=c)
@@ -137,6 +180,7 @@ class SearchView(ListView):
             #Filtro de categorias
             if category is not None:
                 queryset = queryset.filter(id_category__pk=c)
+                search.id_category = category
             #Validacion de lugar
             try:
                 location = Location.objects.get(pk=l)
@@ -145,7 +189,9 @@ class SearchView(ListView):
             #Filtro de lugar
             if location is not None:
                 queryset = queryset.filter(id_location__pk=l) | queryset.filter(id_location__correlative_direction__pk=l)
+                search.id_location = location
             #Filtro de nombre o descripcion
             queryset = queryset.filter(ad_name__icontains=q) | queryset.filter(ad_description__icontains=q)
             queryset = queryset.filter(active=True).order_by('-date_created')
+            search.save()
             return queryset

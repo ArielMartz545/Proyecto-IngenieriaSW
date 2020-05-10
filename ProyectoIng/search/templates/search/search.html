@@ -153,7 +153,7 @@
         <div class="row">
           <div class="col-12">
             <h2 class="m-0 font-weight-bold text-primary">
-              Buscando Usuarios en {{location_name}}
+              Buscando Usuarios en {{search_location_name}}
             </h2>
           </div>
         </div>
@@ -214,13 +214,13 @@
           {% if object_list.count == 0 %}
           <div class="col-12">
             <h2 class="m-0 font-weight-bold text-primary">
-              Buscando Tiendas en {{location_name}}
+              Buscando Tiendas en {{search_location_name}}
             </h2>
           </div>
           {% else %}
           <div class="col-sm-9">
             <h2 class="m-0 font-weight-bold text-primary">
-              Buscando Tiendas en {{location_name}}
+              Buscando Tiendas en {{search_location_name}}
             </h2>
           </div>
           {% if not request.user.is_authenticated %}
