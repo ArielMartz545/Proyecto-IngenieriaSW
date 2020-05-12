@@ -93,6 +93,7 @@
         </div>
         <p class="my-0"><i class="fas fa-map-marker-alt"></i> {{data.store_location}}<a
             href="{% url 'search' %}?l={{ data.id_location.pk }}">{{ data.id_location }}</a></p>
+        {{data.publisher_rating}}
       </div>
       <div class="card-footer bg-white mt-0">
         <div class="row justify-content-end">

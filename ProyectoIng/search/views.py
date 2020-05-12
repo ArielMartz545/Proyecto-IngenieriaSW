@@ -3,7 +3,7 @@ from django.shortcuts import render
 # Create your views here.
 from django.views.generic.list import ListView
 from django.db import models
-from django.db.models import Value, Case, When, F
+from django.db.models import Value, Case, When, F, OuterRef, Subquery, Avg
 from django.db.models.functions import Concat
 from scrape.models import Exchange
 from ad.models import Ad, Category, PriceRange, Currency, AdKind
@@ -11,6 +11,7 @@ from location.models import Location
 from account.models import Account
 from store.models import Store
 from images.models import Image
+from rating.models import Rating
 from .models import Search
 
 class SearchView(ListView):
@@ -139,6 +140,8 @@ class SearchView(ListView):
             return queryset
         else:
             exchange = Exchange.objects.get(pk=1)
+            user_ratings = Rating.objects.filter(evaluated_user__isnull=False, evaluated_user=OuterRef('id_user'))
+            store_ratings = Rating.objects.filter(evaluated_store__isnull=False, evaluated_store=OuterRef('id_store'))
             #Busqueda de anuncios
             search.ad_search = True
             #Validacion de minimo y maximo
@@ -156,12 +159,18 @@ class SearchView(ListView):
                 price_lempiras=Case(
                     When(id_currency__pk = 1, then = F('price')),
                     When(id_currency__pk = 2, then = F('price')*exchange.exchange),
-                    output_field=models.FloatField(),),
+                    output_field=models.FloatField(),
+                ),
                 price_dollar=Case(
                     When(id_currency__pk = 2, then = F('price')),
                     When(id_currency__pk = 1, then = F('price')/exchange.exchange),
-                    output_field=models.FloatField(),),
+                    output_field=models.FloatField(),
+                ),
             )
+            #Annotate publisher rating
+            queryset = queryset.publisher_rating()
+            #Filtro por rating (Los que no han sido evaluados siempre se muestran)
+            """queryset.filter(publisher_rating__gte=(rating)) | queryset.filter(publisher_rating=None)"""
             if currency == 1:
                 queryset = queryset.filter(price_lempiras__gte=(min_price))
                 if (max_price != 0):

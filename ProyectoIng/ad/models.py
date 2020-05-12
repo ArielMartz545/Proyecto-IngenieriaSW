@@ -4,6 +4,9 @@ from store.models import Store
 from location.models import Location
 from images.models import Image
 from scrape.models import Exchange
+from rating.models import Rating
+from django.db.models import Value, Case, When, F, OuterRef, Subquery, Avg
+
 
 from django.forms.models import model_to_dict
 
@@ -84,6 +87,27 @@ class PriceRange(models.Model):
         verbose_name_plural= "Rangos de Precio"
 
 
+class AdSet(models.QuerySet):
+    def publisher_rating(self):
+        return self.annotate(
+            publisher_rating=Case(
+                #Obtener promedio de usuario
+                When(id_store__isnull = True, then = 
+                    Subquery(Rating.objects.filter(evaluated_user=OuterRef('id_user'))
+                    .annotate(rating=Avg('points'))
+                    .values('rating')[:1])
+                ),
+                #Obtener promedio de tienda
+                When(id_store__isnull = False, then = 
+                    Subquery(Rating.objects.filter(evaluated_user=OuterRef('id_store'))
+                    .annotate(rating=Avg('points'))
+                    .values('rating')[:1])
+                ),
+                output_field=models.FloatField(),
+            ),
+        )
+
+
 """Clase Anuncio:
 Atributos: [ID Usuario, ID Tienda, ID ubicacion, ID tipo anuncio, ID Categoria, ID Unidad, 
             nombre y descripcion del anuncio, precio del anuncio y fecha de creacion]"""
@@ -119,8 +143,11 @@ class Ad(models.Model):
         else:
             return Currency.objects.get(pk = 1)
 
+    objects = AdSet.as_manager()
+
     class Meta():
         verbose_name= "Anuncio"
         verbose_name_plural= "Anuncios"
+
 
 
