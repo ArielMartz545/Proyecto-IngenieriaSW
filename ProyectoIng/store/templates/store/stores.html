@@ -15,6 +15,7 @@
 <link href="{% static 'core/css/cover.css' %}" rel="stylesheet">
 <link href="{% static 'store/css/style.css' %}" rel="stylesheet">
 <link href="{% static 'core/css/card-img-top.css' %}" rel="stylesheet">
+<link href="{% static 'core/css/star.css' %}" rel="stylesheet">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script> 
 {% endblock %}
 {% block navbar %}
@@ -165,6 +166,23 @@
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class="row">
+                    {% if request.user.pk not in owners and  request.user.is_authenticated %}
+                    <div class="col-md-4 my-3 float-md-right ">
+                        <a href="#" class="btn btn-block btn-danger btn-lg ">Estadísticas</a>
+                    </div>
+                    <div class="col-md-4 my-3">
+                        <a href="#" data-toggle="modal" data-target="#modalEvaluar"
+                            class="btn btn-block btn-success btn-lg ">Evaluar Tienda</a>
+                    </div>
+                    {% elif request.user.is_authenticated %}
+                    <div class="col-md-4 my-3">
+                        <a href="#" class="btn btn-block btn-success btn-lg">Mis estadísticas</a>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
             {% endif %}
@@ -439,6 +457,49 @@
     </div>
 </div>
 {# FIN MODAL ACTUALIZAR DATOS #}
+{# INICIO MODAL EVALUAR TIENDA#}
+<div class="modal fade" id="modalEvaluar" tabindex="-1" role="dialog" aria-labelledby="modalEvaluarLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="{% url 'home' %}" class="text-decoration-none">
+                    <h1 class="font-weight-bold font-italic display-4"><span class="text-primary">Pa</span><span
+                            class="text-success">’Ya</span></h1>
+                </a>
+                <h5 class="modal-title" id="exampleModalLabel">Rating Store</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="{% url 'rate_store' %}" method="POST">
+                {% csrf_token %}
+                <input type="number" value="{{ object.pk }}" hidden name="id_evaluated_store">
+                <div class="modal-body">
+                    <div class="row justify-content-md-center py-4">
+                        <a href="#" class="px-3 py-1 star star-1"><i class="far fa-star text-warning"></i></a>
+                        <a href="#" class="px-3 py-1 star star-2"><i class="far fa-star text-warning"></i></a>
+                        <a href="#" class="px-3 py-1 star star-3"><i class="far fa-star text-warning"></i></a>
+                        <a href="#" class="px-3 py-1 star star-4"><i class="far fa-star text-warning"></i></a>
+                        <a href="#" class="px-3 py-1 star star-5"><i class="far fa-star text-warning"></i></a>
+                        <span>Que tan satifecho(a) estas con la tienda</span>
+                    </div>
+                    <input type="number" name="id_points_store" id="stars" hidden="True" readonly="true" value=0>
+                    <div class="form-group">
+                        <label for="id_comment" class="text-muted"></label>
+                        <textarea class='form-control' rows="2" required name="id_comment_store"
+                            placeholder="Comentario"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Evaluar Tienda</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{# FIN MODAL EVALUAR TIENDA #}
 {# INICIO MODAL CREAR ANUNCIO #}
 <div class="modal fade" id="modalAgregarAnuncio" tabindex="-1" role="dialog" aria-labelledby="modalAgregarAnuncio"
     aria-hidden="true">
@@ -596,4 +657,5 @@
 <script src="{% static 'core/js/collapse-sidebar.js' %}"></script>
 <script src="{% static 'core/js/profile.js' %}"></script>
 <script src="{% static 'core/js/custom.js' %}"></script>
+<script src="{% static 'core/js/rate-star.js' %}"></script>
 {% endblock %}

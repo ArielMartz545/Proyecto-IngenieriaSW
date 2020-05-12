@@ -1,6 +1,8 @@
 from django.shortcuts import render, HttpResponse, HttpResponseRedirect
 from django.urls import reverse_lazy
 from .models import Rating
+from .models import RatingStore
+from .models import Store
 from .models import Account
 from django.db.models import Avg
 # Create your views here.
@@ -48,44 +50,34 @@ def rate_user(request):
 
 
 def rate_store(request):
-
     if request.method == "POST":
         try:
-            points = int( request.POST.get('id_points') )
+            points = int( request.POST.get('id_points_store') )
         except:
             return HttpResponseRedirect(reverse_lazy('home'))
         try:
-            evaluated_store_id = int( request.POST.get('id_evaluated_user'))
+            evaluated_store_id = int( request.POST.get('id_evaluated_store'))
         except:
             return HttpResponseRedirect(reverse_lazy('home'))
-    
-        comment = request.POST.get('id_comment')
-
+        comment = request.POST.get('id_comment_store')
         if comment is None:
             comment = ""
-
         try:
-            evaluated_store = Account.objects.get(pk=evaluated_store_id) 
+            evaluated_store = Store.objects.get(pk=evaluated_store_id) 
         except:
             return HttpResponseRedirect(reverse_lazy('home'))
-
         if  not (1 <= points <= 5): #Revisa si el puntaje no esta en el rango y lo regresa a perfil
-            return HttpResponseRedirect(reverse_lazy('profile', kwargs={'pk':evaluated_store_id})+'?error=points'+ str(points))    
+            return HttpResponseRedirect(reverse_lazy('store', kwargs={'pk':evaluated_store_id})+'?error=points'+ str(points))    
         try:
-            rating=Rating.objects.get(evaluated_store__pk = evaluated_store.pk, evaluator_user__pk = request.user.pk)
+            ratingStore=RatingStore.objects.get(evaluated_store__pk = evaluated_store.pk, evaluator_user_store__pk = request.user.pk)
         except:
-            rating = Rating(evaluated_store=evaluated_store, evaluator_user=request.user)
+            ratingStore = RatingStore(evaluated_store=evaluated_store, evaluator_user_store=request.user)
 
-        rating.comment = comment
-        rating.points = points
-        rating.save()
+        ratingStore.comment = comment
+        ratingStore.points = points
+        ratingStore.save()
 
-        return HttpResponseRedirect(reverse_lazy('profile', kwargs={'pk': evaluated_store_id}))
+        return HttpResponseRedirect(reverse_lazy('store_detail', kwargs={'pk': evaluated_store_id}))
 
     else:
         return HttpResponseRedirect(reverse_lazy('home'))
-
-
-def prom(request):
-    avss = average=Rating.objects.aggregate(avg('points'))
-    return print(avss)

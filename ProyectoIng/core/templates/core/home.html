@@ -3,29 +3,55 @@
 {% block title %}Inicio{% endblock %} 
 {% block css %}
 <link href="{% static 'core/css/card-img-top.css' %}" rel="stylesheet">
+<link href="{% static 'core/css/jumbo.css' %}" rel="stylesheet">
 {% endblock %}
 {% block content %}
 {{ request.session.exchange_var }}
-    <div class="row">
-        {% for category in categories %}              
-        <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3">
-            <div class="card  shadow h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                <div class="col mr-2">
-                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">{{category.category_name}}</div>
-                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{category.category_description}}</div>
+{% if not request.user.is_authenticated %}
+<div class="jumbotron jumbotron-fluid">
+    <div class="container">
+        <h1 class="font-weight-bold font-italic display-4">
+            <span class="text-primary">Pa</span>
+            <span class="text-success">’Ya</span>
+        </h1>
+      <p class="lead">Pa'Ya es una aplicacion diseñada para darte la facilidad de buscar y adquirir
+          el producto o servicio que necesitas PARA YA!</p>
+      <button class="btn btn-outline-danger">Mas sobre nosotros</button>
+    </div>
+  </div>
+<div class="page-scroll">
+{% endif %}
+<div class="col-12">
+    <div class="card shadow my-3">
+        <div class="card-header py-2">
+            <div class="row">
+                <div class="col-sm-10">
+                    <h2 class="m-0 font-weight-bold text-primary text-justify">
+                        <i class="fas fa-store"></i> Categorias
+                    </h2>
                 </div>
-                <div class="col-auto">
-                    <i class="{{category.category_icon_class}} fa-2x"></i>
+            {% for category in categories %}              
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3">
+                <div class="card  shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">{{category.category_name}}</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{category.category_description}}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="{{category.category_icon_class}} fa-2x"></i>
+                    </div>
+                    </div>
+                    <div class="row">
+                    <a href="{% url 'products_category' category.id %}" class="btn btn-link text-left">Buscar en {{category.category_name}}</a>
+                    </div>
                 </div>
-                </div>
-                <div class="row">
-                <a href="{% url 'products_category' category.id %}" class="btn btn-link text-left">Buscar en {{category.category_name}}</a>
                 </div>
             </div>
+            {% endfor %}
             </div>
         </div>
-        {% endfor %}
     </div>
+</div>
 {% endblock %}
