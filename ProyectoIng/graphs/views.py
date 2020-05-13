@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.views.generic.base import TemplateView
 from account.models import Account
 from ad.models import Ad
+from search.models import Search
 import datetime
 
 
@@ -61,4 +62,25 @@ class graphsTemplateView(TemplateView):
         context['oc']=oc
         context['nov']=nov
         context['dic']=dic
+
+        #Search Graphs Data 
+        context["ad_search"] =Search.objects.filter(ad_search=True).count()
+        context["user_search"] =Search.objects.filter(user_search=True).count()
+        context["store_search"] =Search.objects.filter(store_search=True).count()
+        context["custom_price_range"] =Search.objects.filter(custon_price_range=True).count()
+
+        #Anuncios Eliminados*Categoria
+        ads_query = Ad.objects.filter(active= False).all()
+        active_categoryes = list()
+        for ad in ads_query:
+            if ad.id_category.category_name not in active_categoryes:
+                active_categoryes.append(ad.id_category.category_name)
+
+        active_categoryes_values=dict([(key, 0) for key in active_categoryes])
+
+        for ad in ads_query:
+            if ad.id_category.category_name in active_categoryes_values.keys():
+                active_categoryes_values[ad.id_category.category_name] += 1
+
+        context["disable"] = active_categoryes_values
         return context

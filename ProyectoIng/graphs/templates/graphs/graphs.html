@@ -1,6 +1,10 @@
 {% extends 'core/sidebar.html' %}
 {% block content %}
-<!--Hidden Values active users, active ads-->>
+{%for key, value in disable.items %}
+  <input type="text"  value="{{value}}" id="{{key}}">
+  
+{% endfor %}
+<!--Hidden Values active users, active ads-->
 <input type="text" hidden value="{{active_users}}" id="active_users">
 <input type="text" hidden value="{{inactive_users}}" id="inactive_users">
 <input type="text" hidden value="{{active_ads}}" id="active_ads">
@@ -19,12 +23,18 @@
 <input type="text" hidden value="{{oc}}" id="oc">
 <input type="text" hidden value="{{nov}}" id="nov">
 <input type="text" hidden value="{{dic}}" id="dic">
-{{dates}}
+<!--Hiden Values Search-->
+<input type="text" hidden value="{{ad_search}}" id="ad_search">
+<input type="text" hidden value="{{user_search}}" id="user_search">
+<input type="text" hidden value="{{store_search}}" id="store_search">
+<input type="text" hidden value="{{custom_price_range}}" id="custom_price_range">
+<!---Graphs-->
 <div class="container-fluid">
     <div class="row">
-       <div id="new_users" class="col-md-12"></div>
-       <div id="users_actives_vs_inactives" class="col-md-6"></div> 
-       <div id="ads_actives_vs_inactives" class="col-md-6"></div>
+       <div id="new_users" class="col-md-12 p-1"></div>
+       <div id="users_actives_vs_inactives" class="col-md-6 p-1"></div> 
+       <div id="ads_actives_vs_inactives" class="col-md-6 p-1"></div>
+       <div id="search" class="col-md-12 p-1"></div>
     </div>
 </div>
     
@@ -114,6 +124,7 @@
       width: '500px'
   });
   </script>
+
   <script>
     let ene= Number($("#ene").val());
     let feb= Number($("#feb").val());
@@ -168,6 +179,53 @@
       },
       height: '370px',
       width: '100%'
+  });
+  </script>
+
+
+<script>
+  let ad_search= Number($("#ad_search").val());
+  let user_search= Number($("#user_search").val());
+  let store_search= Number($("#store_search").val());
+  let custom_price_range= Number($("#custom_price_range").val());
+
+    zingchart.render({
+      id: 'search',
+      data: {
+          type: "pie",
+          title: {
+          text: "Busquedas de Usuario"
+           },
+          scale: {
+          'size-factor':0.8
+          },
+          legend: {
+              header: {
+              text: "Busquedas",
+              'font-family': "Georgia",
+              'font-size':12,
+              'font-color': "black",
+              'font-weight': "normal"
+              },
+              layout: "4x1", 
+              x: "80%",
+              y: "10%",
+          },
+      plot: {
+          tooltip: {
+          text: "%t<br>%v"
+          }
+      },
+      series: [
+        { values: [ad_search], text:"Anuncios",'background-color': "#17A673"},
+        { values: [user_search], text:"Usuarios",'background-color': "#4C71DE"},
+        { values: [store_search], text:"Tiendas",'background-color': "#D04335"},
+        { values: [custom_price_range], text:"Precios",'background-color': "#F4B619"},
+      
+      ]
+      },
+      height: '370px',
+      width: '500px'
   });
   </script>
 {% endblock %}
