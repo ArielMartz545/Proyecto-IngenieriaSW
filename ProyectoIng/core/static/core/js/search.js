@@ -3,9 +3,16 @@ $( document ).ready(function() {
     var search_q = $("#search_var_q").html();
     var search_c = $("#search_var_c").html();
     var search_l = $("#search_var_l").html();
+    var search_r = $("#search_var_r").html();
     var search_currency = $("#search_var_currency").html();
     var search_min = $("#search_var_min").html();
     var search_max = $("#search_var_max").html();
+    //Cargar el mismo Rating de busqueda
+    $(".search-r-option").each(function() {
+        if($(this).val() == search_r){
+            $(this).attr('selected',true);
+        }
+    });
     //Cargar la misma Query de busqueda
     $("input[name='search_q']").each(function() {
         $(this).attr('value',search_q);
@@ -21,6 +28,11 @@ $( document ).ready(function() {
         if($(this).attr('location') == search_l){
             //Ya hay funcion encargada de seleccionar Location al hacer click
             $(this).click();
+        }
+    });
+    $(".search-l-option").each(function() {
+        if($(this).attr('value') == search_l){
+            $(this).attr('selected',true);
         }
     });
     //Cargar la misma Currency de busqueda
@@ -65,8 +77,54 @@ $( ".price-range" ).click(function(event) {
         $("#custom-price-range-item").attr("max","");
         $("#custom-price-range-item").html("");
     }
+    $(".search-p-option").each(function() {
+        if($(this).attr('min') == min && $(this).attr('max') == max){
+            $(this).attr("selected",true);
+        }else{
+            $(this).attr("selected",false);
+        }
+    });
     //Cerrar filtro de precios luego de seleccionar uno
     //$("#prices-collapser").click();
+});
+
+$( "select[name='search_c']" ).change(function(event) {
+    var search_c = $(this).children("option:selected").val();
+    $(".search-c-option").each(function() {
+        if($(this).val() == search_c){
+            $(this).attr("selected",true);
+        }else{
+            $(this).attr("selected",false);
+        }
+    });
+});
+
+$( "select[name='search_p']" ).change(function(event) {
+    var search_min = $(this).children("option:selected").attr('min');
+    var search_max = $(this).children("option:selected").attr('max');
+    $(".price-range").each(function() {
+        if($(this).attr('min') == search_min
+        && $(this).attr('max') == search_max){
+            $(this).click();
+        }
+    });
+});
+
+$( "select[name='search_l']" ).change(function(event) {
+    var search_l = $(this).children("option:selected").val();
+    $(".location").each(function() {
+        if($(this).attr('location') == search_l){
+            //Ya hay funcion encargada de seleccionar Location al hacer click
+            $(this).click();
+        }
+    });
+});
+
+$( "select[name='search_r']" ).change(function(event) {
+    var search_r = $(this).children("option:selected").val();
+    $("input[name='search_r']").each(function() {
+        $(this).attr('value',search_r);
+    });
 });
 
 $( "#btn-custom-price" ).click(function(event) {
@@ -98,6 +156,8 @@ $( "#btn-custom-price" ).click(function(event) {
     }else{
         text=currency_text+min+"-"+max;
     }
+    $("#search-p-option-custom").attr('selected',true);
+    $("#search-p-option-custom").html(text);
     $("#custom-price-range-item").attr("hidden",false);
     $("#custom-price-range-item").attr("min",min);
     $("#custom-price-range-item").attr("max",max);
@@ -126,6 +186,13 @@ $( ".location" ).click(function(event) {
     var location = $(this).attr("location");
     $("input[name='search_l']").each(function() {
         $(this).attr('value',location);
+    });
+    $(".search-l-option").each(function() {
+        if($(this).val() == location){
+            $(this).attr("selected",true);
+        }else{
+            $(this).attr("selected",false);
+        }
     });
     //Cerrar filtro de lugares luego de seleccionar uno
     //$("#locations-collapser").click();

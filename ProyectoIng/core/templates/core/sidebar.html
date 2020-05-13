@@ -227,6 +227,7 @@
             <input type="number" hidden name="search_max" id="id_max" value="0">
             <input type="number" hidden name="search_currency" id="id_currency" value="1">
             <input type="number" hidden name="search_l" id="id_l" value="0">
+            <input type="number" hidden name="search_r" id="id_search_r" value="0">
           </form>
 
           <!-- Topbar Navbar -->
@@ -261,6 +262,7 @@
                   <input type="number" hidden name="search_max" id="id_max" value="0">
                   <input type="number" hidden name="search_currency" id="id_currency" value="1">
                   <input type="number" hidden name="search_l" id="id_l" value="0">
+                  <input type="number" hidden name="search_r" id="id_search_r" value="0">
                 </form>
               </div>
             </li>
@@ -571,12 +573,15 @@
     <span hidden id="search_var_min">{{search_min}}</span>
     {#Search max#}
     <span hidden id="search_var_max">{{search_max}}</span>
+    {#Search rate#}
+    <span hidden id="search_var_r">{{search_r}}</span>
   {#FIN Search variables#}
 
 
 <!-- Bootstrap core JavaScript-->
 <script src="{% static 'core/vendor/jquery/jquery.js' %}"></script>
 <script src="{% static 'core/vendor/bootstrap/js/bootstrap.bundle.js' %}" ></script>
+<script src="{% static 'core/vendor/bootstrap/js/bootstrap.min.js' %}" ></script>
 <script src="{% static 'core/js/resize-select.js' %}"></script>
 
 <!-- Core plugin JavaScript-->

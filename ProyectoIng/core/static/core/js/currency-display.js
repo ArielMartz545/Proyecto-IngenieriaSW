@@ -27,6 +27,19 @@ $( ".currency-display" ).click(function(event) {
             }
         }
     });
+    $(".search-p-option").each(function() {
+        //Mantener siempre el Rango de Precio "Todo"
+        if($(this).attr('min') == 0.0 && $(this).attr('max') == 0.0){
+            $(this).attr('currency',currency);
+        }else{
+            //Mostrar los que tengan la misma moneda, ocultar los demas
+            if($(this).attr('currency') == currency){
+                $(this).attr('hidden',false);
+            }else{
+                $(this).attr('hidden',true);
+            }
+        }
+    });
     //Asignar moneda de busqueda
     $("input[name='search_currency']").each(function() {
         $(this).attr('value',currency);

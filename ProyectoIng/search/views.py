@@ -50,6 +50,10 @@ class SearchView(ListView):
         except:
             l = 0
         try:
+            r = int(self.request.GET.get("search_r"))
+        except:
+            r = 0
+        try:
             category_name = Category.objects.get(pk=c).category_name
         except:
             category_name = "Todas las categorías"
@@ -75,6 +79,7 @@ class SearchView(ListView):
         context['search_max'] = max_price
         context['search_c'] = c
         context['search_l'] = l
+        context['search_r'] = r
         context['search_category_name'] = category_name
         context['search_location_name'] = location_name
         context['default_image'] = Image.objects.get(pk=1)
@@ -104,13 +109,23 @@ class SearchView(ListView):
             l = int(self.request.GET.get("search_l"))
         except:
             l = 0
-        currency = self.request.GET.get("search_currency")
-        if currency is None:
-            currency=1
+        try:
+            r = int(self.request.GET.get("search_r"))
+        except:
+            r = 0
+        try:
+            currency = int(self.request.GET.get("search_currency"))
+        except:
+            currency = 1
         if c == -1:
             #Busqueda de usuarios
             search.user_search = True
-            queryset = Account.objects.annotate(full_name=Concat('first_name', Value(' '), 'last_name'))
+            queryset = Account.objects.annotate(full_name=Concat('first_name', Value(' '), 'last_name'),
+                publisher_rating = Subquery(
+                    Rating.objects.filter(evaluated_user=OuterRef('pk'), evaluated_store__isnull = True)
+                    .annotate(rating=Avg('points')).values('rating')[:1])
+            )
+            queryset = queryset.filter(publisher_rating__gte=(r)) | queryset.filter(publisher_rating=None)
             queryset = queryset.filter(full_name__icontains=q) | queryset.filter(email__icontains=q)
             try:
                 location = Location.objects.get(pk=l)
@@ -126,6 +141,12 @@ class SearchView(ListView):
             #Busqueda de tiendas
             search.store_search = True
             queryset = Store.objects.filter(active=True)
+            queryset = queryset.annotate(publisher_rating = Subquery(
+                    Rating.objects.filter(evaluated_store=OuterRef('pk'), evaluated_user__isnull = True)
+                    .annotate(rating=Avg('points')).values('rating')[:1]
+                    )
+            )
+            queryset = queryset.filter(publisher_rating__gte=(r)) | queryset.filter(publisher_rating=None)
             queryset = queryset.filter(store_name__icontains=q) | queryset.filter(store_description__icontains=q)
             try:
                 location = Location.objects.get(pk=l)
@@ -170,7 +191,7 @@ class SearchView(ListView):
             #Annotate publisher rating
             queryset = queryset.publisher_rating()
             #Filtro por rating (Los que no han sido evaluados siempre se muestran)
-            """queryset.filter(publisher_rating__gte=(rating)) | queryset.filter(publisher_rating=None)"""
+            queryset = queryset.filter(publisher_rating__gte=(r)) | queryset.filter(publisher_rating=None)
             if currency == 1:
                 queryset = queryset.filter(price_lempiras__gte=(min_price))
                 if (max_price != 0):

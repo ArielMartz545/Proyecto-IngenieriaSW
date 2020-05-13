@@ -5,54 +5,217 @@
 <link href="{% static 'core/css/card-img-top.css' %}" rel="stylesheet">
 {% endblock %}
 {% block content %}
-{% if ad_search %}
-{# BUSQUEDA DE ANUNCIOS #}
+
+{# Barra superior de busqueda#}
 <div class="row">
   <div class="col-12">
-    <div class="card border-left-primary border-bottom-primary shadow my-3">
-      <div class="card-header py-3">
+    <div class="card shadow mt-3 mb-1">
+      <div class="card-body py-3">
         <div class="row">
-          {% if object_list.count == 0 %}
-          <div class="col-12">
-            <h2 class="m-0 font-weight-bold text-primary">
-              Buscando Anuncios de {{search_category_name}} en {{search_location_name}}
-            </h2>
-          </div>
-          {% else %}
-          <div class="col-sm-9">
-            <h2 class="m-0 font-weight-bold text-primary">
-              Buscando Anuncios de {{search_category_name}} en {{search_location_name}}
-            </h2>
-          </div>
-          {% if not request.user.is_authenticated %}
-          <div class="col-sm-3">
-            <a href="{% url 'login' %}" class="btn btn-primary btn-block">Crear un anuncio</a>
-          </div>
-          {% else %}
-          <div class="col-sm-3">
-            <a href="#" data-toggle="modal" data-target="#modalAgregarAnuncio" class="btn btn-primary btn-block">Crear
-              un anuncio</a>
-          </div>
+          {# Busqueda de anuncios header#}
+          {% if ad_search %}
+            <div class="col-sm-9">
+              <h4 class="m-0 font-weight-bold text-primary">
+                <i class="fas fa-search"></i>
+              {% if object_list.count == 0 %}
+                No se han encontrado Anuncios de {{search_category_name}} en {{search_location_name}}
+              {% else %}
+                Buscando Anuncios de {{search_category_name}} en {{search_location_name}}
+              {% endif %}
+              </h4>
+            </div>
+            {% if not request.user.is_authenticated %}
+            <div class="col-sm-3">
+              <a href="{% url 'login' %}" class="btn btn-sm btn-primary btn-block">Crear un anuncio</a>
+            </div>
+            {% else %}
+            <div class="col-sm-3">
+              <a href="#" data-toggle="modal" data-target="#modalAgregarAnuncio" class="btn btn-sm btn-primary btn-block">Crear
+                un anuncio</a>
+            </div>
+            {% endif %}
           {% endif %}
+          {# FIN Busqueda de anuncios header #}
+          {# Busqueda de usuarios header#}
+          {% if user_search %}
+            <div class="col-sm-12">
+              <h4 class="m-0 font-weight-bold text-primary">
+                <i class="fas fa-search"></i>
+              {% if object_list.count == 0 %}
+                No se han encontrado Usuarios en {{search_location_name}}
+              {% else %}
+                Buscando Usuarios en {{search_location_name}}
+              {% endif %}
+              </h4>
+            </div>
           {% endif %}
+          {# FIN Busqueda de usuarios header #}
+          {# Busqueda de tiendas header#}
+          {% if store_search %}
+            <div class="col-sm-12">
+              <h4 class="m-0 font-weight-bold text-primary">
+                <i class="fas fa-search"></i>
+              {% if object_list.count == 0 %}
+                No se han encontrado Tiendas en {{search_location_name}}
+              {% else %}
+                Buscando Tiendas en {{search_location_name}}
+              {% endif %}
+              </h4>
+            </div>
+          {% endif %}
+          {# FIN Busqueda de tiendas header #}
         </div>
       </div>
-      {% if object_list.count == 0 %}
-      <div class="card-body">
-        <h3>No se han encontrado coincidencias.</h3>
-        <p>Categorizamos nuestros anuncios para ayudarte a encontrar lo que buscas de manera más rápida, recuerda que en
-          la barra superior puedes seleccionar la categoría en la que deseas buscar anuncios.</p>
-        <p>¿Busca anuncios en algún lugar en específico? En la barra lateral encontrarás filtros de lugares.</p>
-        <p>¿Cuál es tu presupuesto? La barra lateral tambien contiene filtro por precio, si ningún rango se ajusta,
-          puedes indicar tu presupuesto.</p>
-        <p>¿Busca usuarios o tiendas? En la barra de busqueda encontrarás filtros de usuarios y tiendas.</p>
-        <p>Periodicamente se remueven anuncios para mostrar sólo los más recientes..</p>
-        <a href="{% url 'ad_create' %}" class="btn btn-primary btn-block">Crear un anuncio</a>
-      </div>
-      {% endif %}
     </div>
   </div>
+  <div class="col-12">
+    {# Filtro en dispositivos md, lg, xl #}
+    <div class="d-none d-md-block">
+      <div class="card shadow mb-3">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-9">
+              <h4 class="m-0 font-weight-bold text-primary">
+                <a class="" data-toggle="collapse" href="#collapseFiltersMd" role="button" aria-expanded="false" aria-controls="collapseFiltersMd">
+                  <i class="fas fa-sliders-h"></i> Filtrar
+                </a>
+              </h4>
+            </div>
+            <div class="col-3">
+              <a href="#" data-toggle="modal" data-target="#modalAyudaFiltros" class="btn btn-sm btn-link btn-block"><i class="far fa-question-circle"></i></a>
+            </div>
+          </div>
+          <div class="collapse" id="collapseFiltersMd">
+          <div class="row">
+            <div class="col-md-6 col-xl-3">
+              <div class="input-group my-3">
+                <div class="input-group-prepend">
+                  <label class="input-group-text bg-primary text-white" for="select-c-filter">Categoría</label>
+                </div>
+                <select class="custom-select" name="search_c" id="select-c-filter">
+                  <option class="search-c-option" value="0">Todo</option>
+                      <option class="search-c-option" value="-1">Usuarios</option>
+                      <option class="search-c-option" value="-2">Tiendas</option>
+                      {% for category in categories %}
+                        <option class="search-c-option" value="{{category.id}}">{{category}}</option>
+                      {% endfor %}
+                </select>
+              </div>
+            </div>
+            <div class="col-md-6 col-xl-3">
+              <div class="input-group my-3">
+                <div class="input-group-prepend">
+                  <label class="input-group-text bg-primary text-white" for="select-l-filter">Lugar</label>
+                </div>
+                <select class="custom-select" name="search_l" id="select-l-filter">
+                  <option class="search-l-option" value="0">Todo</option>
+                  {% for location in locations %}
+                    <option class="search-l-option" value="{{location.pk}}">{{location}}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+            <div class="col-md-6 col-xl-3">
+              <div class="input-group my-3">
+                <div class="input-group-prepend">
+                  <label class="input-group-text bg-primary text-white" for="select-p-filter">Precio</label>
+                </div>
+                <select class="custom-select" name="search_p"  id="select-p-filter">
+                  <option class="search-p-option" min="0.0" max="0.0" currency="1">Todo</option>
+                    {% for price_range in price_ranges %}
+                      <option class="search-p-option" min="{{price_range.min_price}}" max="{{price_range.max_price}}" currency="{{price_range.currency.id}}">{{price_range}}</option>
+                    {% endfor %}
+                  <option class="search-p-option" id="search-p-option-custom" hidden>Personalizado (barra lateral)</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-6 col-xl-3">
+              <div class="input-group my-3">
+                <div class="input-group-prepend">
+                  <label class="input-group-text bg-primary text-white" for="select-r-filter">Puntuacion</label>
+                </div>
+                <select class="custom-select" name="search_r" id="select-r-filter">
+                  <option class="search-r-option" value="0">Todo</option>
+                  <option class="search-r-option" value="1">1 o más estrellas</option>
+                  <option class="search-r-option" value="2">2 o más estrellas</option>
+                  <option class="search-r-option" value="3">3 o más estrellas</option>
+                  <option class="search-r-option" value="4">4 o más estrellas</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {# FIN Filtro en dispositivos md, lg, xl #}
+    {# Filtro en dispositivos sm, xs #}
+    <div class="d-md-none d-block">
+      <div class="card shadow mb-3">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-9">
+              <h4 class="m-0 font-weight-bold text-primary">
+                <a class="" data-toggle="collapse" href="#collapseFiltersSm" role="button" aria-expanded="false" aria-controls="collapseFiltersSm">
+                  <i class="fas fa-sliders-h"></i> Filtrar
+                </a>
+              </h4>
+            </div>
+            <div class="col-3">
+              <a href="#" data-toggle="modal" data-target="#modalAyudaFiltros" class="btn btn-sm btn-link btn-block"><i class="far fa-question-circle"></i></a>
+            </div>
+          </div>
+          <div class="collapse" id="collapseFiltersSm">
+            <div class="form-group">
+              <label for="select-c-filter">Categoría</label>
+              <select class="custom-select no-resize-select" name="search_c" id="select-c-filter">
+                <option class="search-c-option" value="0">Todo</option>
+                    <option class="search-c-option" value="-1">Usuarios</option>
+                    <option class="search-c-option" value="-2">Tiendas</option>
+                    {% for category in categories %}
+                      <option class="search-c-option" value="{{category.id}}">{{category}}</option>
+                    {% endfor %}
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="select-l-filter">Lugar</label>
+              <select class="custom-select" name="search_l" id="select-l-filter">
+                <option class="search-l-option" value="0">Todo</option>
+                {% for location in locations %}
+                  <option class="search-l-option" value="{{location.pk}}">{{location}}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="select-p-filter">Precio</label>
+              <select class="custom-select" name="search_p"  id="select-p-filter">
+                <option class="search-p-option" min="0.0" max="0.0" currency="1">Todo</option>
+                  {% for price_range in price_ranges %}
+                    <option class="search-p-option" min="{{price_range.min_price}}" max="{{price_range.max_price}}" currency="{{price_range.currency.id}}">{{price_range}}</option>
+                  {% endfor %}
+                <option class="search-p-option" id="search-p-option-custom" hidden>Personalizado (barra lateral)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="select-r-filter">Puntuación</label>
+              <select class="custom-select" name="search_r" id="select-r-filter">
+                  <option class="search-r-option" value="0">Todo</option>
+                  <option class="search-r-option" value="1">1 o más estrellas</option>
+                  <option class="search-r-option" value="2">2 o más estrellas</option>
+                  <option class="search-r-option" value="3">3 o más estrellas</option>
+                  <option class="search-r-option" value="4">4 o más estrellas</option>
+                </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {# FIN Filtro en dispositivos sm, xs #}
+  </div>
 </div>
+{# FIN Barra superior de busqueda #}
+{% if ad_search %}
+{# BUSQUEDA DE ANUNCIOS #}
 <div class="row">
   {% for data in object_list %}
   <div class="col-12 col-sm-6 col-md-4 col-lg-3 my-2">
@@ -93,7 +256,6 @@
         </div>
         <p class="my-0"><i class="fas fa-map-marker-alt"></i> {{data.store_location}}<a
             href="{% url 'search' %}?l={{ data.id_location.pk }}">{{ data.id_location }}</a></p>
-        {{data.publisher_rating}}
       </div>
       <div class="card-footer bg-white mt-0">
         <div class="row justify-content-end">
@@ -148,37 +310,17 @@
 {% if user_search %}
 {# BUSQUEDA DE USUARIOS #}
 <div class="row">
+  {% if not request.user.is_authenticated %}
   <div class="col-12">
-    <div class="card border-left-primary border-bottom-primary shadow my-3">
-      <div class="card-header py-3">
-        <div class="row">
-          <div class="col-12">
-            <h2 class="m-0 font-weight-bold text-primary">
-              Buscando Usuarios en {{search_location_name}}
-            </h2>
-          </div>
-        </div>
-      </div>
-      {% if object_list.count == 0 or not request.user.is_authenticated %}
-      <div class="card-body">
-        {% if not request.user.is_authenticated %}
+    <div class="card shadow my-3">
+      <div class="card-body py-2">
         <h3>Necesitas estar ingresado con una cuenta para poder buscar usuarios.</h3>
         <p>Puedes <a href="{% url 'login' %}">iniciar sesión</a> si ya tienes una cuenta Pa'Ya o puedes <a
             href="{% url 'signup' %}">crear una cuenta</a> si aún no tienes una.</p>
-        {% else %}
-        <h3>No se han encontrado coincidencias.</h3>
-        <p>Puedes buscar usuarios por su nombre o correo electrónico</p>
-        <p>¿Busca usuarios en algún lugar en específico? En la barra lateral encontrarás filtros de lugares.</p>
-        <p>¿No estás buscando usuarios? En la barra de busqueda puedes elegir una categoría de productos, servicios o
-          tiendas para buscar.</p>
-        {% endif %}
       </div>
-      {% endif %}
     </div>
   </div>
-</div>
-<div class="row">
-  {% if request.user.is_authenticated %}
+  {% else %}
   {% for data in object_list %}
   <div class="col-12 col-sm-6 col-md-5 col-lg-3 mb-3">
     {# Card usuario #}
@@ -208,54 +350,6 @@
 {% else %}
 {# BUSQUEDA DE TIENDAS #}
 <div class="row">
-  <div class="col-12">
-    <div class="card border-left-primary border-bottom-primary shadow my-3">
-      <div class="card-header py-3">
-        <div class="row">
-          {% if object_list.count == 0 %}
-          <div class="col-12">
-            <h2 class="m-0 font-weight-bold text-primary">
-              Buscando Tiendas en {{search_location_name}}
-            </h2>
-          </div>
-          {% else %}
-          <div class="col-sm-9">
-            <h2 class="m-0 font-weight-bold text-primary">
-              Buscando Tiendas en {{search_location_name}}
-            </h2>
-          </div>
-          {% if not request.user.is_authenticated %}
-          <div class="col-sm-3">
-            <a href="{% url 'login' %}" class="btn btn-primary btn-block">Crear un anuncio</a>
-          </div>
-          {% else %}
-          <div class="col-sm-3">
-            <button type="button" class="btn btn-primary btn-block" href="#" data-toggle="modal"
-            data-target="#modalCrearTienda">Crear una tienda</button>
-          </div>
-          {% endif %}
-          {% endif %}
-        </div>
-      </div>
-      {% if object_list.count == 0 or not request.user.is_authenticated %}
-      <div class="card-body">
-        {% if not request.user.is_authenticated %}
-        <h3>Necesitas tener una cuenta para poder buscar tiendas.</h3>
-        <p>Puedes <a href="{% url 'login' %}">iniciar sesión</a> si ya tienes una en Pa'Ya o puedes <a
-            href="{% url 'signup' %}">crear una</a> si aún no la tienes.</p>
-        {% else %}
-        <h3>No se han encontrado coincidencias.</h3>
-        <p>Puedes buscar tiendas por su nombre o descripción.</p>
-        <p>¿Busca tiendas en algún lugar en específico? En la barra lateral encontrarás filtros de lugares.</p>
-        <p>¿No estás buscando tiendas? En la barra de busqueda puedes elegir una categoría de productos, servicios o
-          usuarios para buscar.</p>
-        {% endif %}
-      </div>
-      {% endif %}
-    </div>
-  </div>
-</div>
-<div class="row">
   {% if request.user.is_authenticated %}
   {% for data in object_list %}
   <div class="col-12 col-sm-6 col-md-5 col-lg-3 mb-3">
@@ -278,7 +372,6 @@
               <i class="fas fa-plus"></i> Ver tienda
             </a>
           </div>
-
         </div>
       </div>
     </div>
@@ -480,6 +573,127 @@
 </div>
 {% endif %}
 {#  FIN VENTANA MODAL CREAR TIENDA #}
+{#  INICIO VENTANA MODAL AYUDA #}
+<div class="modal fade" id="modalAyudaFiltros" tabindex="-1" role="dialog" aria-labelledby="modalAyudaFiltros"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="exampleModalLabel">Filtros de busqueda</h2>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+        <div class="modal-body">
+          <div class="accordion" id="accordionAyudaFiltros">
+            <div class="card">
+              <div class="card-header" id="General">
+                <h2 class="mb-0">
+                  <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseGeneral" aria-expanded="true" aria-controls="collapseGeneral">
+                    General
+                  </button>
+                </h2>
+              </div>
+
+              <div id="collapseGeneral" class="collapse show" aria-labelledby="General" data-parent="#accordionAyudaFiltros">
+                <div class="card-body">
+                  <p>
+                    Los filtros de búsqueda Pa'Ya están aquí para ayudarte con tus búsquedas, para un fácil acceso a ellos encontraras en todo momento los filtros de Categoría, Precio y Lugar. El filtro de Puntuación solamente lo encontraras una vez que realices una búsqueda.
+                  </p>
+                  <p>
+                    En la barra lateral izquierda encontraras los filtros de Precio y Lugar, en la barra superior encontraras que puedes seleccionar la Categoría en la que deseas realizar tu búsqueda junto con la barra de búsqueda.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header" id="Categoria">
+                <h2 class="mb-0">
+                  <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseCategoria" aria-expanded="false" aria-controls="collapseCategoria">
+                    Categoría
+                  </button>
+                </h2>
+              </div>
+              <div id="collapseCategoria" class="collapse" aria-labelledby="Categoria" data-parent="#accordionAyudaFiltros">
+                <div class="card-body">
+                  <p>
+                    En el filtro de Categoría puedes seleccionar si deseas buscar Usuarios, Tiendas o alguna categoría de Anuncios
+                  </p>
+                  <p>
+                    Cuando realizas tu búsqueda sin seleccionar una categoría se buscara en todos los anuncios, si seleccionas una categoría de anuncios se buscara solamente en los anuncios que estén dentro de ella.
+                  </p>
+                  <p>
+                    Este filtro lo encuentras en todo momento en la barra de búsqueda de Pa'Ya
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header" id="Lugar">
+                <h2 class="mb-0">
+                  <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseLugar" aria-expanded="false" aria-controls="collapseLugar">
+                    Lugar
+                  </button>
+                </h2>
+              </div>
+              <div id="collapseLugar" class="collapse" aria-labelledby="Lugar" data-parent="#accordionAyudaFiltros">
+                <div class="card-body">
+                  <p>
+                    El el filtro de Lugar puedes seleccionar en que departamento de Honduras deseas buscar. Se buscara en dicho departamento la Categoría que hayas seleccionado, ya sean Usuarios, Tiendas o alguna categoría de Anuncios
+                  </p>
+                  <p>
+                    Este filtro lo encuentras en todo momento en la barra lateral de Pa'Ya
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header" id="Precio">
+                <h2 class="mb-0">
+                  <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapsePrecio" aria-expanded="false" aria-controls="collapsePrecio">
+                    Precio
+                  </button>
+                </h2>
+              </div>
+              <div id="collapsePrecio" class="collapse" aria-labelledby="Precio" data-parent="#accordionAyudaFiltros">
+                <div class="card-body">
+                  <p>
+                    El el filtro de Precio puedes seleccionar un rango de precio en el que deseas buscar anuncios. Si no encuentras un rango que se ajuste, siempre puedes personalizar uno en la barra lateral izquierda.
+                  </p>
+                  <p>
+                    Este filtro lo encuentras en todo momento en la barra lateral de Pa'Ya
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header" id="Puntuacion">
+                <h2 class="mb-0">
+                  <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapsePuntuacion" aria-expanded="false" aria-controls="collapsePuntuacion">
+                    Puntuación
+                  </button>
+                </h2>
+              </div>
+              <div id="collapsePuntuacion" class="collapse" aria-labelledby="Puntuacion" data-parent="#accordionAyudaFiltros">
+                <div class="card-body">
+                  <p>
+                    El el filtro de Puntuación puedes seleccionar la puntuación con la que deseas buscar. Si buscas usuarios o tiendas solo aparecerán aquellos que tengan una puntuación mayor o igual a la que seleccionaste. Los usuarios o tiendas que aún no hayan sido calificados siempre aparecerán en tus búsquedas. Si buscas anuncios con el filtro de puntuación seleccionado solo aparecerán los anuncios de los publicistas (usuarios o tiendas) que tengan una puntuación mayor o igual a la que seleccionaste o que aún no hayan sido calificados.
+                  </p>
+                  <p>
+                    Este filtro solo lo encuentras luego de realizada la primer búsqueda para dar oportunidad a todos los anuncios que se han publicado de aparecer.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal">Entendido</button>
+        </div>
+    </div>
+  </div>
+</div>
+{#  FIN VENTANA MODAL AYUDA #}
 {% endblock %}
 {% block js %}
 
