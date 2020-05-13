@@ -164,6 +164,13 @@
                                     <p><i class="fas fa-edit"></i> Editar Tienda</p>
                                 </a>
                             </div>
+                            <div class="col-12">
+                                <button type="button" class="btn btn-xs btn-sm float-md-right" >
+                                    <a class="nav-link" href="#" data-toggle="modal" data-target="#modalDenunciaTienda">
+                                        <span>Reportar</span>
+                                        <i class="fas fa-exclamation fa-lg"></i></a>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -394,6 +401,82 @@
     </div>
 </div>
 {# FIN Card anuncio #}
+{# INICIO MODAL DENUNCIAS #}
+        {% if request.user.is_authenticated %}
+        <div class="modal fade" id="modalDenunciaTienda" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <a class="text-decoration-none d-flex" href="{% url 'home' %}">
+                        <div class="sidebar-brand-icon rotate-n-15">
+                        <i class="fab fa-product-hunt"></i>
+                        </div>
+                        <div class="sidebar-brand-text mx-0 display-5 font-weight-bold ">Pa'Ya</div>
+                        </a>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            <h1> Denunciar contenido ofensivo, ilegal u otros</h1>
+                            Este formulario de reporte te permite denunciar contenido ilegal o inadecuado que encuentres en las tiendas de Pa'Ya 
+                            o en los productos anunciados en la tienda. No podemos asegurarte que vayas a recibir una respuesta, 
+                            pero utilizaremos tus comentarios para mejorar nuestros productos y servicios.
+                        </p>
+                        <form action="{% url 'complaint_store' %}" method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <input type="number" value="{{ object.pk }}" hidden name="id_indicatedStore">
+                            <div class="form-group">
+                              <div class="form-group">
+                                <label for="exampleFormControlSelect1">Que problema presenta la tienda?</label>
+                                <select class="form-control" id="id_electionStore" name="id_electionStore">
+                                  <option value="">Elige una opción</option>
+                                  <option>Contenido Inadecuado</option>
+                                  <option>Poca informacion</option>
+                                  <option>Imagenes de producto borrosas</option>
+                                  <option>Informacion falsa</option>
+                                  <option>Otro</option>
+                                </select>
+                              </div>                   
+                            </div>
+                            <div class="form-group">
+                              <label for="id_commentStore" class="text-muted">En caso que el problema sea otro al de los mencionados, por favor especifica el problema en la casilla
+                                de comentarios</label>
+                              <textarea class="form-control" rows="2" required name="id_commentStore" placeholder="Espefica mas tu problema"></textarea>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                                <button type="submit" class="btn btn-primary">Enviar Denuncia</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="modal fade" id="modalDenu" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Que problema tienes</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <p>Registrate o Ingresa si quieres denunciar o reportar algo</p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <a class="btn btn-success" href="{% url 'signup' %}" >Regístrate</a>
+                <a href="{% url 'login' %}" class="btn btn-primary" >Ingresar</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+{# FIN MODAL DENUNCIAS #}  
 {# MODAL ACTUALIZAR DATOS #}
 <div class="modal fade" id="modalCambiarDatos" tabindex="-1" role="dialog" aria-labelledby="modalCambiarDatosLabel"
     aria-hidden="true">
