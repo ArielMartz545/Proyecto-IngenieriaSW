@@ -18,7 +18,8 @@ class Disable_ads(models.Model):
         verbose_name = "Dias para desabilitar anuncios"
     
     def __str__(self):
-        return self.time_to
+        return "Dias para desailitar, recomendado 15"
+    
 
 """Clase Categoria
 Atributos: [Nombre, descripcion e icono de la categoria]"""
