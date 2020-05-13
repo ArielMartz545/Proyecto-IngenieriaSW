@@ -19,6 +19,8 @@ class Search(models.Model):
     id_price_range = models.ForeignKey(PriceRange, on_delete= models.CASCADE, default = None, blank=True, null=True)
     #Palabras para busqueda del usuario
     query_search = models.TextField()
+    #Puntuacion minima que se uso para la busqueda
+    min_rating = models.IntegerField(default = None, blank=True, null=True)
     #Es busqueda de anuncios
     ad_search = models.BooleanField(default=False)
     #Es busqueda de usuarios

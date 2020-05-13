@@ -113,6 +113,7 @@ class SearchView(ListView):
             r = int(self.request.GET.get("search_r"))
         except:
             r = 0
+        search.min_rating = r
         try:
             currency = int(self.request.GET.get("search_currency"))
         except:
