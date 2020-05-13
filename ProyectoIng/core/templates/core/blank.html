@@ -46,21 +46,13 @@
         </div>
     <footer>
         {% block footer %}{% endblock %}
-        <div class="row">
-          <div class="col-md-3 text-center mx-auto">
-              <div class="row">
-                  <div class="col-md-6">
-                      <a href="{% url 'terms' %}" class="btn btn-link">Terminos y Servicios</a>
-                  </div>
-                  <div class="col-md-6">
-                      <a href="{% url 'privacy' %}" class="btn btn-link">Politicas y Privacidad</a>
-                  </div>
-              </div>
-          </div>
-        </div>
-        <div class="row">
+        <div class="row">  
             <div class="col text-center">
-              <p class="text-muted">Derechos reservados &copy; 2020 Pa’Ya</p>
+              <p class="text-muted">Derechos reservados &copy; 2020 Pa’Ya
+                <a href="{% url 'terms' %}" class="btn btn-link">Terminos y Servicios</a>
+                <a href="{% url 'privacy' %}" class="btn btn-link">Politicas y Privacidad</a>
+              </p>
+              
             </div>
         </div>
     </footer>
