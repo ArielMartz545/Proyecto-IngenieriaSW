@@ -15,6 +15,7 @@ from ad.forms import AdCreateForm, AdDeleteForm
 from django.http import  HttpResponseRedirect
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin #Para permisos
+from favorites.models import Favorites_Store
 # Create your views here.
 
 #Clase para crear una tienda
@@ -123,6 +124,14 @@ class StoreDetailView(DetailView):
         #Consulta para obtener los anuncios realizados con la tienda
         last_ads = Ad.objects.filter(id_store__id = kwargs['object'].pk, active = True).order_by('-date_created')[:4]
         context['last_ads'] = last_ads
+        try:
+            favorite = Favorites_Store.objects.get(id_user = self.request.user, id_favorite_store__pk = kwargs['object'].pk)
+        except:
+            favorite = None
+        if favorite is not None:
+            context['favorite'] = True
+        else:
+            context['favorite'] = False
         return context
 
 #Funcion que envia a los administradores de la tienda

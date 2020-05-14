@@ -13,7 +13,7 @@ from store.views import owners
 from ad.forms import AdCreateForm, AdUpdateForm, AdDeleteForm
 from django.urls import reverse_lazy, reverse
 from django.forms import modelformset_factory
-from favorites.models import Favorites
+from favorites.models import Favorites , Favorites_Store
 from django.core.mail import send_mail
 from django.conf import settings
 from django.utils.decorators import method_decorator
@@ -168,17 +168,30 @@ class CreateAd(CreateView):
                 instance = Image.objects.get(pk=1)
                 ad.ad_images.add( instance )
             ad.save(False)
-            favs = Favorites.objects.all().filter(id_favorite_user = request.user)
-            emails = []
-            num = ad.id
-            for fav in favs:
-                emails.append(fav.id_user.email)
+            id_store = request.POST.get('id_store')
             mail_subject = 'Nuevo Anuncio'
-            message_html = render_to_string('ad/ad_mail.html', {
-                'user': request.user.get_full_name(),
-                'num': num,
-            })
-            send_mail(mail_subject, strip_tags(message_html), settings.EMAIL_HOST_USER,emails,fail_silently=False,html_message=message_html)
+            num = ad.id
+            if request.POST.get('id_store') is not None:
+                favs_store = Favorites_Store.objects.all().filter(id_favorite_store = id_store)
+                emails = []
+                name = store.store_name
+                for favstore in favs_store:
+                    emails.append(favstore.id_user.email)
+                message_html2 = render_to_string('ad/ad_mail.html', {
+                    'user': name,
+                    'num': num,
+                })
+                send_mail(mail_subject, strip_tags(message_html2), settings.EMAIL_HOST_USER,emails,fail_silently=False,html_message=message_html2)
+            else:
+                favs = Favorites.objects.all().filter(id_favorite_user = request.user)
+                emails = []
+                for fav in favs:
+                    emails.append(fav.id_user.email)
+                message_html = render_to_string('ad/ad_mail.html', {
+                    'user': request.user.get_full_name(),
+                    'num': num,
+                })
+                send_mail(mail_subject, strip_tags(message_html), settings.EMAIL_HOST_USER,emails,fail_silently=False,html_message=message_html)
             return HttpResponseRedirect(reverse_lazy('products_user',kwargs={'uid':self.request.user.pk})+'?createdAd=success')
         return HttpResponseRedirect(reverse_lazy('ad_create')+'?createdAd=error')
 

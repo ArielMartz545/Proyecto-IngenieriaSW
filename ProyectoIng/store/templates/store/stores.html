@@ -72,9 +72,9 @@
                     {# CORROBORAMOS QUE EL USUARIO SE ENCUENTRE EN LA LISTA ENVIADA DESDE LA VISTA, QUE CONTIENE EL ID DE LOS OWNERS DE LA TIENDA #}
                     {% if request.user.pk not in owners and  request.user.is_authenticated %}
                     <div class="col-md-2">
-                        <form class="ml-auto" action="{% url 'ad_favorite' %}" method="POST">
+                        <form class="ml-auto" action="{% url 'ad_favorite_store' %}" method="POST">
                             {% csrf_token %}
-                            <input type="hidden" value={{object.pk}} id="fav_user" name="fav_user">
+                            <input type="hidden" value={{object.pk}} id="fav_store" name="fav_store">
                             <button class="btn btn-block btn-danger float-md-right">{% if favorite %}<i
                                     class="fas fa-heart fa-lg"></i> Siguiendo{% else %}<i
                                     class="far fa-heart fa-lg"></i> Seguir{% endif %}</button>
