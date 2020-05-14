@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     'rating.apps.RatingConfig',
     'graphs',
     'complaints.apps.ComplaintsConfig',
+    'jsonify',
     
 ]
 
