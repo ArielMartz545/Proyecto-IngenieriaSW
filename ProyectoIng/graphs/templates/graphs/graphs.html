@@ -35,6 +35,7 @@
        <div id="users_actives_vs_inactives" class="col-md-6 p-1"></div> 
        <div id="ads_actives_vs_inactives" class="col-md-6 p-1"></div>
        <div id="search" class="col-md-12 p-1"></div>
+       <div id="test" class= "col-md-12"></div>
     </div>
 </div>
     
@@ -234,8 +235,52 @@
 <script>
   var items = document.getElementById('items').innerHTML;
   var items_as_json = JSON.parse(items);
-  console.log(items_as_json)
+  var items_len=  Object.keys(items_as_json).length;
+  console.log(items_len)
+  //console.log(items_as_json)
+  function format_data(json_obj){
+    formated_data=[]
 
+    for (var key in json_obj) {
+      if (json_obj.hasOwnProperty(key)) {
+      var val = json_obj[key];
+      formated_data.push({"values":[val],text:key})
+      }
+    }
+      
+      return formated_data;
+  };
+
+  var formated_data = format_data(items_as_json);
+  console.log(formated_data)
+
+  zingchart.render({
+    id: 'test',
+    data: {
+        type: "bar3d",
+        '3d-aspect': {
+         true3d: false
+        },
+        title: {
+        text: "Anuncios eliminados o desabilitados <br> por categoria"
+         },
+        scale: {
+        'size-factor':0.8
+        },
+        legend: {
+            layout: ("x1"), 
+            x: "80%",
+            y: "5%",
+        },
+    plot: {
+        tooltip: {
+        
+        }
+    },
+    series: formated_data
+      },
+      
+});
   
 
 </script>
