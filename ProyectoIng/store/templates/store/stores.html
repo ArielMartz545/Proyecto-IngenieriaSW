@@ -37,7 +37,7 @@
 {# INICIO TARJETA PERFIL (DATOS) TIENDA #}
 <div class="row px-0">
     <div class="col-12 mt-2">
-        <div class="card border-left-primary border-bottom-primary shadow mb-4">
+        <div class="card shadow mb-4">
             <div class="card-header py-3">
                 {# INICIO MENSAJES DE RETROALIMENTACION POR ACTUALIZAR PERFIL #}
                 {% if 'updated' in request.GET %}
@@ -118,21 +118,48 @@
                 <div class="row">
                     <div class="col-md-12 mb-2">
                         <div class="row">
+                            {# VERIFICANDO QUE TENGA UN TELEFONO AGREGADO #}
+                            {% if object.store_phone_number != None %}
                             <div class="col-md-6">
                                 <div class="form-group my-0 py-1">
-                                    <h5><strong>Número de teléfono: </strong> {{ object.phone_number }} </h5>
+                                    <h5><strong>Número de teléfono: </strong> {{ object.store_phone_number }} </h5>
                                 </div>
                             </div>
+                            {% elif  request.user.pk  in owners and  request.user.is_authenticated %}
                             <div class="col-md-6">
                                 <div class="form-group my-0 py-1">
-                                    <h5><strong>Correo electrónico: </strong> {{ object.email }} </h5>
+                                    <h5><strong>Número de teléfono: </strong> Campo vacío </h5>
                                 </div>
                             </div>
+                            {% endif %}
+                            {# VERIFICANDO QUE TENGA UN EMAIL AGREGADO #}
+                            {% if object.store_email != None %}
                             <div class="col-md-6">
                                 <div class="form-group my-0 py-1">
-                                    <h5><strong>Sitio web: </strong> {{ object.email }} </h5>
+                                    <h5><strong>Correo electrónico: </strong> {{ object.store_email }} </h5>
                                 </div>
                             </div>
+                            {% elif  request.user.pk  in owners and  request.user.is_authenticated %}
+                            <div class="col-md-6">
+                                <div class="form-group my-0 py-1">
+                                    <h5><strong>Correo electrónico: </strong> Campo vacío </h5>
+                                </div>
+                            </div>
+                            {% endif %}
+                            {# VERIFICANDO QUE TENGA UN SITIO WEB AGREGADO #}
+                            {% if object.store_website != None %}
+                            <div class="col-md-6">
+                                <div class="form-group my-0 py-1">
+                                    <h5><strong>Sitio web: </strong> {{ object.store_website }} </h5>
+                                </div>
+                            </div>
+                            {% elif  request.user.pk  in owners and  request.user.is_authenticated %}
+                            <div class="col-md-6">
+                                <div class="form-group my-0 py-1">
+                                    <h5><strong>Sitio web: </strong> Campo vacío </h5>
+                                </div>
+                            </div>
+                            {% endif %}
                             <div class="col-md-6">
                                 <div class="form-group my-0 py-1">
                                     <h5><strong>Ubicación: </strong> {{ object.store_location }} </h5>
@@ -175,23 +202,16 @@
                     </div>
                 </div>
             </div>
-            <div class="card-footer">
+            {% if request.user.pk not in owners and  request.user.is_authenticated %}
+            <div class="card-footer bg-white">
                 <div class="row">
-                    {% if request.user.pk not in owners and  request.user.is_authenticated %}
-                    <div class="col-md-4 my-3 float-md-right ">
-                        <a href="#" class="btn btn-block btn-danger btn-lg ">Estadísticas</a>
-                    </div>
-                    <div class="col-md-4 my-3">
+                    <div class="col-md-2 my-3">
                         <a href="#" data-toggle="modal" data-target="#modalEvaluar"
                             class="btn btn-block btn-success btn-lg ">Evaluar Tienda</a>
                     </div>
-                    {% elif request.user.is_authenticated %}
-                    <div class="col-md-4 my-3">
-                        <a href="#" class="btn btn-block btn-success btn-lg">Mis estadísticas</a>
-                    </div>
-                    {% endif %}
                 </div>
             </div>
+            {% endif %}
             {% endif %}
         </div>
     </div>
@@ -507,6 +527,21 @@
                             placeholder="{{ object.store_description }}">{{ object.store_description }}</textarea>
                     </div>
                     <div class="form-group my-0 py-1">
+                        <label for="id_store_phone_number" class="text-muted">Número de teléfono:</label>
+                        <input {% if object.store_phone_number != None %} placeholder="{{ object.store_phone_number }}" value="{{ object.store_phone_number }}" {% else %} placeholder="Por Ejemplo: 99999999" {% endif %} type="text"
+                                    name="store_phone_number" maxlength="20"  class="form-control" id="id_store_phone_number">
+                    </div>
+                    <div class="form-group my-0 py-1">
+                        <label for="id_store_email" class="text-muted">Correo electrónico:</label>
+                        <input {% if object.store_email != None %} placeholder="{{ object.store_email }}" value="{{ object.store_email }}" {% else %} placeholder="Por Ejemplo: juan@paya.com" {% endif %} type="text"
+                                    name="store_email" maxlength="100" class="form-control" id="id_store_email">
+                    </div>
+                    <div class="form-group my-0 py-1">
+                        <label for="id_store_website" class="text-muted">Sitio web:</label>
+                        <input {% if object.store_website != None %} placeholder="{{ object.store_website }}" value="{{ object.store_website }}" {% else %} placeholder="Por Ejemplo: www.tutienda.com" {% endif %} type="text"
+                                    name="store_website" maxlength="60"  class="form-control" id="id_store_website">
+                    </div>
+                    <div class="form-group my-0 py-1">
                         <label for="id_location">Ubicación</label>
                         <select class="form-control" name="store_location" id="id_location" required>
                             <option value="" disabled selected>Lugar</option>
@@ -517,6 +552,7 @@
                         </select>
                     </div>
                     <div class="form-group my-0 py-1">
+                        <label for="id_images" class="text-muted">Imágenes:</label>
                         <div class="custom-file">
                             <input type="file" class="custom-file-input" id="id_store_profile_img"
                                 name="store_profile_img" accept="image/*">

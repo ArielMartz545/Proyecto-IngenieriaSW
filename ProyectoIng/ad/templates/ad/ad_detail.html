@@ -16,7 +16,7 @@
 <div id="fb-root"></div>
 <div class="row">
     <div class="col-12">
-        <div class="card border-left-primary border-bottom-primary shadow my-3">
+        <div class="card shadow my-3">
             <div class="card-body py-3">
                 <div class="row">
                     <div class="col-12 col-md-5">
@@ -150,7 +150,11 @@
                             </div>
                             <div class="col-12 col-md-8">
                                 <h5 class="m-0 ml-4 text-secondary">
-                                    {{object.id_user}}
+                                    {% if not object.id_store %} 
+                                        {{object.id_user}} 
+                                    {% else %} 
+                                        {{object.id_store.store_email}}
+                                    {% endif %}
                                 </h5>
                             </div>
                         </div>
@@ -162,7 +166,11 @@
                             </div>
                             <div class="col-12 col-md-8">
                                 <h5 class="m-0 ml-4 text-secondary">
-                                    +504 {{object.id_user.phone_number}}
+                                    {% if not object.id_store %} 
+                                        +504 {{object.id_user.phone_number}}
+                                    {% else %} 
+                                        +504 {{object.id_store.store_phone_number}}
+                                    {% endif %}
                                 </h5>
                             </div>
                         </div>
@@ -180,9 +188,9 @@
                         </div>
                         <div class="row">
                             <div class="col-12">
-                                <a href="mailto:{{object.id_user}} ?Subject=Me%20interesa%20tu%20anuncio"
+                                <a href="mailto:{% if not object.id_store %}{{object.id_user}}{% else %}{{object.id_store.store_email}}{% endif %}?Subject=Me%20interesa%20tu%20anuncio"
                                 class="btn btn-info" target="_blank"> <i class="fas fa-envelope"></i> Correo</a>
-                                <a href="https://api.whatsapp.com/send?phone=504{{object.id_user.phone_number}}&text=Hola%21%20Estoy%20interesado%20en%20tu%20anuncio%20de%20Pa%27Ya."
+                                <a href="https://api.whatsapp.com/send?phone=504{% if not object.id_store %}{{object.id_user.phone_number}}{% else %}{{object.id_store.store_phone_number}}{% endif %}&text=Hola%21%20Estoy%20interesado%20en%20tu%20anuncio%20de%20Pa%27Ya."
                                     class="btn btn-success" target="_blank"><i class="fab fa-whatsapp"></i>
                                     Contactar</a>
                                 <div class="fb-share-button" data-href="https://paya.com" data-layout="button"
