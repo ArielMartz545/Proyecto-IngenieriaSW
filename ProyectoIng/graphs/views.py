@@ -5,10 +5,13 @@ from ad.models import Ad
 from search.models import Search
 import datetime
 
-
+from django.contrib.auth.mixins import UserPassesTestMixin
 # Create your views here.
-class graphsTemplateView(TemplateView):
+class graphsTemplateView(UserPassesTestMixin ,TemplateView):
     template_name = "graphs/graphs.html"
+
+    def test_func(self):
+        return self.request.user.is_superuser
 
     def get_context_data(self, **kwargs):
         year=datetime.datetime.now().year
