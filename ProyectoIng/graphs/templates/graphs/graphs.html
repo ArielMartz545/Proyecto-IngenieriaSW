@@ -1,9 +1,9 @@
 {% extends 'core/sidebar.html' %}
+{% load jsonify %}
 {% block content %}
-{%for key, value in disable.items %}
-  <input type="text"  value="{{value}}" id="{{key}}">
-  
-{% endfor %}
+
+<span hidden id="items">{{disable|jsonify}}</span>
+
 <!--Hidden Values active users, active ads-->
 <input type="text" hidden value="{{active_users}}" id="active_users">
 <input type="text" hidden value="{{inactive_users}}" id="inactive_users">
@@ -74,6 +74,8 @@
         }
     },
     series: [
+    
+    
         { values: [actives], text:"Activos",'background-color': "#4C71DE"},
         { values: [inactives], text:"Inactivos",'background-color': "#E74A3B"},
       
@@ -228,4 +230,13 @@
       width: '500px'
   });
   </script>
+
+<script>
+  var items = document.getElementById('items').innerHTML;
+  var items_as_json = JSON.parse(items);
+  console.log(items_as_json)
+
+  
+
+</script>
 {% endblock %}
