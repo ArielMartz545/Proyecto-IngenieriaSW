@@ -188,7 +188,7 @@
                         </div>
                         <div class="row">
                             <div class="col-12">
-                                <a href="mailto:{% if not object.id_store %}{{object.id_user}}{% else %}{{object.id_store.store_email}}{% endif %}?Subject=Me%20interesa%20tu%20anuncio"
+                                <a href="mailto:{% if not object.id_store %}{{object.id_user}}{% else %}{{object.id_store.store_email}}{% endif %}?subject = Feedback&body = Me interesa tu Anuncio"  
                                 class="btn btn-info" target="_blank"> <i class="fas fa-envelope"></i> Correo</a>
                                 <a href="https://api.whatsapp.com/send?phone=504{% if not object.id_store %}{{object.id_user.phone_number}}{% else %}{{object.id_store.store_phone_number}}{% endif %}&text=Hola%21%20Estoy%20interesado%20en%20tu%20anuncio%20de%20Pa%27Ya."
                                     class="btn btn-success" target="_blank"><i class="fab fa-whatsapp"></i>
